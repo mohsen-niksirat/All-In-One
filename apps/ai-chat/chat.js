@@ -448,13 +448,24 @@ const Chat = {
         }
     },
 
+    /** Stable per-device id, so imports can tell same-device backups apart. */
+    deviceId() {
+        let id = Store.get('hub', 'deviceId', '');
+        if (!id) {
+            id = Store.id();
+            Store.set('hub', 'deviceId', id);
+        }
+        return id;
+    },
+
     /** Download the conversation as JSON (keeps roles, timestamps and the
      *  queued/offline flags, so re-importing resumes unfinished sends). */
     exportChat() {
         try {
             const data = {
                 app: 'ai-chat',
-                format: 1,
+                format: 2,
+                deviceId: this.deviceId(),
                 exportedAt: new Date().toISOString(),
                 messages: this.messages,
             };
@@ -475,11 +486,25 @@ const Chat = {
         }
     },
 
-    /** Replace the conversation from an exported JSON file. */
+    fmtDate(ts) {
+        const loc = I18N.current === 'fa' ? 'fa-IR' : (I18N.current === 'ar' ? 'ar-EG' : 'en-US');
+        try {
+            return new Date(ts).toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch (e) {
+            return String(ts);
+        }
+    },
+
+    /**
+     * Import an exported JSON backup. Never deletes anything: messages are
+     * merged by id, so re-importing a backup on the same device is a no-op
+     * while a backup from another device adds only the missing turns. Shows
+     * a preview (count + date range + how many are new) and asks first.
+     */
     importChat(file) {
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = async () => {
             try {
                 const data = JSON.parse(String(reader.result));
                 if (!data || !Array.isArray(data.messages)) throw new Error('bad shape');
@@ -488,8 +513,34 @@ const Chat = {
                     typeof m.content === 'string');
                 if (msgs.length === 0) throw new Error('empty');
 
-                this.messages = msgs;
+                // Merge by id: keep everything already here, add only new turns.
+                const have = new Set(this.messages.map(m => m.id));
+                const fresh = msgs.filter(m => !have.has(m.id));
+                if (fresh.length === 0) {
+                    TG.toast(I18N.t('chat_import_none'), 'info');
+                    return;
+                }
+
+                const times = msgs.map(m => m.timestamp || 0).filter(t => t > 0);
+                let from = '—';
+                let to = '—';
+                if (times.length) {
+                    from = this.fmtDate(Math.min(...times));
+                    to = this.fmtDate(Math.max(...times));
+                }
+                const sameDevice = data.deviceId && data.deviceId === this.deviceId();
+                let preview = I18N.t('chat_import_preview', {
+                    n: msgs.length, m: fresh.length, from, to,
+                });
+                if (sameDevice) preview += ' ' + I18N.t('chat_import_same_device');
+
+                const ok = await TG.confirm(preview);
+                if (!ok) return;
+
                 this.queued = [];
+                this.messages = this.messages
+                    .concat(fresh)
+                    .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
                 this.elements.messages.querySelectorAll('.message').forEach(el => el.remove());
                 this.hideWelcome();
                 this.messages.forEach(msg => this.renderMessage(msg, false));
@@ -499,7 +550,7 @@ const Chat = {
                 this.scrollToBottom();
                 // Re-queue any turns that were mid-flight when the backup was made.
                 this.resumeQueued();
-                TG.toast(I18N.t('chat_imported', { n: msgs.length }), 'success');
+                TG.toast(I18N.t('chat_merged', { n: fresh.length }), 'success');
             } catch (e) {
                 TG.toast(I18N.t('chat_import_fail'), 'error');
             }

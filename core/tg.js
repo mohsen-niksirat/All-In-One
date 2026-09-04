@@ -9,7 +9,7 @@ const TG = {
     /** Release version — shown in the header badge on every page.
      *  Keep in sync with sw.js (CACHE = 'allinone-v<major>'): run
      *  `node scripts/release.js` to bump both; tests enforce the sync. */
-    APP_VERSION: '2.4.0',
+    APP_VERSION: '2.5.0',
 
     /**
      * Initialize the Telegram WebApp SDK.
@@ -75,6 +75,22 @@ const TG = {
                 // Check for a newer build now and then periodically.
                 reg.update();
                 setInterval(() => reg.update(), 10 * 60 * 1000);
+
+                // Also re-check whenever the app returns to the foreground
+                // (debounced), so updates land shortly after a tab switch.
+                let lastFgCheck = 0;
+                const foregroundCheck = () => {
+                    const now = Date.now();
+                    if (now - lastFgCheck < 30000) return;
+                    lastFgCheck = now;
+                    try { reg.update(); } catch (e) { /* ignore */ }
+                };
+                try {
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'visible') foregroundCheck();
+                    });
+                    if (window.addEventListener) window.addEventListener('focus', foregroundCheck);
+                } catch (e) { /* ignore */ }
             })
             .catch(() => {});
     },

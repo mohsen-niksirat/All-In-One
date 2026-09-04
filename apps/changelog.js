@@ -7,6 +7,28 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.5.0',
+        icon: '🗂️',
+        link: 'ai-chat',
+        i18n: {
+            fa: [
+                'بررسی خودکار به‌روزرسانی هنگام بازگشت به برنامه',
+                'پیش‌نمایش ورودی گفتگو (تعداد و بازهٔ تاریخ) + تأیید قبل از ادغام',
+                'ادغام به‌جای جایگزینی — با شناسهٔ دستگاه، پشتیبان‌ها حذف نمی‌کنند',
+            ],
+            en: [
+                'Auto update check when the app returns to the foreground',
+                'Import preview (count + date range) asks before merging',
+                'Merges by message id with a per-device flag — imports never delete',
+            ],
+            ar: [
+                'فحص تلقائي للتحديثات عند العودة إلى التطبيق',
+                'معاينة الاستيراد (العدد + نطاق التاريخ) مع تأكيد قبل الدمج',
+                'الدمج بدلاً من الاستبدال — بمعرّف الجهاز، لا يحذف الاستيراد شيئاً',
+            ],
+        },
+    },
+    {
         version: '2.4.0',
         icon: '💾',
         link: 'ai-chat',
