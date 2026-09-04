@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="pomo_back" title="Back to apps">‹</a>
+        <h1 data-i18n="pomo_title">Pomodoro Timer</h1>
+        <button id="settings-btn" class="icon-btn" data-i18n-title="pomo_settings" title="Settings">⚙️</button>
+    </header>
+
+    <main class="app-page pomo-page">
+        <!-- Mode tabs -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="work" data-i18n="pomo_work">Work</button>
+            <button class="mode-tab" data-mode="short" data-i18n="pomo_short">Short Break</button>
+            <button class="mode-tab" data-mode="long" data-i18n="pomo_long">Long Break</button>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-wrap">
+            <svg class="progress-ring" viewBox="0 0 260 260">
+                <circle class="ring-bg" cx="130" cy="130" r="120"/>
+                <circle id="ring-fg" class="ring-fg" cx="130" cy="130" r="120"/>
+            </svg>
+            <div class="timer-center">
+                <div id="time-display" class="time-display">25:00</div>
+                <div id="session-label" class="session-label" data-i18n="pomo_focus">Focus</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="start-btn" class="btn btn-primary btn-big">▶ Start</button>
+            <button id="reset-btn" class="btn btn-secondary btn-big" data-i18n="pomo_reset">Reset</button>
+        </div>
+
+        <!-- Session count -->
+        <div class="session-info">
+            <span data-i18n="pomo_sessions">Sessions today</span>
+            <span id="session-count" class="session-count">0</span>
+        </div>
+
+        <div class="lang-row">
+            <div data-lang-switcher class="lang-switcher"></div>
+        </div>
+    </main>
+
+    <!-- Settings modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 data-i18n="pomo_settings">Settings</h3>
+            <div class="setting-group">
+                <label for="dur-work" data-i18n="pomo_work_min">Work duration (min)</label>
+                <input type="number" id="dur-work" min="1" max="120" value="25">
+            </div>
+            <div class="setting-group">
+                <label for="dur-short" data-i18n="pomo_short_min">Short break (min)</label>
+                <input type="number" id="dur-short" min="1" max="60" value="5">
+            </div>
+            <div class="setting-group">
+                <label for="dur-long" data-i18n="pomo_long_min">Long break (min)</label>
+                <input type="number" id="dur-long" min="1" max="120" value="15">
+            </div>
+            <button id="save-settings" class="btn btn-primary btn-block" data-i18n="pomo_save">Save</button>
+        </div>
+    </div>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

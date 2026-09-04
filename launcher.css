@@ -1,0 +1,210 @@
+/* ===== Launcher page ===== */
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- Header ---- */
+.launcher-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px 14px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.launcher-header .logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.launcher-header .header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.launcher-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.launcher-header p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---- Main ---- */
+.launcher-main {
+    flex: 1;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.search-box input {
+    padding: 12px 42px 12px 14px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    border-color: transparent;
+}
+
+.search-box input:focus {
+    background: var(--input-bg);
+    border-color: var(--accent-color);
+}
+
+/* LTR overrides */
+[dir="ltr"] .search-box .search-icon {
+    right: auto;
+    left: 14px;
+}
+
+[dir="ltr"] .search-box input {
+    padding: 12px 14px 12px 42px;
+}
+
+.stats {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+/* ---- App grid ---- */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+    padding-bottom: 30px;
+}
+
+.app-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: transform 0.12s, border-color 0.12s;
+    overflow: hidden;
+}
+
+a.app-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.app-card .app-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.app-card .app-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.app-card .app-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.app-card .app-info .name-en {
+    font-size: 11px;
+    color: var(--text-secondary);
+    direction: ltr;
+    text-align: right;
+}
+
+[dir="ltr"] .app-card .app-info .name-en {
+    text-align: left;
+}
+
+.app-card .app-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.app-card .app-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.app-card .app-tags .chip {
+    padding: 2px 8px;
+    font-size: 10px;
+}
+
+/* ---- Coming soon cards ---- */
+.app-card.soon {
+    opacity: 0.62;
+    cursor: default;
+    filter: saturate(0.6);
+}
+
+.soon-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+[dir="ltr"] .soon-badge {
+    left: auto;
+    right: 10px;
+}
+
+.app-grid .empty-state {
+    grid-column: 1 / -1;
+}

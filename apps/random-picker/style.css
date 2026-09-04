@@ -1,0 +1,143 @@
+/* ===== Random Picker app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Input ---- */
+.control-group {
+    margin-bottom: 16px;
+}
+
+.control-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+#items-input {
+    resize: vertical;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* ---- Result ---- */
+.result-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.92); opacity: 0.4; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.result-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.result-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+    word-break: break-word;
+}
+
+.result-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* ---- Actions ---- */
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.btn-big {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
+}
+
+/* ---- History ---- */
+.history .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.clear-btn {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: underline;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+.history-item .time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    direction: ltr;
+}
+
+.empty-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 14px;
+}
+
+.hidden {
+    display: none !important;
+}

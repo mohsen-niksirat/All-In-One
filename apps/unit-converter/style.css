@@ -1,0 +1,126 @@
+/* ===== Unit Converter app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Category tabs ---- */
+.cat-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 18px;
+}
+
+.cat-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid transparent;
+    transition: all 0.15s;
+}
+
+.cat-tab.active {
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    border-color: var(--accent-color);
+}
+
+/* ---- Converter card ---- */
+.converter.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.field input,
+.field select {
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+#value-input {
+    font-size: 22px;
+    font-weight: 600;
+    direction: ltr;
+    text-align: left;
+}
+
+[dir="rtl"] #value-input {
+    text-align: right;
+}
+
+/* ---- Swap button ---- */
+.swap-btn {
+    align-self: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-color);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.swap-btn:active {
+    transform: rotate(180deg);
+}
+
+/* ---- Result ---- */
+.result-box {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+
+.result-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.result-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent-color);
+    direction: ltr;
+    word-break: break-all;
+}

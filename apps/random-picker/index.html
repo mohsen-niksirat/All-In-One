@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Random Picker</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="pick_back" title="Back to apps">‹</a>
+        <h1 data-i18n="pick_title">Random Picker</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Input list -->
+        <div class="control-group">
+            <label class="control-label" for="items-input" data-i18n="pick_list">Your list</label>
+            <textarea id="items-input" rows="6" data-i18n-placeholder="pick_placeholder" placeholder="One item per line..."></textarea>
+        </div>
+
+        <!-- Result -->
+        <div id="result-box" class="result-box card hidden">
+            <div class="result-label" data-i18n="pick_result">Winner</div>
+            <div id="result-text" class="result-text"></div>
+            <div class="result-actions">
+                <button id="copy-btn" class="btn btn-secondary btn-sm" data-i18n="pick_copy">Copy result</button>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button id="pick-btn" class="btn btn-primary btn-big">🎲 <span data-i18n="pick_btn">Pick!</span></button>
+            <button id="again-btn" class="btn btn-secondary btn-big hidden" data-i18n="pick_again">Pick again</button>
+        </div>
+
+        <!-- History -->
+        <div class="history">
+            <div class="section-title">
+                <span data-i18n="pick_history">Past picks</span>
+                <button id="clear-history" class="clear-btn" data-i18n="pick_clear">Clear</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

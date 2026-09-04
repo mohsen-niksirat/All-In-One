@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="pass_back" title="Back to apps">‹</a>
+        <h1 data-i18n="pass_title">Password Generator</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Password display -->
+        <div class="password-box card">
+            <div id="password-output" class="password-output" dir="ltr"></div>
+            <button id="copy-btn" class="copy-btn" data-i18n-title="pass_copy" title="Copy">📋</button>
+        </div>
+
+        <!-- Strength -->
+        <div class="strength">
+            <div class="strength-head">
+                <span data-i18n="pass_strength">Strength</span>
+                <span id="strength-label" class="strength-label">—</span>
+            </div>
+            <div class="strength-bar">
+                <div id="strength-fill" class="strength-fill"></div>
+            </div>
+        </div>
+
+        <!-- Length -->
+        <div class="control-group">
+            <label for="length-slider" class="control-label">
+                <span data-i18n="pass_length">Password length</span>
+                <span id="length-value" class="length-value">16</span>
+            </label>
+            <input type="range" id="length-slider" min="4" max="64" value="16">
+        </div>
+
+        <!-- Options -->
+        <div class="control-group">
+            <div class="control-label" data-i18n="pass_options">Options</div>
+            <div class="options">
+                <label class="option"><input type="checkbox" id="opt-upper" checked><span data-i18n="pass_upper">Uppercase (A–Z)</span></label>
+                <label class="option"><input type="checkbox" id="opt-lower" checked><span data-i18n="pass_lower">Lowercase (a–z)</span></label>
+                <label class="option"><input type="checkbox" id="opt-digits" checked><span data-i18n="pass_digits">Numbers (0–9)</span></label>
+                <label class="option"><input type="checkbox" id="opt-symbols" checked><span data-i18n="pass_symbols">Symbols (!@#)</span></label>
+            </div>
+        </div>
+
+        <!-- Generate -->
+        <button id="generate-btn" class="btn btn-primary btn-block btn-big">🔄 <span data-i18n="pass_generate">Generate</span></button>
+
+        <!-- History -->
+        <div class="history">
+            <div class="section-title" data-i18n="pass_history">History</div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

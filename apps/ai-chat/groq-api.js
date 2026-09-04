@@ -1,8 +1,9 @@
 /**
- * groq-api.js — Groq API client with streaming support
+ * groq-api.js — Groq API client with streaming support (core layer).
  */
 const GroqAPI = {
     BASE_URL: 'https://api.groq.com/openai/v1',
+    NS: 'ai-chat',
 
     /**
      * Send a chat completion request with streaming
@@ -15,10 +16,10 @@ const GroqAPI = {
      * @param {number} maxTokens - Max tokens to generate
      */
     async streamChat(messages, model, onChunk, onDone, onError, signal, maxTokens = 1024) {
-        const apiKey = Storage.getApiKey();
-        
+        const apiKey = Store.get(this.NS, 'apiKey', '');
+
         if (!apiKey) {
-            onError('API Key تنظیم نشده است. لطفاً از بخش تنظیمات کلید API خود را وارد کنید.');
+            onError(I18N.t('chat_no_api_key_error'));
             return;
         }
 
@@ -41,7 +42,7 @@ const GroqAPI = {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                const errorMsg = errorData.error?.message || `خطای HTTP ${response.status}`;
+                const errorMsg = errorData.error?.message || `${I18N.t('chat_error_http')} ${response.status}`;
                 throw new Error(errorMsg);
             }
 
@@ -52,22 +53,22 @@ const GroqAPI = {
 
             while (true) {
                 const { done, value } = await reader.read();
-                
+
                 if (done) break;
 
                 buffer += decoder.decode(value, { stream: true });
-                
+
                 // Process SSE lines
                 const lines = buffer.split('\n');
                 buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    
+
                     if (!trimmed || !trimmed.startsWith('data: ')) continue;
-                    
+
                     const data = trimmed.slice(6);
-                    
+
                     if (data === '[DONE]') {
                         onDone(fullContent);
                         return;
@@ -76,7 +77,7 @@ const GroqAPI = {
                     try {
                         const parsed = JSON.parse(data);
                         const delta = parsed.choices?.[0]?.delta?.content;
-                        
+
                         if (delta) {
                             fullContent += delta;
                             onChunk(delta, fullContent);
@@ -95,7 +96,7 @@ const GroqAPI = {
                 onDone(''); // User cancelled
                 return;
             }
-            onError(error.message || 'خطا در اتصال به سرور');
+            onError(error.message || I18N.t('chat_error_connect'));
         }
     },
 
@@ -125,9 +126,9 @@ const GroqAPI = {
                     'Authorization': `Bearer ${apiKey}`,
                 },
             });
-            
+
             if (!response.ok) return [];
-            
+
             const data = await response.json();
             return data.data || [];
         } catch {

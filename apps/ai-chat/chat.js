@@ -1,7 +1,8 @@
 /**
- * chat.js — Chat manager for messages, UI, and interactions
+ * chat.js — Chat manager for messages, UI, and interactions (core layer).
  */
 const Chat = {
+    NS: 'ai-chat',
     messages: [],
     isStreaming: false,
     abortController: null,
@@ -22,7 +23,7 @@ const Chat = {
     },
 
     loadHistory() {
-        this.messages = Storage.getChatHistory();
+        this.messages = Store.getJSON(this.NS, 'history', []);
         if (this.messages.length > 0) {
             this.hideWelcome();
             this.messages.forEach(msg => this.renderMessage(msg, false));
@@ -47,11 +48,12 @@ const Chat = {
         // Send button
         this.elements.sendBtn.addEventListener('click', () => this.sendMessage());
 
-        // Quick action buttons
+        // Quick action buttons (localized prompts)
         document.querySelectorAll('.quick-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const prompt = btn.dataset.prompt;
-                this.elements.input.value = prompt;
+                const key = btn.dataset.promptKey;
+                if (!key) return;
+                this.elements.input.value = I18N.t(key);
                 this.updateSendButton();
                 this.sendMessage();
             });
@@ -78,7 +80,7 @@ const Chat = {
 
         // Create user message
         const userMsg = {
-            id: Storage.generateId(),
+            id: Store.id(),
             role: 'user',
             content: content,
             timestamp: Date.now(),
@@ -96,7 +98,7 @@ const Chat = {
 
         // Create AI message placeholder
         const aiMsg = {
-            id: Storage.generateId(),
+            id: Store.id(),
             role: 'assistant',
             content: '',
             timestamp: Date.now(),
@@ -117,9 +119,9 @@ const Chat = {
         this.abortController = new AbortController();
 
         // Build API messages (system prompt + chat history)
-        const systemPrompt = Storage.getSystemPrompt();
-        const model = Storage.getSelectedModel();
-        const maxTokens = Storage.getMaxTokens();
+        const systemPrompt = Store.get(this.NS, 'systemPrompt', I18N.t('chat_default_prompt'));
+        const model = Store.get(this.NS, 'selectedModel', 'llama-3.3-70b-versatile');
+        const maxTokens = parseInt(Store.get(this.NS, 'maxTokens', 1024)) || 1024;
 
         const apiMessages = [
             { role: 'system', content: systemPrompt },
@@ -143,7 +145,7 @@ const Chat = {
                 aiMsg.content = fullContent;
                 bubble.innerHTML = this.formatMessage(fullContent);
                 chunkCount++;
-                
+
                 if (chunkCount % 3 === 0) {
                     this.scrollToBottom();
                 }
@@ -152,7 +154,7 @@ const Chat = {
             (fullContent) => {
                 aiMsg.content = fullContent;
                 aiMsg.timestamp = Date.now();
-                bubble.innerHTML = this.formatMessage(fullContent || '(پاسخ خالی)');
+                bubble.innerHTML = this.formatMessage(fullContent || I18N.t('chat_empty_response'));
                 this.updateMessageMeta(aiElement, aiMsg);
                 this.saveHistory();
                 this.scrollToBottom();
@@ -164,7 +166,7 @@ const Chat = {
                 this.updateMessageMeta(aiElement, aiMsg);
                 this.scrollToBottom();
                 this.finishStreaming();
-                this.showToast(error, 'error');
+                TG.toast(error, 'error');
             },
             this.abortController.signal,
             maxTokens
@@ -188,7 +190,7 @@ const Chat = {
         const div = document.createElement('div');
         div.className = `message ${msg.role === 'user' ? 'user' : 'ai'}`;
         div.dataset.id = msg.id;
-        
+
         if (!animate) {
             div.style.animation = 'none';
         }
@@ -196,10 +198,10 @@ const Chat = {
         div.innerHTML = `
             <div class="message-bubble">${msg.content ? this.formatMessage(msg.content) : ''}</div>
             <div class="message-meta">
-                <span class="message-time">${Storage.formatTimestamp(msg.timestamp)}</span>
+                <span class="message-time">${Store.time(msg.timestamp)}</span>
                 <div class="message-actions">
-                    <button class="action-btn copy-btn" title="کپی">📋</button>
-                    ${msg.role === 'assistant' ? '<button class="action-btn regenerate-btn" title="تولید مجدد">🔄</button>' : ''}
+                    <button class="action-btn copy-btn" title="copy">📋</button>
+                    ${msg.role === 'assistant' ? '<button class="action-btn regenerate-btn" title="regenerate">🔄</button>' : ''}
                 </div>
             </div>
         `;
@@ -224,7 +226,7 @@ const Chat = {
     updateMessageMeta(element, msg) {
         const timeEl = element.querySelector('.message-time');
         if (timeEl) {
-            timeEl.textContent = Storage.formatTimestamp(msg.timestamp);
+            timeEl.textContent = Store.time(msg.timestamp);
         }
     },
 
@@ -276,7 +278,7 @@ const Chat = {
     async copyMessage(content) {
         try {
             await navigator.clipboard.writeText(content);
-            this.showToast('کپی شد!', 'success');
+            TG.toast(I18N.t('chat_copied'), 'success');
         } catch {
             // Fallback
             const textarea = document.createElement('textarea');
@@ -285,7 +287,7 @@ const Chat = {
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            this.showToast('کپی شد!', 'success');
+            TG.toast(I18N.t('chat_copied'), 'success');
         }
     },
 
@@ -298,7 +300,7 @@ const Chat = {
 
         // Remove this message and all after it
         this.messages = this.messages.slice(0, idx);
-        
+
         // Remove DOM elements
         const allMsgs = this.elements.messages.querySelectorAll('.message');
         allMsgs.forEach(el => {
@@ -324,18 +326,18 @@ const Chat = {
 
     clearChat() {
         this.messages = [];
-        Storage.clearChatHistory();
-        
+        Store.remove(this.NS, 'history');
+
         // Remove all messages from DOM
         const msgElements = this.elements.messages.querySelectorAll('.message');
         msgElements.forEach(el => el.remove());
-        
+
         this.showWelcome();
         this.updateTokenCount();
     },
 
     saveHistory() {
-        Storage.saveChatHistory(this.messages);
+        Store.setJSON(this.NS, 'history', this.messages);
     },
 
     scrollToBottom() {
@@ -349,16 +351,4 @@ const Chat = {
         const estimatedTokens = Math.ceil(totalChars / 4);
         this.elements.tokenCount.textContent = estimatedTokens > 0 ? `~${estimatedTokens} tokens` : '';
     },
-
-    showToast(message, type = 'error') {
-        const existing = document.querySelector('.toast');
-        if (existing) existing.remove();
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => toast.remove(), 3000);
-    }
 };

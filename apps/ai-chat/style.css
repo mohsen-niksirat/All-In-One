@@ -1,59 +1,9 @@
-/* ===== CSS Variables (Theme) ===== */
-:root {
-    --bg-color: #ffffff;
-    --bg-secondary: #f0f2f5;
-    --text-color: #1a1a1a;
-    --text-secondary: #666666;
-    --border-color: #e0e0e0;
-    --accent-color: #0088cc;
-    --accent-hover: #006da3;
-    --user-bubble-bg: #0088cc;
-    --user-bubble-text: #ffffff;
-    --ai-bubble-bg: #f0f2f5;
-    --ai-bubble-text: #1a1a1a;
-    --input-bg: #ffffff;
-    --input-border: #d0d0d0;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --modal-bg: rgba(0, 0, 0, 0.5);
-    --header-bg: #ffffff;
-    --scrollbar-thumb: #c0c0c0;
-    --scrollbar-track: #f0f0f0;
-}
-
-[data-theme="dark"] {
-    --bg-color: #1a1a2e;
-    --bg-secondary: #16213e;
-    --text-color: #e0e0e0;
-    --text-secondary: #a0a0a0;
-    --border-color: #2a2a4a;
-    --accent-color: #0088cc;
-    --accent-hover: #00aadd;
-    --user-bubble-bg: #0088cc;
-    --user-bubble-text: #ffffff;
-    --ai-bubble-bg: #16213e;
-    --ai-bubble-text: #e0e0e0;
-    --input-bg: #16213e;
-    --input-border: #2a2a4a;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --header-bg: #1a1a2e;
-    --scrollbar-thumb: #3a3a5a;
-    --scrollbar-track: #1a1a2e;
-}
-
-/* ===== Reset & Base ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ===== AI Chat — app-specific styles ===== */
+/* Theme variables & base reset live in ../../core/ui.css */
 
 html, body {
     height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
     overflow: hidden;
-    -webkit-font-smoothing: antialiased;
 }
 
 #app {
@@ -61,18 +11,6 @@ html, body {
     flex-direction: column;
     height: 100vh;
     height: 100dvh;
-}
-
-/* ===== Scrollbar ===== */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 3px;
 }
 
 /* ===== Header ===== */
@@ -152,6 +90,7 @@ header {
     font-size: 12px;
     cursor: pointer;
     outline: none;
+    width: auto;
 }
 
 .model-select:focus {
@@ -566,13 +505,13 @@ header {
     background: var(--accent-hover);
 }
 
-/* ===== Error Toast ===== */
+/* ===== Toast (positioned above input in chat) ===== */
 .toast {
     position: fixed;
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
-    background: #f44336;
+    background: var(--danger-color);
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
@@ -583,7 +522,11 @@ header {
 }
 
 .toast.success {
-    background: #4caf50;
+    background: var(--success-color);
+}
+
+.toast.info {
+    background: var(--accent-color);
 }
 
 @keyframes slideUp {
@@ -596,7 +539,7 @@ header {
     .quick-actions {
         grid-template-columns: 1fr;
     }
-    
+
     .message {
         max-width: 90%;
     }

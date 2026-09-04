@@ -1,112 +1,92 @@
-# 🤖 AI Chat — Telegram Mini App
+# 🧩 All-In-One — Telegram Mini Apps Hub
 
-یک چت‌بات هوش مصنوعی سرورلس برای تلگرام، قابل میزبانی رایگان روی GitHub Pages.
+> **فارسی:** [مطالعه نسخه فارسی](README.fa.md)
 
-## ✨ ویژگی‌ها
+A collection of **free, serverless Telegram Mini Apps** — one launcher page, many tools. Every app runs entirely in the browser: no backend, no database, **$0 hosting cost** on GitHub Pages.
 
-- 💬 رابط چت زیبا با پشتیبانی از تم تاریک/روشن
-- 🚀 پاسخ‌های استریم (typing in real-time)
-- 🤖 مدل‌های مختلف هوش مصنوعی (Llama, Gemma, Mixtral)
-- 📱 کاملاً ریسپانسیو برای موبایل
-- 💾 ذخیره تاریخچه چت در مرورگر
-- ⚡ بدون نیاز به سرور (Serverless)
-- 🎨 هماهنگ با تم تلگرام
+## ✨ Features
 
-## 🛠️ فناوری‌ها
+- 🏠 **Launcher home** — all apps listed in one grid with search & filters
+- 🌍 **Truly bilingual** — فارسی / English, switchable in one tap (choice is remembered)
+- 🧱 **Shared core layer** — `core/tg.js` (Telegram SDK), `core/store.js` (namespaced storage), `core/i18n.js` (translations), `core/ui.css` (theming)
+- 📱 **Native Telegram feel** — dark/light theme from Telegram, haptic feedback, native back button
+- 💾 **Data stays on device** — localStorage, nothing is sent to any server (except the APIs you opt into)
 
-| بخش | فناوری | هزینه |
-|-----|--------|-------|
-| فرانت‌اند | HTML + CSS + JS | رایگان |
-| میزبانی | GitHub Pages | رایگان |
-| هوش مصنوعی | Groq API (Llama 3.3) | رایگان |
-| ذخیره‌سازی | localStorage | رایگان |
+## 🚀 Ready Apps
 
-## 📦 نصب و راه‌اندازی
+| App | What it does |
+|-----|--------------|
+| 🤖 **AI Chat** | Streaming chat with Groq models (Llama 3.3, Gemma, Mixtral…) — free API key |
+| 🍅 **Pomodoro Timer** | Focus timer with work/break modes, progress ring & session stats |
+| 📐 **Unit Converter** | Length, weight, temperature, data, speed, time |
+| 🔐 **Password Generator** | Strong random passwords with strength meter & history |
+| 🎲 **Random Picker** | Pick a random winner from your list, with history |
 
-### ۱. دریافت کلید API Groq
+…and **22 more apps on the roadmap** (todo list, habits, expenses, weather, notes, QR codes and more) — see `apps/registry.js`.
 
-1. به [console.groq.com](https://console.groq.com) بروید
-2. ثبت‌نام کنید (رایگان، نیازی به کارت بانکی نیست)
-3. از بخش **API Keys** یک کلید جدید بسازید
-4. کلید را کپی کنید (فرمت: `gsk_...`)
+## 🧱 Project Structure
 
-### ۲. میزبانی روی GitHub Pages
-
-```bash
-# ۱. یک ریپ جدید بسازید
-# ۲. فایل‌ها را کپی کنید
-# ۳. پوش کنید
-
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/ai-chat-mini-app.git
-git push -u origin main
+```
+├── index.html           ← Launcher home (lists all apps)
+├── launcher.css/.js
+├── core/                ← Shared layer used by every app
+│   ├── tg.js            ← Telegram WebApp wrapper (theme, haptics, back button)
+│   ├── store.js         ← Namespaced localStorage (tma:<app>:<key>)
+│   ├── i18n.js          ← Multi-language engine (fa/en)
+│   └── ui.css           ← Theme variables + shared components
+└── apps/
+    ├── registry.js      ← App metadata (single source of truth)
+    ├── ai-chat/         ← 🤖 (index.html + style.css + app.js + chat.js + groq-api.js)
+    ├── pomodoro/        ← 🍅 (index.html + style.css + app.js)
+    ├── unit-converter/  ← 📐
+    ├── password-generator/ ← 🔐
+    └── random-picker/   ← 🎲
 ```
 
-### ۳. فعال‌سازی GitHub Pages
+## 🆕 How to Add a New App
 
-1. به Settings > Pages ریپ خود بروید
-2. Source را روی **main branch** بگذارید
-3. منتظر بمانید تا Build شود
-4. آدرس سایت را کپی کنید (مثلاً: `https://YOUR_USERNAME.github.io/ai-chat-mini-app/`)
-
-### ۴. اتصال به ربات تلگرام
-
-1. با `@BotFather` در تلگرام یک بات جدید بسازید:
+1. Create `apps/<your-app>/` with its own `index.html` (+ `style.css`, `app.js` if needed).
+2. Load the core layer in your page:
+   ```html
+   <link rel="stylesheet" href="../../core/ui.css">
+   <script src="../../core/tg.js"></script>
+   <script src="../../core/store.js"></script>
+   <script src="../../core/i18n.js"></script>
    ```
-   /newbot
+3. Register translations, then initialize:
+   ```js
+   I18N.register('fa', { my_key: '…' });
+   I18N.register('en', { my_key: '…' });
+   TG.init({ backHref: '../../' });
+   I18N.init();
    ```
-2. نام و یوزرنیم بات را وارد کنید
-3. دستور زیر را بدهید (آدرس سایت خود را جایگزین کنید):
-   ```
-   /setwebapp
-   ```
-4. نام بات و آدرس GitHub Pages را وارد کنید
+4. Add an entry to `apps/registry.js` (`status: 'ready'` and `path: 'apps/<your-app>/'`). Done — it appears on the launcher.
 
-### ۵. تنظیم API Key در اپ
+> Tip: use `data-i18n` / `data-i18n-placeholder` / `data-i18n-title` attributes in HTML for static text, and `I18N.t('key')` in JS for dynamic text. Add a `<div data-lang-switcher class="lang-switcher"></div>` to any header to let users switch language.
 
-1. بات را در تلگرام باز کنید
-2. روی دکمه **AI Chat** کلیک کنید
-3. روی آیکون ⚙️ (تنظیمات) کلیک کنید
-4. کلید API Groq خود را وارد کنید
-5. ذخیره کنید
+## 🌍 Adding a Language
 
-## 🎮 استفاده
+1. Add `{ fa: 'rtl', ar: 'rtl', … }` to `dirs` in `core/i18n.js`.
+2. Register a new dict for every existing key — `I18N.register('ar', { … })`.
+3. Add the native name to `nativeNames` in `core/i18n.js`.
+4. Add the localized name/description to every entry in `apps/registry.js`.
 
-- پیام خود را بنویسید و Enter بزنید
-- از دکمه‌های سریع برای شروع استفاده کنید
-- از منوی بالا مدل هوش مصنوعی را تغییر دهید
-- روی پیام‌ها کلیک کنید تا کپی یا تولید مجدد شوند
+## 🚀 Deploy to GitHub Pages
 
-## 📋 مدل‌های موجود
+1. Push this repo to GitHub.
+2. **Settings → Pages → Source: `main` branch** → Save.
+3. Your hub is live at `https://<username>.github.io/All-In-One/`.
 
-| مدل | توضیح | سرعت |
-|-----|--------|-------|
-| Llama 3.3 70B | قوی‌ترین مدل | متوسط |
-| Llama 3.1 8B | سبک و سریع | سریع |
-| Gemma 2 9B | مدل گوگل | سریع |
-| Mixtral 8x7B | مدل ترکیبی | متوسط |
+### Connect to a Telegram bot
 
-## ⚠️ محدودیت‌ها
+1. Talk to [@BotFather](https://t.me/BotFather) → `/newbot` → get the token.
+2. `/newapp` → pick the bot → set the **Web App URL** to your Pages URL.
+3. Open the bot → menu button → your hub opens inside Telegram (theme + haptics + back button just work).
 
-- **API Key در مرورگر ذخیره می‌شود** — برای پروژه‌های شخصی مناسب است
-- **Rate Limit:** 30 درخواست در دقیقه، 14,400 درخواست در روز (رایگان)
-- **تاریخچه چت:** در localStorage مرورگر ذخیره می‌شود (پاک شدن داده‌های مرورگر = حذف تاریخچه)
+### AI Chat setup (optional)
 
-## 🚀 آینده
+The AI Chat app needs a free Groq API key: [console.groq.com/keys](https://console.groq.com/keys). Open the app → ⚙️ Settings → paste the `gsk_…` key. It is stored only on your device.
 
-- [ ] اضافه کردن Cloudflare Worker به عنوان پروکسی امن
-- [ ] پشتیبانی از آپلود تصویر
-- [ ] اضافه کردن تاریخچه چت‌های جداگانه
-- [ ] پشتیبانی از صدا (Whisper)
-- [ ] اضافه کردن TTS (تبدیل متن به صدا)
+## 📄 License
 
-## 📄 لایسنس
-
-MIT — آزاد برای استفاده و توسعه.
-
----
-
-ساخته‌شده با ❤️ برای جامعه توسعه‌دهندگان تلگرام
+MIT — free to use, modify and share.

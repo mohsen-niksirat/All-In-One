@@ -1,0 +1,165 @@
+/* ===== Pomodoro app styles ===== */
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.pomo-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    padding-top: 26px;
+}
+
+/* ---- Mode tabs ---- */
+.mode-tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-secondary);
+    border-radius: 999px;
+    padding: 4px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.mode-tab {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.mode-tab.active {
+    background: var(--card-bg);
+    color: var(--accent-color);
+    box-shadow: var(--shadow);
+}
+
+/* ---- Timer ring ---- */
+.timer-wrap {
+    position: relative;
+    width: 260px;
+    height: 260px;
+}
+
+.progress-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ring-bg {
+    fill: none;
+    stroke: var(--bg-secondary);
+    stroke-width: 12;
+}
+
+.ring-fg {
+    fill: none;
+    stroke: var(--accent-color);
+    stroke-width: 12;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s linear;
+}
+
+.timer-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.time-display {
+    font-size: 52px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    direction: ltr;
+}
+
+.session-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ---- Controls ---- */
+.controls {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.btn-big {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
+}
+
+/* ---- Session info ---- */
+.session-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 10px 18px;
+    border-radius: 999px;
+}
+
+.session-count {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent-color);
+    direction: ltr;
+}
+
+/* ---- Language switcher row ---- */
+.lang-row {
+    margin-top: 6px;
+}
+
+/* ---- Settings modal ---- */
+.setting-group {
+    margin-bottom: 14px;
+}
+
+.setting-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-color);
+}
+
+.modal-box h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
