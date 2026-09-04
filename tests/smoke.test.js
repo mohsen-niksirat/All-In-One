@@ -305,6 +305,32 @@ test('every page boots and i18n covers all keys in fa/en/ar', () => {
     }
 });
 
+test('changelog integrity: documents the current release in fa/en/ar', () => {
+    const boot = bootPage('index.html');
+    const changelog = boot.get('APP_CHANGELOG');
+    const version = boot.get('TG').APP_VERSION;
+
+    assert.ok(Array.isArray(changelog) && changelog.length > 0, 'changelog must have at least one entry');
+    assert.ok(/^\d+\.\d+\.\d+$/.test(version), 'bad TG.APP_VERSION: ' + version);
+    assert.strictEqual(
+        changelog[0].version, version,
+        `latest changelog entry (${changelog[0] && changelog[0].version}) must equal TG.APP_VERSION (${version}) — update apps/changelog.js when releasing`
+    );
+
+    const seen = new Set();
+    for (const entry of changelog) {
+        assert.ok(!seen.has(entry.version), 'duplicate changelog version: ' + entry.version);
+        seen.add(entry.version);
+        assert.ok(entry.i18n, `entry ${entry.version} missing i18n`);
+        for (const lang of ['fa', 'en', 'ar']) {
+            assert.ok(
+                Array.isArray(entry.i18n[lang]) && entry.i18n[lang].length > 0,
+                `changelog entry ${entry.version} missing ${lang} lines`
+            );
+        }
+    }
+});
+
 test('registry integrity', () => {
     const boot = bootPage('index.html');
     const registry = boot.get('APP_REGISTRY');

@@ -97,9 +97,10 @@ const GroqAPI = {
                 return;
             }
             // Network failures surface as TypeError('Failed to fetch') in the
-            // browser — show the localized message, not raw browser English.
+            // browser — report them separately (localized message, and the
+            // caller can queue the message for an automatic resend).
             if (error instanceof TypeError) {
-                onError(I18N.t('chat_error_connect'));
+                onError(I18N.t('chat_error_connect'), true);
                 return;
             }
             onError(error.message || I18N.t('chat_error_connect'));

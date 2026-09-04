@@ -9,7 +9,7 @@ const TG = {
     /** Release version — shown in the header badge on every page.
      *  Keep in sync with sw.js (CACHE = 'allinone-v<major>'): run
      *  `node scripts/release.js` to bump both; tests enforce the sync. */
-    APP_VERSION: '2.1.0',
+    APP_VERSION: '2.2.0',
 
     /**
      * Initialize the Telegram WebApp SDK.

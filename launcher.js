@@ -28,6 +28,7 @@
         hub_data_label: 'حریم خصوصی و داده‌ها',
         hub_coming: 'این اپ به‌زودی در دسترس می‌شود',
         hub_update_ready: 'نسخهٔ جدید آماده است — در حال به‌روزرسانی…',
+        hub_changelog_title: 'تازه‌های نسخه',
         tag_serverless: 'سرورلس',
         tag_freeapi: 'API رایگان',
         tag_offline: 'آفلاین',
@@ -55,6 +56,7 @@
         hub_data_label: 'Privacy & data',
         hub_coming: 'This app is coming soon',
         hub_update_ready: 'New version ready — updating…',
+        hub_changelog_title: "What's new",
         tag_serverless: 'Serverless',
         tag_freeapi: 'Free API',
         tag_offline: 'Offline',
@@ -82,6 +84,7 @@
         hub_data_label: 'الخصوصية والبيانات',
         hub_coming: 'هذا التطبيق قادم قريباً',
         hub_update_ready: 'الإصدار الجديد جاهز — جارٍ التحديث…',
+        hub_changelog_title: 'ما الجديد',
         tag_serverless: 'بدون خادم',
         tag_freeapi: 'واجهة مجانية',
         tag_offline: 'دون اتصال',
@@ -285,14 +288,59 @@
             const app = APP_REGISTRY.find(a => a.id === sheetAppId);
             if (app) openSheet(app);
         }
+        if (!changelogSheet.classList.contains('hidden')) openChangelog();
         TG.haptic('light');
     });
 
     // ---- Version badge + update detection ----
     // The badge itself (vX.Y.Z, ↻ flash + auto-reload on update) lives in
     // core/tg.js so every page has it. Here we add the localized toast when
-    // an update is detected.
+    // an update is detected, and the changelog sheet opened by tapping the
+    // badge (only the launcher loads the changelog data).
     document.addEventListener('sw:update', () => TG.toast(I18N.t('hub_update_ready')));
+
+    const changelogSheet = document.getElementById('changelog-sheet');
+    const changelogBox = document.getElementById('changelog-box');
+
+    function openChangelog() {
+        if (typeof APP_CHANGELOG === 'undefined') return;
+        const entries = APP_CHANGELOG.map((entry) => {
+            const lines = entry.i18n[I18N.current] || entry.i18n.en || [];
+            return `
+                <div class="cl-entry">
+                    <div class="cl-ver">v${entry.version}</div>
+                    <ul class="cl-lines">
+                        ${lines.map(l => `<li>${l}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }).join('');
+        changelogBox.innerHTML = `
+            <div class="sheet-head">
+                <div class="sheet-icon">📣</div>
+                <div class="sheet-title"><h3>${I18N.t('hub_changelog_title')}</h3></div>
+            </div>
+            <div class="cl-list">${entries}</div>
+            <div class="sheet-actions">
+                <button type="button" class="btn btn-secondary" id="changelog-close">${I18N.t('hub_close')}</button>
+            </div>
+        `;
+        changelogSheet.classList.remove('hidden');
+        TG.haptic('light');
+        const close = document.getElementById('changelog-close');
+        if (close) close.addEventListener('click', closeChangelog);
+    }
+
+    function closeChangelog() {
+        changelogSheet.classList.add('hidden');
+    }
+
+    const badgeEl = document.getElementById('version-badge');
+    if (badgeEl) badgeEl.addEventListener('click', openChangelog);
+
+    changelogSheet.addEventListener('click', (e) => {
+        if (e.target === changelogSheet) closeChangelog();
+    });
 
     // ---- Deep links ----
     // Open a specific app when the hub URL carries #<app-id> or when Telegram

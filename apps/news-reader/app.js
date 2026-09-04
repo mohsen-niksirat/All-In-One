@@ -33,6 +33,7 @@
         nws_open: 'باز کردن خبر',
         nws_updated: 'آخرین به‌روزرسانی: {time}',
         nws_cached: '⚠️ آفلاین — نمایش آخرین اخبار ذخیره‌شده',
+        nws_stamp: 'ذخیره {time}',
         nws_time_now: 'همین حالا',
         nws_time_min: '{n} د',
         nws_time_hour: '{n} س',
@@ -72,6 +73,7 @@
         nws_open: 'Open article',
         nws_updated: 'Last updated: {time}',
         nws_cached: '⚠️ Offline — showing last saved articles',
+        nws_stamp: 'saved {time}',
         nws_time_now: 'now',
         nws_time_min: '{n}m',
         nws_time_hour: '{n}h',
@@ -111,6 +113,7 @@
         nws_open: 'فتح المقال',
         nws_updated: 'آخر تحديث: {time}',
         nws_cached: '⚠️ دون اتصال — عرض آخر المقالات المحفوظة',
+        nws_stamp: 'محفوظ {time}',
         nws_time_now: 'الآن',
         nws_time_min: '{n} د',
         nws_time_hour: '{n} س',
@@ -339,7 +342,7 @@
 
             // Instant render from the last saved feed for this view (offline).
             const cached = this.loadCached();
-            if (cached) this.renderFeed(cached.articles);
+            if (cached) this.renderFeed(cached.articles, cached.ts);
 
             if (typeof fetch !== 'function') {
                 if (!silent && !cached) this.setStatus(I18N.t('nws_error_net'), true);
@@ -455,7 +458,7 @@
             }
         },
 
-        renderFeed(articles) {
+        renderFeed(articles, savedTs) {
             if (articles.length === 0) {
                 this.elements.feed.innerHTML =
                     `<div class="empty-state"><div class="empty-icon">📰</div><p>${I18N.t('nws_no_articles')}</p></div>`;
@@ -473,7 +476,7 @@
                             ${a.description ? `<p class="art-desc">${this.escape(a.description)}</p>` : ''}
                             <div class="art-meta">
                                 <span class="art-src">${this.escape(a.source)}</span>
-                                <span class="art-time">${this.timeAgo(a.time)}</span>
+                                <span class="art-time">${this.timeAgo(a.time)}${savedTs ? ` <span class="art-stamp">· ${I18N.t('nws_stamp', { time: this.fmtTime(savedTs) })}</span>` : ''}</span>
                             </div>
                         </div>
                     </button>

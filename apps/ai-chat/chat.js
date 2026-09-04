@@ -6,6 +6,7 @@ const Chat = {
     messages: [],
     isStreaming: false,
     abortController: null,
+    queued: [],        // offline sends awaiting reconnect: [{ aiMsg, aiElement }]
     elements: {},
 
     init() {
@@ -16,12 +17,18 @@ const Chat = {
             welcome: document.getElementById('welcome'),
             tokenCount: document.getElementById('token-count'),
             lastSync: document.getElementById('last-sync'),
+            outbox: document.getElementById('outbox-note'),
         };
 
         this.loadHistory();
         this.updateLastSync();
         this.setupEventListeners();
         this.updateSendButton();
+
+        // Resend anything queued while offline as soon as we're back online.
+        if (window.addEventListener) {
+            window.addEventListener('online', () => this.flushQueue());
+        }
     },
 
     /** Show when the conversation was last saved locally (history is always
@@ -39,6 +46,27 @@ const Chat = {
             this.hideWelcome();
             this.messages.forEach(msg => this.renderMessage(msg, false));
             this.scrollToBottom();
+            // Pick up messages still queued from a previous session and, if we
+            // are already online, flush them right away.
+            this.resumeQueued();
+        }
+    },
+
+    /** Re-queue assistant turns left marked 'queued' in persisted history. */
+    resumeQueued() {
+        const pending = this.messages.filter(m => m.role === 'assistant' && m.queued);
+        if (pending.length === 0) return;
+        pending.forEach((aiMsg) => {
+            const el = this.elements.messages.querySelector(`[data-id="${aiMsg.id}"]`);
+            if (el) {
+                this.queued.push({ aiMsg, aiElement: el });
+                const bubble = el.querySelector('.message-bubble');
+                if (bubble) bubble.innerHTML = `<span class="queued-text">⏳ ${I18N.t('chat_queued')}</span>`;
+            }
+        });
+        this.updateOutboxNote();
+        if (typeof navigator === 'undefined' || navigator.onLine !== false) {
+            this.flushQueue();
         }
     },
 
@@ -165,14 +193,21 @@ const Chat = {
             (fullContent) => {
                 aiMsg.content = fullContent;
                 aiMsg.timestamp = Date.now();
+                delete aiMsg.queued;
                 bubble.innerHTML = this.formatMessage(fullContent || I18N.t('chat_empty_response'));
                 this.updateMessageMeta(aiElement, aiMsg);
                 this.saveHistory();
+                this.updateOutboxNote();
                 this.scrollToBottom();
                 this.finishStreaming();
             },
-            // onError
-            (error) => {
+            // onError(error, isNetwork) — network failures queue the message
+            // for an automatic resend; API/server errors show as before.
+            (error, isNetwork) => {
+                if (isNetwork) {
+                    this.queueMessage(aiMsg, aiElement);
+                    return;
+                }
                 bubble.innerHTML = `<span class="error-text">⚠️ ${error}</span>`;
                 this.updateMessageMeta(aiElement, aiMsg);
                 this.scrollToBottom();
@@ -189,6 +224,50 @@ const Chat = {
         this.abortController = null;
         this.updateSendButton();
         this.updateTokenCount();
+    },
+
+    /**
+     * Queue an AI turn for an automatic resend: the user's message is already
+     * saved in history, so on reconnect we only re-run the assistant stream
+     * against it. The queued bubble shows a placeholder until then.
+     */
+    queueMessage(aiMsg, aiElement) {
+        if (this.queued.some(q => q.aiMsg.id === aiMsg.id)) {
+            this.finishStreaming();
+            return;
+        }
+        aiMsg.queued = true;
+        this.queued.push({ aiMsg, aiElement });
+        const bubble = aiElement.querySelector('.message-bubble');
+        if (bubble) bubble.innerHTML = `<span class="queued-text">⏳ ${I18N.t('chat_queued')}</span>`;
+        this.updateMessageMeta(aiElement, aiMsg);
+        this.saveHistory();
+        this.updateOutboxNote();
+        this.finishStreaming();
+    },
+
+    /** Resend every queued message (triggered by the browser's 'online' event). */
+    async flushQueue() {
+        if (this.queued.length === 0) return;
+        const pending = this.queued.splice(0);
+        this.updateOutboxNote();
+        for (const item of pending) {
+            // Skip entries whose thread was cleared or regenerated meanwhile.
+            if (!this.messages.some(m => m.id === item.aiMsg.id)) continue;
+            await this.streamResponse(item.aiMsg, item.aiElement);
+        }
+    },
+
+    /** Show/hide the 'N message(s) queued' note above the composer. */
+    updateOutboxNote() {
+        const el = this.elements.outbox;
+        if (!el) return;
+        if (this.queued.length > 0) {
+            el.textContent = I18N.t('chat_queued_note', { n: this.queued.length });
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
     },
 
     cancelStreaming() {
@@ -338,6 +417,8 @@ const Chat = {
     clearChat() {
         this.messages = [];
         Store.remove(this.NS, 'history');
+        this.queued = [];
+        this.updateOutboxNote();
 
         // Remove all messages from DOM
         const msgElements = this.elements.messages.querySelectorAll('.message');

@@ -405,6 +405,22 @@ header {
     direction: ltr;
 }
 
+/* ---- Offline send queue ---- */
+.outbox-note {
+    font-size: 12px;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin: 0 14px 8px;
+    text-align: center;
+}
+
+.queued-text {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 /* ===== Modal ===== */
 .modal {
     position: fixed;

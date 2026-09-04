@@ -229,3 +229,11 @@ body {
     margin-right: 0;
     margin-left: 6px;
 }
+
+/* ---- Offline 'saved at' stamp inside day rows ---- */
+.day-stamp {
+    font-size: 10px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    white-space: nowrap;
+}

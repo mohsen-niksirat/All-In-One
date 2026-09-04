@@ -6,6 +6,11 @@ body {
     flex-direction: column;
 }
 
+/* The badge opens the changelog only on the launcher. */
+.version-badge {
+    cursor: pointer;
+}
+
 /* ---- Header ---- */
 .launcher-header {
     display: flex;
@@ -338,4 +343,49 @@ body {
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 12px;
+}
+
+/* ---- Changelog sheet ---- */
+.cl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.cl-entry {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.cl-entry:first-child {
+    border: 1px solid var(--accent-color);
+}
+
+.cl-ver {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-color);
+    direction: ltr;
+    text-align: right;
+    margin-bottom: 4px;
+}
+
+[dir="ltr"] .cl-ver {
+    text-align: left;
+}
+
+.cl-lines {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.cl-lines li::before {
+    content: '• ';
+    color: var(--text-secondary);
 }

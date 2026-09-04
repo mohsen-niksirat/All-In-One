@@ -15,7 +15,7 @@
  */
 'use strict';
 
-const CACHE = 'allinone-2.1.0';
+const CACHE = 'allinone-2.2.0';
 
 const PRECACHE = [
     './',
