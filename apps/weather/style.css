@@ -160,6 +160,14 @@ body {
     padding: 4px 10px;
 }
 
+/* ---- Last-updated line ---- */
+.updated {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: -2px 0 10px;
+}
+
 /* ---- 7-day list ---- */
 .daily {
     display: flex;

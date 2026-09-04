@@ -27,6 +27,7 @@
         hub_note_static: '⚡ کاملاً در مرورگر شما اجرا می‌شود — بدون سرور',
         hub_data_label: 'حریم خصوصی و داده‌ها',
         hub_coming: 'این اپ به‌زودی در دسترس می‌شود',
+        hub_update_ready: 'نسخهٔ جدید آماده است — در حال به‌روزرسانی…',
         tag_serverless: 'سرورلس',
         tag_freeapi: 'API رایگان',
         tag_offline: 'آفلاین',
@@ -53,6 +54,7 @@
         hub_note_static: '⚡ Runs entirely in your browser — no server',
         hub_data_label: 'Privacy & data',
         hub_coming: 'This app is coming soon',
+        hub_update_ready: 'New version ready — updating…',
         tag_serverless: 'Serverless',
         tag_freeapi: 'Free API',
         tag_offline: 'Offline',
@@ -79,6 +81,7 @@
         hub_note_static: '⚡ يعمل بالكامل في متصفحك — بدون خادم',
         hub_data_label: 'الخصوصية والبيانات',
         hub_coming: 'هذا التطبيق قادم قريباً',
+        hub_update_ready: 'الإصدار الجديد جاهز — جارٍ التحديث…',
         tag_serverless: 'بدون خادم',
         tag_freeapi: 'واجهة مجانية',
         tag_offline: 'دون اتصال',
@@ -285,6 +288,38 @@
         TG.haptic('light');
     });
 
+    // ---- Version badge + update detection ----
+    // Bump APP_VERSION with every release; the badge makes updates obvious,
+    // and the SW's skipWaiting + network-first strategy means a controller
+    // change is always a newer build → reload to show it.
+    const APP_VERSION = '2.0.0';
+
+    function initVersionBadge() {
+        const badge = document.getElementById('version-badge');
+        if (badge) badge.textContent = 'v' + APP_VERSION;
+        if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
+
+        const hadController = Boolean(navigator.serviceWorker.controller);
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            // First claim is just the SW taking control, not an update.
+            if (!hadController) return;
+            if (badge) {
+                badge.classList.add('updating');
+                badge.textContent = '↻ v' + APP_VERSION;
+            }
+            TG.toast(I18N.t('hub_update_ready'));
+            setTimeout(() => location.reload(), 1500);
+        });
+
+        navigator.serviceWorker.ready
+            .then((reg) => {
+                // Check for a newer build now and then periodically.
+                reg.update();
+                setInterval(() => reg.update(), 10 * 60 * 1000);
+            })
+            .catch(() => {});
+    }
+
     // ---- Deep links ----
     // Open a specific app when the hub URL carries #<app-id> or when Telegram
     // starts the web app with ?startapp=<app-id> (start_param).
@@ -311,5 +346,6 @@
 
     // ---- Init ----
     refresh();
+    initVersionBadge();
     openDeepLink();
 })();

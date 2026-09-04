@@ -19,6 +19,8 @@
         wea_wind: 'باد:',
         wea_precip: 'بارش:',
         wea_err: 'خطا در دریافت آب‌وهوا — اتصال اینترنت را بررسی کنید',
+        wea_updated: 'آخرین به‌روزرسانی: {time}',
+        wea_cached: '⚠️ آفلاین — نمایش آخرین دادهٔ ذخیره‌شده',
         wea_c0: 'آسمان صاف',
         wea_c1: 'کمی ابری',
         wea_c2: 'نیمه‌ابری',
@@ -43,6 +45,8 @@
         wea_wind: 'Wind:',
         wea_precip: 'Rain:',
         wea_err: 'Could not load weather — check your connection',
+        wea_updated: 'Last updated: {time}',
+        wea_cached: '⚠️ Offline — showing last saved data',
         wea_c0: 'Clear sky',
         wea_c1: 'Mostly clear',
         wea_c2: 'Partly cloudy',
@@ -67,6 +71,8 @@
         wea_wind: 'الرياح:',
         wea_precip: 'المطر:',
         wea_err: 'تعذّر تحميل الطقس — تحقق من اتصالك',
+        wea_updated: 'آخر تحديث: {time}',
+        wea_cached: '⚠️ دون اتصال — عرض آخر بيانات محفوظة',
         wea_c0: 'سماء صافية',
         wea_c1: 'صافٍ غالباً',
         wea_c2: 'غائم جزئياً',
@@ -106,6 +112,7 @@
                 curTemp: document.getElementById('cur-temp'),
                 curMeta: document.getElementById('cur-meta'),
                 daily: document.getElementById('daily'),
+                updated: document.getElementById('updated'),
             };
 
             this.saved = Store.getJSON(NS, 'saved', []);
@@ -225,12 +232,53 @@
         },
 
         // ---- Forecast ----
+        /** Cloud-safe cache key for a location (no ':' or '.' — CloudStorage
+         *  keys allow only [A-Za-z0-9_-]). */
+        locKey(loc) {
+            return 'cache-' + String(loc.lat).replace(/\./g, '_') + '-' + String(loc.lon).replace(/\./g, '_');
+        },
+
+        fmtTime(ts) {
+            try {
+                return new Date(ts).toLocaleTimeString(this.locale(), { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return String(ts);
+            }
+        },
+
+        showUpdated(ts) {
+            if (!this.elements.updated) return;
+            this.elements.updated.textContent = I18N.t('wea_updated', { time: this.fmtTime(ts) });
+            this.elements.updated.classList.remove('hidden');
+        },
+
+        /**
+         * Forecast with offline fallback: render the last saved snapshot
+         * instantly, then refresh from the network when possible. When the
+         * network is down, the saved data stays on screen with a note.
+         */
         async loadForecast(loc, silent) {
+            this.lastLoc = loc;
+            const cacheKey = this.locKey(loc);
+            const cached = Store.getJSON(NS, cacheKey);
+
+            const apply = (data, ts) => {
+                this.elements.locName.textContent = loc.name;
+                this.elements.forecast.classList.remove('hidden');
+                this.renderCurrent(data.current);
+                this.renderDaily(data.daily);
+                this.showUpdated(ts);
+            };
+
+            // Instant render from the last saved snapshot — works fully offline.
+            if (cached && cached.data && cached.data.current && cached.data.daily) {
+                apply(cached.data, cached.ts);
+            }
+
             if (typeof fetch !== 'function') {
-                if (!silent) this.setStatus(I18N.t('wea_err'), true);
+                if (!silent && !cached) this.setStatus(I18N.t('wea_err'), true);
                 return;
             }
-            this.lastLoc = loc;
             if (!silent) this.setStatus(I18N.t('wea_searching'));
             try {
                 const url = `${FC}?latitude=${loc.lat}&longitude=${loc.lon}` +
@@ -241,16 +289,18 @@
                 if (!res.ok) throw new Error('http ' + res.status);
                 const data = await res.json();
                 if (!data.current || !data.daily) throw new Error('bad payload');
-                this.elements.locName.textContent = loc.name;
-                this.elements.forecast.classList.remove('hidden');
-                this.renderCurrent(data.current);
-                this.renderDaily(data.daily);
+                const ts = Date.now();
+                apply(data, ts);
+                Store.setJSON(NS, cacheKey, { ts, data });
                 if (!silent) {
                     this.setStatus('');
                     TG.haptic('light');
                 }
             } catch (e) {
-                if (!silent) this.setStatus(I18N.t('wea_err'), true);
+                if (!silent) {
+                    // Keep the saved snapshot visible (if any) instead of an error.
+                    this.setStatus(cached ? I18N.t('wea_cached') : I18N.t('wea_err'), true);
+                }
             }
         },
 

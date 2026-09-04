@@ -201,6 +201,13 @@ body {
     background: var(--accent-soft);
 }
 
+.m-updated {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 10px;
+}
+
 /* ---- Quick pairs ---- */
 .quick {
     display: flex;

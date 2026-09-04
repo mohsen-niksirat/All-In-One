@@ -5,14 +5,16 @@
  *  - On install: precache the launcher + core layer (small, static).
  *  - Every successful same-origin GET is cached on the fly, so once you have
  *    visited an app it works offline too.
- *  - Navigations are network-first with cache fallback (falls back to the
- *    cached launcher if the exact page was never visited).
+ *  - Everything is network-first with cache fallback, so repeat visitors
+ *    always get the freshly deployed build the moment the new SW takes over
+ *    (skipWaiting + clients.claim) — and still work fully offline.
  *
  * Bump CACHE when you ship changes that must invalidate old cached assets.
+ * (The version badge on the launcher shows the current release.)
  */
 'use strict';
 
-const CACHE = 'allinone-v1';
+const CACHE = 'allinone-v2';
 
 const PRECACHE = [
     './',
@@ -63,17 +65,15 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Assets: cache-first with background refresh.
+    // Assets: network-first with cache fallback (force-refresh — repeat
+    // visitors see new builds immediately; offline still served from cache).
     event.respondWith(
-        caches.match(req).then((hit) => {
-            const fresh = fetch(req)
-                .then((res) => {
-                    if (res && res.ok) cachePut(req, res.clone());
-                    return res;
-                })
-                .catch(() => hit);
-            return hit || fresh;
-        })
+        fetch(req)
+            .then((res) => {
+                if (res && res.ok) cachePut(req, res.clone());
+                return res;
+            })
+            .catch(() => caches.match(req))
     );
 });
 

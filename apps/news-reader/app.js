@@ -31,6 +31,10 @@
         nws_error_net: 'خطا در دریافت اخبار — اتصال را بررسی کنید',
         nws_error_http: 'خطای سرویس ({code})',
         nws_open: 'باز کردن خبر',
+        nws_time_now: 'همین حالا',
+        nws_time_min: '{n} د',
+        nws_time_hour: '{n} س',
+        nws_time_day: '{n} ر',
         nws_cat_general: 'عمومی',
         nws_cat_world: 'جهان',
         nws_cat_business: 'اقتصاد',
@@ -64,6 +68,10 @@
         nws_error_net: 'Could not load news — check your connection',
         nws_error_http: 'Service error ({code})',
         nws_open: 'Open article',
+        nws_time_now: 'now',
+        nws_time_min: '{n}m',
+        nws_time_hour: '{n}h',
+        nws_time_day: '{n}d',
         nws_cat_general: 'General',
         nws_cat_world: 'World',
         nws_cat_business: 'Business',
@@ -97,6 +105,10 @@
         nws_error_net: 'تعذّر تحميل الأخبار — تحقق من اتصالك',
         nws_error_http: 'خطأ في الخدمة ({code})',
         nws_open: 'فتح المقال',
+        nws_time_now: 'الآن',
+        nws_time_min: '{n} د',
+        nws_time_hour: '{n} س',
+        nws_time_day: '{n} ي',
         nws_cat_general: 'عام',
         nws_cat_world: 'العالم',
         nws_cat_business: 'أعمال',
@@ -364,11 +376,11 @@
             const then = new Date(str).getTime();
             if (isNaN(then)) return '';
             const mins = Math.floor(Math.max(0, Date.now() - then) / 60000);
-            if (mins < 1) return 'now';
-            if (mins < 60) return mins + 'm';
+            if (mins < 1) return I18N.t('nws_time_now');
+            if (mins < 60) return I18N.t('nws_time_min', { n: mins });
             const hrs = Math.floor(mins / 60);
-            if (hrs < 24) return hrs + 'h';
-            return Math.floor(hrs / 24) + 'd';
+            if (hrs < 24) return I18N.t('nws_time_hour', { n: hrs });
+            return I18N.t('nws_time_day', { n: Math.floor(hrs / 24) });
         },
 
         escape(text) {

@@ -4,6 +4,8 @@
 
 // ---- Translations ----
 I18N.register('fa', {
+    chat_title: 'چت هوش مصنوعی',
+    chat_powered: 'پشتیبان‌شده توسط Groq',
     chat_online: 'آنلاین',
     chat_greeting: 'سلام {name} 👋',
     chat_welcome_title: 'سلام! من دستیار هوش مصنوعی هستم',
@@ -41,6 +43,8 @@ I18N.register('fa', {
 });
 
 I18N.register('en', {
+    chat_title: 'AI Chat',
+    chat_powered: 'powered by Groq',
     chat_online: 'Online',
     chat_greeting: 'Hi {name} 👋',
     chat_welcome_title: "Hi! I'm your AI assistant",
@@ -78,6 +82,8 @@ I18N.register('en', {
 });
 
 I18N.register('ar', {
+    chat_title: 'الدردشة الذكية',
+    chat_powered: 'بدعم من Groq',
     chat_online: 'متصل',
     chat_greeting: 'أهلاً {name} 👋',
     chat_welcome_title: 'مرحباً! أنا مساعدك الذكي',
@@ -130,14 +136,14 @@ const App = {
 
         // API key banner follows language changes
         document.addEventListener('i18n:changed', () => {
-            document.title = 'AI Chat';
+            document.title = I18N.t('chat_title');
             this.checkApiKey();
         });
 
         // Greet the user
         this.greetUser();
         this.checkApiKey();
-        document.title = 'AI Chat';
+        document.title = I18N.t('chat_title');
     },
 
     // ===== Greeting =====

@@ -18,14 +18,14 @@
         <!-- Amount + pair -->
         <div class="amount-row">
             <input id="amount" type="number" inputmode="decimal" min="0" step="any" data-i18n-placeholder="cur_amount_ph" placeholder="Amount">
-            <select id="from" class="cur-select" aria-label="From currency"></select>
+            <select id="from" class="cur-select" aria-label="From currency" data-i18n-aria-label="cur_from_label"></select>
         </div>
         <div class="swap-row">
             <button id="swap" class="btn btn-secondary" data-i18n="cur_swap">⇄ Swap</button>
         </div>
         <div class="amount-row">
             <div class="amount-result" id="amount-result">1</div>
-            <select id="to" class="cur-select" aria-label="To currency"></select>
+            <select id="to" class="cur-select" aria-label="To currency" data-i18n-aria-label="cur_to_label"></select>
         </div>
 
         <button id="convert-btn" class="btn btn-primary btn-block" data-i18n="cur_convert">Convert</button>
@@ -54,6 +54,7 @@
                 <span class="m-label"><span data-i18n="cur_market_gold">Global gold</span> <b class="m-code">XAU/IRR</b></span>
                 <span class="m-value" id="m-xau-irr"></span>
             </div>
+            <div class="m-updated hidden" id="m-updated"></div>
             <button id="m-refresh" class="m-refresh" data-i18n="cur_market_refresh">↻ Refresh</button>
         </div>
 

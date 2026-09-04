@@ -10,6 +10,8 @@
         cur_title: 'نرخ ارز',
         cur_back: 'بازگشت به لیست اپ‌ها',
         cur_amount_ph: 'مبلغ',
+        cur_from_label: 'ارز مبدأ',
+        cur_to_label: 'ارز مقصد',
         cur_swap: '⇄ جابه‌جایی',
         cur_convert: 'تبدیل',
         cur_converting: 'در حال دریافت نرخ…',
@@ -19,12 +21,16 @@
         cur_market_usd: 'دلار آمریکا',
         cur_market_gold: 'اونس جهانی طلا',
         cur_market_refresh: '↻ تازه‌سازی',
+        cur_updated: 'آخرین به‌روزرسانی: {time}',
+        cur_cached: '⚠️ آفلاین — نمایش نرخ‌های ذخیره‌شده',
     });
 
     I18N.register('en', {
         cur_title: 'Currency',
         cur_back: 'Back to apps',
         cur_amount_ph: 'Amount',
+        cur_from_label: 'From currency',
+        cur_to_label: 'To currency',
         cur_swap: '⇄ Swap',
         cur_convert: 'Convert',
         cur_converting: 'Fetching rates…',
@@ -34,12 +40,16 @@
         cur_market_usd: 'US Dollar',
         cur_market_gold: 'Global gold',
         cur_market_refresh: '↻ Refresh',
+        cur_updated: 'Last updated: {time}',
+        cur_cached: '⚠️ Offline — showing saved rates',
     });
 
     I18N.register('ar', {
         cur_title: 'أسعار العملات',
         cur_back: 'العودة إلى التطبيقات',
         cur_amount_ph: 'المبلغ',
+        cur_from_label: 'العملة المصدر',
+        cur_to_label: 'العملة الهدف',
         cur_swap: '⇄ تبديل',
         cur_convert: 'تحويل',
         cur_converting: 'جارٍ جلب الأسعار…',
@@ -49,6 +59,8 @@
         cur_market_usd: 'الدولار الأمريكي',
         cur_market_gold: 'الذهب العالمي',
         cur_market_refresh: '↻ تحديث',
+        cur_updated: 'آخر تحديث: {time}',
+        cur_cached: '⚠️ دون اتصال — عرض الأسعار المحفوظة',
     });
 
     const NS = 'currency';
@@ -99,6 +111,7 @@
                 mXau: document.getElementById('m-xau'),
                 mXauIrr: document.getElementById('m-xau-irr'),
                 mRefresh: document.getElementById('m-refresh'),
+                mUpdated: document.getElementById('m-updated'),
             };
             this.elements.market.loading = false;
 
@@ -181,16 +194,47 @@
         },
 
         // ---- Conversion ----
+        /**
+         * Rates with offline fallback: fetch live, persist to Store on success,
+         * and fall back to the last saved snapshot when offline. Session cache
+         * (30 min) avoids hammering the API on every tap.
+         */
         async fetchRates(base) {
-            if (this.cache[base]) return this.cache[base];
-            if (typeof fetch !== 'function') throw new Error('no fetch');
-            const res = await fetch(`${API}/${base}`);
-            if (!res.ok) throw new Error('http ' + res.status);
-            const data = await res.json();
-            if (data.result !== 'success' || !data.rates) throw new Error('bad payload');
-            const entry = { rates: data.rates, updated: data.time_last_update_utc || '' };
-            this.cache[base] = entry;
-            return entry;
+            const KEY = 'rates-' + base;
+            const sess = this.cache[base];
+            if (sess && Date.now() - (sess.fetchedAt || 0) < 30 * 60 * 1000) return sess;
+
+            if (typeof fetch === 'function') {
+                try {
+                    const res = await fetch(`${API}/${base}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.result === 'success' && data.rates) {
+                            const entry = {
+                                rates: data.rates,
+                                updated: data.time_last_update_utc || '',
+                                fetchedAt: Date.now(),
+                            };
+                            this.cache[base] = entry;
+                            if (this.savedTs) delete this.savedTs[base];
+                            Store.setJSON(NS, KEY, { ts: Date.now(), entry });
+                            return entry;
+                        }
+                    }
+                } catch (e) {
+                    // offline — fall back to the last saved snapshot
+                }
+            }
+
+            const saved = Store.getJSON(NS, KEY);
+            if (saved && saved.entry && saved.entry.rates) {
+                saved.entry.fetchedAt = Date.now(); // fresh for this session
+                this.cache[base] = saved.entry;
+                this.savedTs = this.savedTs || {};
+                this.savedTs[base] = saved.ts || 0;
+                return saved.entry;
+            }
+            throw new Error('no rates');
         },
 
         async convert(silent) {
@@ -211,7 +255,9 @@
                 const rate = entry.rates[to];
                 if (!rate) throw new Error('no target');
                 this.showResult({ from, to, amount, rate, value: amount * rate });
-                this.setStatus('');
+                this.setStatus(this.savedTs && this.savedTs[from]
+                    ? I18N.t('cur_cached')
+                    : '');
                 if (!silent) TG.haptic('light');
             } catch (e) {
                 this.setStatus(I18N.t('cur_err'), true);
@@ -242,26 +288,47 @@
             });
             try {
                 // Gold spot (USD per troy ounce) — free, no key, CORS enabled.
-                const [fx, gold] = await Promise.all([
-                    this.fetchRates('USD'),
-                    typeof fetch === 'function'
-                        ? fetch('https://api.gold-api.com/price/XAU').then(r => r.json())
-                        : Promise.resolve(null),
-                ]);
+                // Fetched separately so a gold outage never kills the FX panel.
+                let gold = null;
+                if (typeof fetch === 'function') {
+                    try {
+                        gold = await fetch('https://api.gold-api.com/price/XAU').then(r => r.json());
+                    } catch (e) {
+                        gold = null;
+                    }
+                }
+                const fx = await this.fetchRates('USD');
                 const usdIrr = fx.rates.IRR;
-                const goldUsd = gold && gold.price ? gold.price : null;
                 if (!usdIrr) throw new Error('no IRR');
 
-                els.mUsd.textContent = `1 USD = ${this.fmtRate(usdIrr)} IRR`;
-                if (goldUsd) {
-                    els.mXau.textContent = `1 oz = $${this.fmt(goldUsd, 0)}`;
-                    els.mXauIrr.textContent = `1 oz = ${this.fmt(goldUsd * usdIrr, 0)} IRR`;
-                }
+                const snapshot = { ts: Date.now(), usdIrr, goldUsd: gold && gold.price ? gold.price : null };
+                Store.setJSON(NS, 'market', snapshot);
+                this.showMarket(snapshot.usdIrr, snapshot.goldUsd, snapshot.ts);
             } catch (e) {
-                els.market.classList.add('hidden');
+                // Offline → last saved market snapshot (stale but useful).
+                const saved = Store.getJSON(NS, 'market');
+                if (saved && saved.usdIrr) {
+                    this.showMarket(saved.usdIrr, saved.goldUsd || null, saved.ts || 0);
+                } else {
+                    els.market.classList.add('hidden');
+                }
             } finally {
                 els.market.loading = false;
                 ['mUsd', 'mXau', 'mXauIrr'].forEach(k => els[k].classList.remove('loading'));
+            }
+        },
+
+        showMarket(usdIrr, goldUsd, ts) {
+            const els = this.elements;
+            els.mUsd.textContent = `1 USD = ${this.fmtRate(usdIrr)} IRR`;
+            if (goldUsd) {
+                els.mXau.textContent = `1 oz = $${this.fmt(goldUsd, 0)}`;
+                els.mXauIrr.textContent = `1 oz = ${this.fmt(goldUsd * usdIrr, 0)} IRR`;
+            }
+            if (ts && els.mUpdated) {
+                const t = new Date(ts).toLocaleTimeString(this.locale(), { hour: '2-digit', minute: '2-digit' });
+                els.mUpdated.textContent = I18N.t('cur_updated', { time: t });
+                els.mUpdated.classList.remove('hidden');
             }
         },
 

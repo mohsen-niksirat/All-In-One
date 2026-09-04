@@ -160,7 +160,7 @@ function allPages() {
 
 function usedKeys(html) {
     const keys = new Set();
-    for (const m of html.matchAll(/data-i18n(?:-placeholder|-title)?="([^"]+)"/g)) {
+    for (const m of html.matchAll(/data-i18n(?:-placeholder|-title|-aria-label)?="([^"]+)"/g)) {
         keys.add(m[1]);
     }
     return keys;
@@ -207,6 +207,45 @@ test('static audit: no parentElement-scoped queries (the dead-controls bug class
                 matches.length, 0,
                 `${page} (${s}): use document/known-container scoped queries, not parentElement.querySelector* — ${src.slice(Math.max(0, matches[0] && matches[0].index - 40), matches[0] && matches[0].index + 60)}`
             );
+        }
+    }
+});
+
+test('static audit: no hardcoded UI strings outside the i18n dictionaries', () => {
+    // UI text must live in the I18N.register('fa'/'en'/'ar', {...}) dicts and be
+    // read via I18N.t(...). Words that show up as quoted literals elsewhere are
+    // untranslated stragglers (e.g. News Reader's timeAgo() 'now'/'5m'/'3h').
+    // Dict blocks, comments, and CSS-class names are stripped first.
+    const BANNED = [
+        'now', 'yesterday', 'today', 'retry', 'refresh', 'search', 'settings',
+        'cancel', 'delete', 'share', 'clear', 'offline', 'online', 'save',
+        'close', 'copied', 'empty',
+    ];
+    const strip = (src) => src
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/\/\/[^\n]*/g, '')
+        .replace(/I18N\.register\(\s*['"](?:fa|en|ar)['"],\s*\{[\s\S]*?\n\s*\}\);\s*/g, '')
+        // Mask legitimate non-UI string arguments (DOM ids, classes, API calls)
+        .replace(/getElementById\s*\(\s*'[^']+'\s*\)/g, '')
+        .replace(/\.classList\.(?:add|remove|toggle)\s*\(\s*'[^']+'\s*\)/g, '')
+        .replace(/execCommand\s*\(\s*'[^']+'\s*\)/g, '')
+        .replace(/(?:add|remove)EventListener\s*\(\s*'[^']+'\s*[,)]/g, '')
+        // i18n'd attribute fallbacks inside templates (data-i18n-title=… title="…")
+        .replace(/(?:data-i18n-)?(?:title|placeholder|aria-label)="[^"]*"/g, '');
+    for (const page of allPages()) {
+        for (const s of allScriptSrc(page)) {
+            // Registry + core + launcher are infrastructure: registry tag ids and
+            // CSS class names are data, not UI text. The bug class lives in app
+            // controllers, so audit those (apps/<id>/app.js).
+            if (s === 'apps/registry.js' || !s.endsWith('app.js')) continue;
+            const src = strip(fs.readFileSync(path.join(ROOT, path.dirname(page), s), 'utf8'));
+            for (const w of BANNED) {
+                const re = new RegExp(`['"]${w}['"]`, 'i');
+                assert.ok(
+                    !re.test(src),
+                    `${page} (${s}): hardcoded UI string '${w}' outside the i18n dicts — move it into all three dictionaries and use I18N.t(...)`
+                );
+            }
         }
     }
 });
