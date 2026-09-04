@@ -19,6 +19,7 @@ const APP_REGISTRY = [
             ar: { name: 'دردشة الذكاء الاصطناعي', desc: 'محادثة مع نماذج Groq ببث مباشر' },
         },
         tags: ['serverless', 'freeapi'],
+        keyed: true,
         path: 'apps/ai-chat/',
         status: 'ready',
     },
@@ -241,18 +242,18 @@ const APP_REGISTRY = [
         status: 'ready',
     },
 
-    // ===== Free APIs (coming soon) =====
+    // ===== Free APIs (ready) =====
     {
         id: 'weather',
         icon: '🌤️',
         i18n: {
-            fa: { name: 'آب‌وهوا', desc: 'پیش‌بینی ۵ روزه با API رایگان' },
-            en: { name: 'Weather', desc: '5-day forecast via a free API' },
-            ar: { name: 'الطقس', desc: 'توقعات 5 أيام عبر واجهة مجانية' },
+            fa: { name: 'آب‌وهوا', desc: 'پیش‌بینی ۷ روزه — بدون نیاز به کلید' },
+            en: { name: 'Weather', desc: '7-day forecast & city search — no key needed' },
+            ar: { name: 'الطقس', desc: 'توقعات 7 أيام وبحث عن المدن — دون مفتاح' },
         },
         tags: ['freeapi'],
-        path: null,
-        status: 'soon',
+        path: 'apps/weather/',
+        status: 'ready',
     },
     {
         id: 'news-reader',
@@ -263,8 +264,9 @@ const APP_REGISTRY = [
             ar: { name: 'قارئ الأخبار', desc: 'آخر الأخبار من مصادر متعددة' },
         },
         tags: ['freeapi'],
-        path: null,
-        status: 'soon',
+        keyed: true,
+        path: 'apps/news-reader/',
+        status: 'ready',
     },
     {
         id: 'translator',
@@ -275,23 +277,23 @@ const APP_REGISTRY = [
             ar: { name: 'مترجم', desc: 'ترجم النصوص بواجهة مجانية' },
         },
         tags: ['freeapi'],
-        path: null,
-        status: 'soon',
+        path: 'apps/translator/',
+        status: 'ready',
     },
     {
         id: 'currency',
         icon: '💱',
         i18n: {
-            fa: { name: 'نرخ ارز', desc: 'نرخ لحظه‌ای ارز و طلا' },
-            en: { name: 'Currency Rates', desc: 'Live currency & gold rates' },
-            ar: { name: 'أسعار العملات', desc: 'أسعار العملات والذهب لحظياً' },
+            fa: { name: 'تبدیل ارز', desc: 'تبدیل بیش از ۱۶۰ ارز از جمله ریال — بدون کلید' },
+            en: { name: 'Currency', desc: 'Live conversion for 160+ currencies, incl. IRR' },
+            ar: { name: 'تحويل العملات', desc: 'تحويل مباشر لأكثر من 160 عملة، تشمل الريال الإيراني' },
         },
         tags: ['freeapi'],
-        path: null,
-        status: 'soon',
+        path: 'apps/currency/',
+        status: 'ready',
     },
 
-    // ===== Tools (coming soon) =====
+    // ===== Tools (ready) =====
     {
         id: 'world-clock',
         icon: '🌍',
@@ -301,8 +303,8 @@ const APP_REGISTRY = [
             ar: { name: 'ساعة العالم', desc: 'الوقت الحالي في مدن العالم' },
         },
         tags: ['offline'],
-        path: null,
-        status: 'soon',
+        path: 'apps/world-clock/',
+        status: 'ready',
     },
 
     // ===== Fun / static (coming soon) =====

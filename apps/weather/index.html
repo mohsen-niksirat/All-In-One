@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Weather</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="wea_back" title="Back to apps">‹</a>
+        <h1 data-i18n="wea_title">Weather</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- City search -->
+        <div class="search-row">
+            <input id="city" type="text" data-i18n-placeholder="wea_city_ph" placeholder="City name..." autocomplete="off">
+            <button id="search-btn" class="btn btn-primary" data-i18n="wea_search">Search</button>
+        </div>
+        <div id="status" class="status" role="status"></div>
+        <div id="suggest" class="suggest"></div>
+        <div id="saved" class="saved"></div>
+
+        <!-- Forecast -->
+        <section id="forecast" class="forecast hidden">
+            <div class="cur-card">
+                <div class="cur-head">
+                    <span id="loc-name" class="loc-name"></span>
+                    <span id="cur-cond" class="cond-tag"></span>
+                </div>
+                <div class="cur-temp-row">
+                    <span id="cur-icon" class="big-icon"></span>
+                    <span id="cur-temp" class="big-temp">--</span>
+                    <span class="unit">°C</span>
+                </div>
+                <div id="cur-meta" class="cur-meta"></div>
+            </div>
+            <div id="daily" class="daily"></div>
+        </section>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

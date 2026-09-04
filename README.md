@@ -36,8 +36,13 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 | 🛒 **Shopping List** | Checkable shared shopping list |
 | 📔 **Journal** | Daily writing with mood tracking |
 | 🎯 **Goal Tracker** | Set goals and track progress |
+| 🌤️ **Weather** | 7-day forecast & city search — free API, no key needed |
+| 📰 **News Reader** | Headlines & search via GNews — free key, set in-app |
+| 🌐 **Translator** | Translate 20 languages — free service, no key needed |
+| 💱 **Currency** | Live conversion for 160+ currencies incl. IRR |
+| 🌍 **World Clock** | Live clocks for cities worldwide — fully offline |
 
-…and **8 more apps on the roadmap** (weather, currency, world clock and more) — see `apps/registry.js`.
+…and **3 more apps on the roadmap** (wheel of actions, solar system, emoji poster) — see `apps/registry.js`.
 
 ## 🧱 Project Structure
 
@@ -69,7 +74,12 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── notes-app/       ← 📝
     ├── shopping-list/   ← 🛒
     ├── daily-journal/   ← 📔
-    └── goal-tracker/    ← 🎯
+    ├── goal-tracker/    ← 🎯
+    ├── weather/         ← 🌤️ (Open-Meteo, no key)
+    ├── news-reader/     ← 📰 (GNews, free key)
+    ├── translator/      ← 🌐 (MyMemory, no key)
+    ├── currency/        ← 💱 (open.er-api.com, no key)
+    └── world-clock/     ← 🌍 (offline)
 tests/
     ├── unit.test.js     ← core layer: Store, I18N, converter, password gen
     └── smoke.test.js    ← boots every page with a DOM shim, checks i18n coverage
@@ -112,7 +122,7 @@ node --test tests/unit.test.js tests/smoke.test.js
 ```
 
 - `unit.test.js` — Store namespacing, legacy-key migration, CloudStorage mirroring, I18N fallback chain & direction handling, unit-converter math, password entropy/strength.
-- `smoke.test.js` — boots **every page** (launcher + all apps) with a DOM shim, asserts nothing throws, all three dictionaries register, every `data-i18n`/`I18N.t()` key exists in fa/en/ar, and the registry is consistent (unique ids, ready apps have folders, tag translations).
+- `smoke.test.js` — boots **every page** (launcher + all apps) with a DOM shim, asserts nothing throws, all three dictionaries register, every `data-i18n`/`I18N.t()` key exists in fa/en/ar, and the registry is consistent (unique ids, ready apps have folders, tag translations). Static audits ban the `parentElement.querySelector*` dead-controls pattern and verify every `getElementById` target exists in its page's HTML/JS.
 
 ## 🚀 Deploy to GitHub Pages
 

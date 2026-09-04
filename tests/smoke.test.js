@@ -185,6 +185,50 @@ function scriptsFor(htmlFile) {
         .map(s => path.join(path.dirname(htmlFile), s));
 }
 
+function allScriptSrc(htmlFile) {
+    const html = fs.readFileSync(path.join(ROOT, htmlFile), 'utf8');
+    return [...html.matchAll(/<script src="([^"]+)"><\/script>/g)]
+        .map(m => m[1])
+        .filter(s => !s.startsWith('http'));
+}
+
+// ================= Static audits (no DOM needed) =================
+
+test('static audit: no parentElement-scoped queries (the dead-controls bug class)', () => {
+    // The Journal mood bug was `el.parentElement.querySelectorAll('.mood')` where the
+    // targets live in a sibling subtree — the handler silently attached to nothing.
+    // Ban the pattern outright; scope queries to `document` or a known container id.
+    for (const page of allPages()) {
+        const dir = path.dirname(page);
+        for (const s of allScriptSrc(page)) {
+            const src = fs.readFileSync(path.join(ROOT, dir, s), 'utf8');
+            const matches = [...src.matchAll(/\.parentElement\s*\.\s*querySelector(?:All)?\s*\(/g)];
+            assert.strictEqual(
+                matches.length, 0,
+                `${page} (${s}): use document/known-container scoped queries, not parentElement.querySelector* — ${src.slice(Math.max(0, matches[0] && matches[0].index - 40), matches[0] && matches[0].index + 60)}`
+            );
+        }
+    }
+});
+
+test('static audit: every getElementById target exists in the page HTML or is created in JS', () => {
+    // getElementById on a typo'd id returns null in a real browser and crashes at
+    // .addEventListener — the DOM shim always returns a dummy, so check it statically.
+    for (const page of allPages()) {
+        const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
+        const htmlIds = new Set([...html.matchAll(/id="([^"]+)"/g)].map(m => m[1]));
+        const jsCreated = new Set();
+        const referenced = new Set();
+        for (const s of allScriptSrc(page)) {
+            const src = fs.readFileSync(path.join(ROOT, path.dirname(page), s), 'utf8');
+            [...src.matchAll(/id="([^"]+)"/g)].forEach(m => jsCreated.add(m[1]));
+            [...src.matchAll(/getElementById\s*\(\s*'([^']+)'\s*\)/g)].forEach(m => referenced.add(m[1]));
+        }
+        const missing = [...referenced].filter(id => !htmlIds.has(id) && !jsCreated.has(id));
+        assert.strictEqual(missing.length, 0, `${page}: getElementById target(s) not in HTML or JS: ${missing.join(', ')}`);
+    }
+});
+
 // ================= Tests =================
 
 test('every page boots and i18n covers all keys in fa/en/ar', () => {
@@ -243,10 +287,18 @@ test('registry integrity', () => {
         } else {
             assert.strictEqual(app.status, 'soon', `bad status for ${app.id}`);
         }
+        // keyed apps must be ready and network-tagged (they call a third-party API)
+        if (app.keyed) {
+            assert.strictEqual(app.status, 'ready', `keyed app ${app.id} must be ready`);
+            assert.ok(
+                app.tags.some(t => t === 'freeapi' || t === 'serverless'),
+                `keyed app ${app.id} should carry a network tag`
+            );
+        }
     }
 
     const ready = registry.filter(a => a.status === 'ready');
-    assert.strictEqual(ready.length, 19, 'expected 19 ready apps');
+    assert.strictEqual(ready.length, 24, 'expected 24 ready apps');
 
     // tag_* translations exist for every tag used by every app
     const launcherDicts = boot.get('I18N').dicts;

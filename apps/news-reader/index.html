@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>News Reader</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="nws_back" title="Back to apps">‹</a>
+        <h1 data-i18n="nws_title">News Reader</h1>
+        <button id="settings-btn" class="icon-btn" data-i18n-title="nws_settings" title="Settings">⚙️</button>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- No-key state -->
+        <div id="need-key" class="need-key hidden">
+            <div class="nk-icon">🔑</div>
+            <h3 data-i18n="nws_need_key_title">API key required</h3>
+            <p data-i18n="nws_need_key_text">This app needs a free GNews API key to fetch headlines.</p>
+            <button id="nk-open-settings" class="btn btn-primary btn-block" data-i18n="nws_open_settings">Open settings</button>
+        </div>
+
+        <!-- Controls -->
+        <div id="controls" class="controls hidden">
+            <div class="cats" id="cats"></div>
+            <div class="row2">
+                <input id="q" type="search" data-i18n-placeholder="nws_search_ph" placeholder="Search news..." autocomplete="off">
+                <button id="q-btn" class="btn btn-primary" data-i18n="nws_search">Search</button>
+            </div>
+            <div class="row2">
+                <select id="lang" class="lang-select"></select>
+                <button id="refresh" class="btn btn-secondary" data-i18n="nws_refresh">Refresh</button>
+            </div>
+        </div>
+
+        <div id="status" class="status" role="status"></div>
+        <div id="feed" class="feed"></div>
+    </main>
+
+    <!-- Settings modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 data-i18n="nws_set_title">Settings</h3>
+            <label class="field-label" data-i18n="nws_key_label">GNews API key</label>
+            <input id="api-key-input" type="password" data-i18n-placeholder="nws_key_ph" placeholder="paste key here">
+            <p class="field-hint" data-i18n="nws_key_hint">Free key at gnews.io — 100 requests/day</p>
+            <div class="modal-actions">
+                <button id="close-modal" class="btn btn-secondary" data-i18n="nws_close">Close</button>
+                <button id="save-key" class="btn btn-primary" data-i18n="nws_save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

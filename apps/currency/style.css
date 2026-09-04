@@ -1,0 +1,159 @@
+/* ===== Currency app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---- Amount rows ---- */
+.amount-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.amount-row input,
+.amount-result {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    min-width: 0;
+}
+
+.amount-result {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    direction: ltr;
+    justify-content: flex-end;
+}
+
+[dir="rtl"] .amount-result {
+    justify-content: flex-start;
+}
+
+.cur-select {
+    width: 118px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.swap-row {
+    display: flex;
+    justify-content: center;
+    margin: 2px 0 8px;
+}
+
+.swap-row .btn {
+    padding: 8px 18px;
+    font-size: 14px;
+    border-radius: 999px;
+}
+
+#convert-btn {
+    margin-bottom: 4px;
+}
+
+/* ---- Status ---- */
+.status {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-height: 22px;
+    margin: 8px 0;
+    padding: 0 4px;
+}
+
+.status.error {
+    color: var(--danger-color);
+}
+
+/* ---- Result card ---- */
+.result-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    margin: 6px 0 14px;
+}
+
+.res-line {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 4px 0;
+}
+
+.res-side {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+.res-main {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+.res-eq {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin: 2px 0;
+}
+
+.res-rate {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+/* ---- Quick pairs ---- */
+.quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.quick .q-chip {
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 6px 12px;
+    direction: ltr;
+}
+
+.quick .q-chip.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}

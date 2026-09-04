@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>World Clock</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="wcl_back" title="Back to apps">‹</a>
+        <h1 data-i18n="wcl_title">World Clock</h1>
+        <button id="add-btn" class="icon-btn" data-i18n-title="wcl_add" title="Add city">＋</button>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <div class="offline-note" data-i18n="wcl_note">⚡ Offline — no network needed</div>
+        <div id="clocks" class="clocks"></div>
+    </main>
+
+    <!-- Add-city sheet -->
+    <div id="picker" class="picker hidden">
+        <div class="picker-head">
+            <input id="city-search" type="search" data-i18n-placeholder="wcl_search_ph" placeholder="Search city..." autocomplete="off">
+            <button id="picker-close" class="icon-btn" data-i18n-title="wcl_close" title="Close">✕</button>
+        </div>
+        <div id="picker-list" class="picker-list"></div>
+    </div>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

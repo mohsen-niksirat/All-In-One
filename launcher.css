@@ -122,9 +122,44 @@ body {
     overflow: hidden;
 }
 
-a.app-card:hover {
+.app-card.ready:hover {
     border-color: var(--accent-color);
     transform: translateY(-2px);
+}
+
+.app-card.ready {
+    cursor: pointer;
+}
+
+.app-card .info-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.app-card .info-btn:active {
+    transform: scale(0.9);
+}
+
+.app-card .info-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+[dir="rtl"] .app-card .info-btn {
+    right: auto;
+    left: 10px;
 }
 
 .app-card .app-icon {
@@ -207,4 +242,100 @@ a.app-card:hover {
 
 .app-grid .empty-state {
     grid-column: 1 / -1;
+}
+
+/* ---- App info sheet ---- */
+.sheet-box {
+    max-width: 420px;
+}
+
+.sheet-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.sheet-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.sheet-title {
+    min-width: 0;
+}
+
+.sheet-title h3 {
+    font-size: 17px;
+    margin-bottom: 2px;
+}
+
+.sheet-en {
+    font-size: 12px;
+    color: var(--text-secondary);
+    direction: ltr;
+    text-align: right;
+}
+
+[dir="ltr"] .sheet-en {
+    text-align: left;
+}
+
+.sheet-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.sheet-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.sheet-sec-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.sheet-notes {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.sheet-notes li {
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 9px 12px;
+}
+
+.sheet-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.soon-cta {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 12px;
 }

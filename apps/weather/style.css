@@ -1,0 +1,223 @@
+/* ===== Weather app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Search ---- */
+.search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.search-row input {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 12px;
+}
+
+.search-row .btn {
+    padding: 11px 18px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.status {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-height: 20px;
+    margin: 4px 0 8px;
+    padding: 0 4px;
+}
+
+.status.error {
+    color: var(--danger-color);
+}
+
+/* ---- Suggestions & saved ---- */
+.suggest,
+.saved {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.saved-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    width: 100%;
+    margin-bottom: -2px;
+}
+
+.city-chip {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 13px;
+    transition: border-color 0.15s;
+}
+
+.city-chip:active {
+    transform: scale(0.96);
+}
+
+/* ---- Current card ---- */
+.forecast.hidden {
+    display: none;
+}
+
+.cur-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+}
+
+.cur-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.loc-name {
+    font-size: 15px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cond-tag {
+    font-size: 12px;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 3px 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.cur-temp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0 10px;
+}
+
+.big-icon {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.big-temp {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    direction: ltr;
+}
+
+.unit {
+    font-size: 20px;
+    color: var(--text-secondary);
+    align-self: flex-start;
+    margin-top: 6px;
+    direction: ltr;
+}
+
+.cur-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.meta-pill {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-radius: 999px;
+    padding: 4px 10px;
+}
+
+/* ---- 7-day list ---- */
+.daily {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.day-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.day-name {
+    width: 64px;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.day-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.day-rain {
+    font-size: 12px;
+    color: var(--accent-color);
+    min-width: 34px;
+    flex-shrink: 0;
+    direction: ltr;
+}
+
+.day-temps {
+    flex: 1;
+    text-align: right;
+    font-size: 13px;
+    direction: ltr;
+}
+
+[dir="ltr"] .day-temps {
+    text-align: left;
+}
+
+.day-max {
+    font-weight: 700;
+}
+
+.day-min {
+    color: var(--text-secondary);
+    margin-right: 6px;
+}
+
+[dir="ltr"] .day-min {
+    margin-right: 0;
+    margin-left: 6px;
+}

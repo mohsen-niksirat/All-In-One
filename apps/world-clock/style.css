@@ -1,0 +1,193 @@
+/* ===== World Clock app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.offline-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+/* ---- Clock rows ---- */
+.clocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 16px;
+}
+
+.clock-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+}
+
+.clock-row .c-flag {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.clock-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.c-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.c-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.c-time {
+    text-align: left;
+    flex-shrink: 0;
+}
+
+[dir="rtl"] .c-time {
+    text-align: right;
+}
+
+.c-time-main {
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+.c-offset {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    direction: ltr;
+    unicode-bidi: embed;
+    text-align: inherit;
+    margin-top: 2px;
+}
+
+.c-remove {
+    color: var(--text-secondary);
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.c-remove:active {
+    color: var(--danger-color);
+    background: var(--bg-secondary);
+}
+
+.empty-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 50px 20px;
+    line-height: 1.8;
+}
+
+/* ---- City picker ---- */
+.picker {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px 20px;
+}
+
+.picker-head {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.picker-head input {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 12px;
+}
+
+.picker-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.city-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    text-align: start;
+    width: 100%;
+}
+
+.city-opt.added {
+    opacity: 0.45;
+}
+
+.city-opt .co-flag {
+    font-size: 20px;
+}
+
+.city-opt .co-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.city-opt .co-tz {
+    font-size: 11px;
+    color: var(--text-secondary);
+    direction: ltr;
+    unicode-bidi: embed;
+    flex-shrink: 0;
+}
