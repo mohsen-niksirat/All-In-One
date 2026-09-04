@@ -19,6 +19,8 @@ const TG = {
             this.webApp.expand();
             this.applyTheme();
             this.webApp.onEvent('themeChanged', () => this.applyTheme());
+            // Merge CloudStorage into localStorage (cross-device sync, best effort)
+            if (typeof Store !== 'undefined') Store.initCloud();
         } else {
             // Browser testing fallback
             document.documentElement.setAttribute('data-theme', 'dark');

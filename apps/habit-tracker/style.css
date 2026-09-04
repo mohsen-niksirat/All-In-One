@@ -1,0 +1,157 @@
+/* ===== Habit Tracker app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Add row ---- */
+.add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.add-row input {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+}
+
+.add-row .btn {
+    padding: 12px 18px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* ---- Habit cards ---- */
+.habit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.habit-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+}
+
+.habit-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.habit-name {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.habit-streak {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    direction: ltr;
+}
+
+.habit-streak.on-fire {
+    color: var(--warning-color);
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.habit-del {
+    color: var(--text-secondary);
+    font-size: 15px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.habit-del:active {
+    color: var(--danger-color);
+    background: var(--bg-secondary);
+}
+
+/* ---- Week grid ---- */
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.day-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.day-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.day-label.today {
+    color: var(--accent-color);
+}
+
+.day-cell {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 38px;
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: transparent;
+    transition: all 0.12s;
+}
+
+.day-cell.done {
+    background: var(--accent-color);
+    color: var(--user-bubble-text);
+}
+
+.day-cell.future {
+    opacity: 0.35;
+}
+
+/* ---- Empty state ---- */
+.habit-list .empty-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 40px 10px;
+}

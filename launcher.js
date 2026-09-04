@@ -35,6 +35,21 @@
         tag_static: 'Static',
     });
 
+    I18N.register('ar', {
+        hub_title: 'التطبيقات المصغّرة',
+        hub_sub: 'مجموعة تطبيقات مجانية بدون خادم',
+        hub_greeting: 'أهلاً {name} 👋 — كل شيء مجاني وبدون خادم',
+        hub_search: 'ابحث عن تطبيق...',
+        hub_stats: '{ready} جاهز · {soon} قريباً',
+        hub_soon: 'قريباً',
+        hub_empty: 'لم يتم العثور على تطبيقات',
+        tag_serverless: 'بدون خادم',
+        tag_freeapi: 'واجهة مجانية',
+        tag_offline: 'دون اتصال',
+        tag_storage: 'تخزين',
+        tag_static: 'ثابت',
+    });
+
     TG.init();
     I18N.init();
 

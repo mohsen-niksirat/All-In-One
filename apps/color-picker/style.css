@@ -1,0 +1,167 @@
+/* ===== Color Picker app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Picker box ---- */
+.picker-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+}
+
+.swatch {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.picker-inputs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 44px;
+    padding: 4px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#hex-input {
+    text-align: center;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ---- Values ---- */
+.values {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.value-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 9px 14px;
+}
+
+.value-label {
+    width: 44px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.value-copy {
+    flex: 1;
+    text-align: left;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 13px;
+    color: var(--text-color);
+    direction: ltr;
+}
+
+.value-copy:active {
+    color: var(--accent-color);
+}
+
+/* ---- Palette ---- */
+.palette-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.palette-swatch {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: transparent;
+    transition: transform 0.1s;
+}
+
+.palette-swatch:active {
+    transform: scale(0.92);
+}
+
+.palette-swatch.copied {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- History ---- */
+.history .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.clear-btn {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: underline;
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.history-chip {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.empty-note {
+    width: 100%;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 14px;
+}

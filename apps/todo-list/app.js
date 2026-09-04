@@ -41,6 +41,24 @@
         todo_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        todo_title: 'قائمة المهام',
+        todo_add_placeholder: 'مهمة جديدة...',
+        todo_add: 'إضافة',
+        todo_priority: 'الأولوية',
+        todo_prio_low: 'منخفضة',
+        todo_prio_medium: 'متوسطة',
+        todo_prio_high: 'عالية',
+        todo_all: 'الكل',
+        todo_active: 'نشطة',
+        todo_done: 'منجزة',
+        todo_clear_done: 'مسح المنجزة',
+        todo_empty: 'كل شيء منجز! 🎉',
+        todo_no_tasks: 'لا توجد مهام بعد',
+        todo_active_count: '{n} مهام نشطة',
+        todo_back: 'العودة إلى التطبيقات',
+    });
+
     const NS = 'todo-list';
 
     const App = {

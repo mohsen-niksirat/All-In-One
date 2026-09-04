@@ -7,7 +7,8 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 ## ✨ Features
 
 - 🏠 **Launcher home** — all apps listed in one grid with search & filters
-- 🌍 **Truly bilingual** — فارسی / English, switchable in one tap (choice is remembered)
+- 🌍 **Truly trilingual** — فارسی / English / العربية, switchable in one tap (choice is remembered)
+- ☁️ **Cross-device sync** — data mirrors to Telegram CloudStorage when running inside Telegram (localStorage fallback elsewhere)
 - 🧱 **Shared core layer** — `core/tg.js` (Telegram SDK), `core/store.js` (namespaced storage), `core/i18n.js` (translations), `core/ui.css` (theming)
 - 📱 **Native Telegram feel** — dark/light theme from Telegram, haptic feedback, native back button
 - 💾 **Data stays on device** — localStorage, nothing is sent to any server (except the APIs you opt into)
@@ -24,8 +25,14 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 | ✅ **Todo List** | Daily tasks with priorities, filters & completion tracking |
 | ⏱️ **Stopwatch** | Precision timer with lap recording |
 | ⚖️ **BMI Calculator** | Body mass index with category scale & history |
+| 📈 **Habit Tracker** | Daily habits with streaks & a 7-day checklist grid |
+| 💰 **Expense Tracker** | Log expenses, monthly total & category chart |
+| 🔳 **QR Generator** | Offline QR codes (SVG + PNG download) |
+| 🧩 **JSON Formatter** | Format, validate & minify JSON |
+| 📄 **Markdown Preview** | Live markdown rendering + copy HTML |
+| 🎨 **Color Picker** | HEX/RGB/HSL values, palettes & history |
 
-…and **19 more apps on the roadmap** (habits, expenses, weather, notes, QR codes and more) — see `apps/registry.js`.
+…and **13 more apps on the roadmap** (bookmarks, notes, weather, currency, world clock and more) — see `apps/registry.js`.
 
 ## 🧱 Project Structure
 
@@ -46,7 +53,16 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── random-picker/   ← 🎲
     ├── todo-list/       ← ✅
     ├── stopwatch/       ← ⏱️
-    └── bmi-calculator/  ← ⚖️
+    ├── bmi-calculator/  ← ⚖️
+    ├── habit-tracker/   ← 📈
+    ├── expense-tracker/ ← 💰
+    ├── qr-generator/    ← 🔳 (vendored qrcode.js, MIT)
+    ├── json-formatter/  ← 🧩
+    ├── markdown-preview/ ← 📄
+    └── color-picker/    ← 🎨
+tests/
+    ├── unit.test.js     ← core layer: Store, I18N, converter, password gen
+    └── smoke.test.js    ← boots every page with a DOM shim, checks i18n coverage
 ```
 
 ## 🆕 How to Add a New App
@@ -76,6 +92,17 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 2. Register a new dict for every existing key — `I18N.register('ar', { … })`.
 3. Add the native name to `nativeNames` in `core/i18n.js`.
 4. Add the localized name/description to every entry in `apps/registry.js`.
+
+## 🧪 Testing
+
+No dependencies — plain Node:
+
+```bash
+node --test tests/unit.test.js tests/smoke.test.js
+```
+
+- `unit.test.js` — Store namespacing, legacy-key migration, CloudStorage mirroring, I18N fallback chain & direction handling, unit-converter math, password entropy/strength.
+- `smoke.test.js` — boots **every page** (launcher + all apps) with a DOM shim, asserts nothing throws, all three dictionaries register, every `data-i18n`/`I18N.t()` key exists in fa/en/ar, and the registry is consistent (unique ids, ready apps have folders, tag translations).
 
 ## 🚀 Deploy to GitHub Pages
 

@@ -37,6 +37,22 @@
         pick_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        pick_title: 'اختيار عشوائي',
+        pick_list: 'قائمتك',
+        pick_placeholder: 'عنصر واحد في كل سطر...',
+        pick_btn: 'اختر!',
+        pick_again: 'اختر مجدداً',
+        pick_copy: 'نسخ النتيجة',
+        pick_copied: 'تم النسخ!',
+        pick_result: 'الفائز',
+        pick_nothing: 'لا يوجد شيء للاختيار',
+        pick_history: 'الاختيارات السابقة',
+        pick_clear: 'مسح',
+        pick_empty: 'لا اختيارات بعد',
+        pick_back: 'العودة إلى التطبيقات',
+    });
+
     const NS = 'random-picker';
 
     const App = {

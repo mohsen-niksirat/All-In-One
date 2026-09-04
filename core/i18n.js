@@ -12,9 +12,9 @@ const I18N = {
     NS: 'hub',
     LANG_KEY: 'lang',
     current: 'en',
-    dirs: { fa: 'rtl', en: 'ltr' },
+    dirs: { fa: 'rtl', en: 'ltr', ar: 'rtl' },
     dicts: {},
-    nativeNames: { fa: 'فا', en: 'EN' },
+    nativeNames: { fa: 'فا', en: 'EN', ar: 'ع' },
 
     register(lang, dict) {
         this.dicts[lang] = Object.assign(this.dicts[lang] || {}, dict);
@@ -29,7 +29,8 @@ const I18N = {
         let saved = Store.get(this.NS, this.LANG_KEY, null);
         if (!saved) {
             const code = (TG.user()?.language_code) || navigator.language || 'en';
-            saved = code.toLowerCase().startsWith('fa') ? 'fa' : 'en';
+            const c = code.toLowerCase();
+            saved = c.startsWith('fa') ? 'fa' : (c.startsWith('ar') ? 'ar' : 'en');
         }
         this.current = this.dicts[saved] ? saved : 'en';
         this.apply();

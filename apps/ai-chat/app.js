@@ -77,6 +77,43 @@ I18N.register('en', {
     chat_error_http: 'HTTP error',
 });
 
+I18N.register('ar', {
+    chat_online: 'متصل',
+    chat_greeting: 'أهلاً {name} 👋',
+    chat_welcome_title: 'مرحباً! أنا مساعدك الذكي',
+    chat_welcome_sub: 'اسألني أي شيء',
+    chat_quick_joke: 'نكتة',
+    chat_quick_about: 'عنّي',
+    chat_quick_code: 'اكتب كوداً',
+    chat_quick_date: 'التاريخ',
+    chat_quick_joke_prompt: 'ألقِ نكتة',
+    chat_quick_about_prompt: 'حدّثني عن نفسك',
+    chat_quick_code_prompt: 'اكتب مثالاً بكود بايثون',
+    chat_quick_date_prompt: 'ما تاريخ اليوم؟',
+    chat_input_placeholder: 'اكتب رسالتك...',
+    chat_settings: 'الإعدادات',
+    chat_clear: 'مسح المحادثة',
+    chat_back: 'العودة إلى التطبيقات',
+    chat_settings_title: 'الإعدادات',
+    chat_api_key_label: 'مفتاح Groq',
+    chat_api_key_hint: 'احصل على المفتاح من console.groq.com',
+    chat_api_key_placeholder: 'gsk_...',
+    chat_system_prompt: 'التعليمات النظامية',
+    chat_system_prompt_placeholder: 'التعليمات...',
+    chat_max_tokens: 'الحد الأقصى للرموز',
+    chat_save: 'حفظ الإعدادات',
+    chat_default_prompt: 'أنت مساعد ذكي مفيد وودود. أجب عن الأسئلة بوضوح وإيجاز.',
+    chat_saved: 'تم حفظ الإعدادات!',
+    chat_clear_confirm: 'هل أنت متأكد من مسح كل الرسائل؟',
+    chat_no_key_title: '⚠️ لم يتم تعيين مفتاح API',
+    chat_no_key_text: 'لبدء المحادثة، أدخل مفتاح API من الإعدادات.',
+    chat_copied: 'تم النسخ!',
+    chat_no_api_key_error: 'مفتاح API غير مضبوط. يرجى إدخاله من الإعدادات.',
+    chat_empty_response: '(رد فارغ)',
+    chat_error_connect: 'خطأ في الاتصال بالخادم',
+    chat_error_http: 'خطأ HTTP',
+});
+
 const App = {
     init() {
         // Initialize Telegram + i18n
@@ -92,11 +129,15 @@ const App = {
         this.setupClearButton();
 
         // API key banner follows language changes
-        document.addEventListener('i18n:changed', () => this.checkApiKey());
+        document.addEventListener('i18n:changed', () => {
+            document.title = 'AI Chat';
+            this.checkApiKey();
+        });
 
         // Greet the user
         this.greetUser();
         this.checkApiKey();
+        document.title = 'AI Chat';
     },
 
     // ===== Greeting =====

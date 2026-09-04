@@ -1,5 +1,6 @@
 /**
- * app.js — Password Generator (core layer, bilingual).
+ * app.js — Password Generator (core layer, trilingual fa/en/ar).
+ * Generation & entropy math live in the pure module generator.js.
  */
 (function () {
     'use strict';
@@ -45,16 +46,31 @@
         pass_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        pass_title: 'مولّد كلمات المرور',
+        pass_length: 'طول كلمة المرور',
+        pass_options: 'الخيارات',
+        pass_upper: 'أحرف كبيرة (A–Z)',
+        pass_lower: 'أحرف صغيرة (a–z)',
+        pass_digits: 'أرقام (0–9)',
+        pass_symbols: 'رموز (!@#)',
+        pass_generate: 'إنشاء',
+        pass_copy: 'نسخ',
+        pass_copied: 'تم النسخ!',
+        pass_strength: 'القوة',
+        pass_weak: 'ضعيفة',
+        pass_medium: 'متوسطة',
+        pass_strong: 'قوية',
+        pass_history: 'السجل',
+        pass_empty: 'لا توجد كلمات مرور بعد',
+        pass_back: 'العودة إلى التطبيقات',
+    });
+
     const NS = 'password-generator';
-    const CHARSETS = {
-        upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-        lower: 'abcdefghijklmnopqrstuvwxyz',
-        digits: '0123456789',
-        symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-    };
 
     const App = {
         elements: {},
+        currentPassword: '',
 
         init() {
             TG.init({ backHref: '../../' });
@@ -113,31 +129,17 @@
             );
         },
 
+        secureRandomInt(max) {
+            const buf = new Uint32Array(1);
+            crypto.getRandomValues(buf);
+            return buf[0] % max;
+        },
+
         generate() {
-            const sets = this.selectedSets();
             const length = parseInt(this.elements.lengthSlider.value) || 16;
-            const allChars = sets.map(k => CHARSETS[k]).join('');
+            const sets = this.selectedSets();
 
-            // Secure random via crypto
-            const randomInt = (max) => {
-                const buf = new Uint32Array(1);
-                crypto.getRandomValues(buf);
-                return buf[0] % max;
-            };
-
-            // Guarantee at least one char from each selected set
-            const chars = sets.map(k => CHARSETS[k][randomInt(CHARSETS[k].length)]);
-            for (let i = chars.length; i < length; i++) {
-                chars.push(allChars[randomInt(allChars.length)]);
-            }
-
-            // Shuffle (Fisher–Yates)
-            for (let i = chars.length - 1; i > 0; i--) {
-                const j = randomInt(i + 1);
-                [chars[i], chars[j]] = [chars[j], chars[i]];
-            }
-
-            this.currentPassword = chars.join('');
+            this.currentPassword = PasswordGen.build(length, sets, (max) => this.secureRandomInt(max));
             this.elements.output.textContent = this.currentPassword;
             this.renderStrength(this.currentPassword);
 
@@ -151,25 +153,19 @@
         renderStrength(password) {
             const length = password.length;
             const sets = this.selectedSets();
-            const charsetSize = sets.reduce((sum, k) => sum + CHARSETS[k].length, 0);
-            const entropy = length * Math.log2(charsetSize || 1);
+            const charsetSize = sets.reduce((sum, k) => sum + PasswordGen.CHARSETS[k].length, 0);
+            const entropy = PasswordGen.entropy(length, charsetSize);
 
-            let level, labelKey, color;
-            if (entropy < 40) {
-                level = 'weak';
-                color = 'var(--danger-color)';
-            } else if (entropy < 70) {
-                level = 'medium';
-                color = 'var(--warning-color)';
-            } else {
-                level = 'strong';
-                color = 'var(--success-color)';
-            }
-            labelKey = 'pass_' + level;
+            const level = PasswordGen.strength(length, sets);
+            const colors = {
+                weak: 'var(--danger-color)',
+                medium: 'var(--warning-color)',
+                strong: 'var(--success-color)',
+            };
 
             this.elements.strengthFill.style.width = Math.min(100, (entropy / 90) * 100) + '%';
-            this.elements.strengthFill.style.background = color;
-            this.elements.strengthLabel.textContent = I18N.t(labelKey);
+            this.elements.strengthFill.style.background = colors[level];
+            this.elements.strengthLabel.textContent = I18N.t('pass_' + level);
             this.elements.strengthLabel.className = 'strength-label ' + level;
         },
 

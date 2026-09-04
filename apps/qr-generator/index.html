@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QR Generator</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="qr_back" title="Back to apps">‹</a>
+        <h1 data-i18n="qr_title">QR Generator</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Input -->
+        <textarea id="qr-input" rows="4" data-i18n-placeholder="qr_placeholder" placeholder="Text or link..."></textarea>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button id="generate-btn" class="btn btn-primary btn-big" data-i18n="qr_generate">Generate</button>
+            <button id="download-btn" class="btn btn-secondary btn-big hidden" data-i18n="qr_download">Download PNG</button>
+        </div>
+
+        <!-- Output -->
+        <div id="qr-output" class="qr-output hidden">
+            <div id="qr-svg" class="qr-svg"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- QR library (vendored, MIT — qrcode-generator by Kazuhiko Arase) -->
+    <script src="qrcode.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

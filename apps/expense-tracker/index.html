@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="exp_back" title="Back to apps">‹</a>
+        <h1 data-i18n="exp_title">Expense Tracker</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Monthly summary -->
+        <div class="summary card">
+            <span class="summary-label" data-i18n="exp_month_total">This month</span>
+            <div class="summary-value">
+                <span id="month-total">0</span>
+                <span class="summary-count" id="month-count"></span>
+            </div>
+        </div>
+
+        <!-- Add expense -->
+        <div class="add-form">
+            <div class="amount-row">
+                <input type="number" id="amount-input" class="amount-input" data-i18n-placeholder="exp_amount" placeholder="Amount" inputmode="decimal" step="any" min="0">
+                <select id="category-select"></select>
+            </div>
+            <div class="note-row">
+                <input id="note-input" data-i18n-placeholder="exp_note" placeholder="Note (optional)" autocomplete="off">
+                <button id="add-btn" class="btn btn-primary" data-i18n="exp_add">Add</button>
+            </div>
+        </div>
+
+        <!-- Category chart -->
+        <div id="chart" class="chart hidden">
+            <div class="section-title" data-i18n="exp_categories">By category</div>
+            <div id="chart-bars" class="chart-bars"></div>
+        </div>
+
+        <!-- Expense list -->
+        <div class="expenses">
+            <div class="section-title">
+                <span data-i18n="exp_list">Expenses</span>
+                <button id="clear-all" class="clear-btn" data-i18n="exp_clear">Clear all</button>
+            </div>
+            <div id="expense-list" class="expense-list"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

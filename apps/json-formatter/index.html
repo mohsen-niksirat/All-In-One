@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JSON Formatter</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="json_back" title="Back to apps">‹</a>
+        <h1 data-i18n="json_title">JSON Formatter</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Input -->
+        <textarea id="json-input" rows="8" data-i18n-placeholder="json_placeholder" placeholder='{"key": "value"}' spellcheck="false"></textarea>
+
+        <!-- Status -->
+        <div id="status" class="status-line"></div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button id="format-btn" class="btn btn-primary" data-i18n="json_format">Format</button>
+            <button id="minify-btn" class="btn btn-secondary" data-i18n="json_minify">Minify</button>
+            <button id="copy-btn" class="btn btn-secondary" data-i18n="json_copy">Copy</button>
+            <button id="clear-btn" class="btn btn-secondary" data-i18n="json_clear">Clear</button>
+        </div>
+
+        <!-- Output -->
+        <div class="output-label" data-i18n="json_output">Output</div>
+        <textarea id="json-output" rows="8" readonly spellcheck="false" dir="ltr"></textarea>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

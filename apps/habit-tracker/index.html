@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="habit_back" title="Back to apps">‹</a>
+        <h1 data-i18n="habit_title">Habit Tracker</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Add habit -->
+        <div class="add-row">
+            <input id="habit-input" data-i18n-placeholder="habit_add_placeholder" placeholder="New habit..." autocomplete="off">
+            <button id="add-btn" class="btn btn-primary" data-i18n="habit_add">Add</button>
+        </div>
+
+        <!-- Habit list -->
+        <div id="habit-list" class="habit-list"></div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

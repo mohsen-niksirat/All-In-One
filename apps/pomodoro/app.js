@@ -47,6 +47,27 @@
         pomo_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        pomo_title: 'مؤقّت بومودورو',
+        pomo_work: 'عمل',
+        pomo_short: 'استراحة قصيرة',
+        pomo_long: 'استراحة طويلة',
+        pomo_start: 'ابدأ',
+        pomo_pause: 'إيقاف مؤقت',
+        pomo_reset: 'إعادة',
+        pomo_settings: 'الإعدادات',
+        pomo_work_min: 'مدة العمل (دقيقة)',
+        pomo_short_min: 'الاستراحة القصيرة (دقيقة)',
+        pomo_long_min: 'الاستراحة الطويلة (دقيقة)',
+        pomo_save: 'حفظ',
+        pomo_sessions: 'جلسات اليوم',
+        pomo_focus: 'تركيز',
+        pomo_break: 'استراحة',
+        pomo_done_work: 'حان وقت الاستراحة! 🎉',
+        pomo_done_break: 'انتهت الاستراحة! عُد إلى العمل 💪',
+        pomo_back: 'العودة إلى التطبيقات',
+    });
+
     const NS = 'pomodoro';
     const RING_CIRCUMFERENCE = 2 * Math.PI * 120;
 

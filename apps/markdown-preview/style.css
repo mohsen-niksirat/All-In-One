@@ -1,0 +1,179 @@
+/* ===== Markdown Preview app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Tabs (mobile) ---- */
+.md-tabs {
+    display: none;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.md-tab {
+    flex: 1;
+    padding: 9px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+}
+
+.md-tab.active {
+    background: var(--accent-color);
+    color: var(--user-bubble-text);
+}
+
+/* ---- Panes ---- */
+.md-panes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.md-pane textarea {
+    width: 100%;
+    resize: vertical;
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 300px;
+}
+
+.md-preview {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-height: 300px;
+    max-height: 60vh;
+    overflow-y: auto;
+    line-height: 1.7;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+.md-preview h1, .md-preview h2, .md-preview h3,
+.md-preview h4, .md-preview h5, .md-preview h6 {
+    margin: 14px 0 8px;
+    line-height: 1.3;
+}
+
+.md-preview h1 { font-size: 22px; }
+.md-preview h2 { font-size: 19px; }
+.md-preview h3 { font-size: 16px; }
+
+.md-preview p {
+    margin-bottom: 10px;
+}
+
+.md-preview code {
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 12px;
+    background: var(--bg-secondary);
+    padding: 1px 6px;
+    border-radius: 5px;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.md-preview pre {
+    background: var(--bg-secondary);
+    padding: 12px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.md-preview pre code {
+    background: none;
+    padding: 0;
+    direction: ltr;
+    text-align: left;
+    display: block;
+}
+
+.md-preview ul, .md-preview ol {
+    padding-right: 22px;
+    margin: 8px 0;
+}
+
+.md-preview li {
+    margin-bottom: 4px;
+}
+
+.md-preview blockquote {
+    border-right: 3px solid var(--accent-color);
+    padding: 6px 12px;
+    margin: 10px 0;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-radius: 6px;
+}
+
+.md-preview a {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.md-preview hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 16px 0;
+}
+
+.md-preview .empty-note {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px 10px;
+}
+
+/* ---- Footer ---- */
+.md-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.clear-btn {
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---- Responsive: stacked panes + tabs on narrow screens ---- */
+@media (max-width: 640px) {
+    .md-tabs {
+        display: flex;
+    }
+
+    .md-panes {
+        grid-template-columns: 1fr;
+    }
+
+    .md-pane.hidden-mobile {
+        display: none;
+    }
+}

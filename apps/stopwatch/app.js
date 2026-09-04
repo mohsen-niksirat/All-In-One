@@ -29,6 +29,18 @@
         stop_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        stop_title: 'ساعة إيقاف',
+        stop_start: 'ابدأ',
+        stop_pause: 'إيقاف مؤقت',
+        stop_reset: 'إعادة',
+        stop_lap: 'لفة',
+        stop_laps: 'اللفات',
+        stop_clear_laps: 'مسح اللفات',
+        stop_no_laps: 'لا لفات بعد',
+        stop_back: 'العودة إلى التطبيقات',
+    });
+
     const App = {
         running: false,
         startedAt: 0,      // timestamp when the current run started

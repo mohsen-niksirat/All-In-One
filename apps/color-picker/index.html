@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Color Picker</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="color_back" title="Back to apps">‹</a>
+        <h1 data-i18n="color_title">Color Picker</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Main picker -->
+        <div class="picker-box card">
+            <div id="swatch" class="swatch"></div>
+            <div class="picker-inputs">
+                <input type="color" id="color-input" value="#0088cc">
+                <input id="hex-input" value="#0088cc" spellcheck="false" dir="ltr">
+            </div>
+        </div>
+
+        <!-- Values -->
+        <div class="values">
+            <div class="value-row">
+                <span class="value-label">HEX</span>
+                <button class="value-copy" data-copy="#0088cc">#0088cc</button>
+            </div>
+            <div class="value-row">
+                <span class="value-label">RGB</span>
+                <button class="value-copy" data-copy="rgb(0, 136, 204)">rgb(0, 136, 204)</button>
+            </div>
+            <div class="value-row">
+                <span class="value-label">HSL</span>
+                <button class="value-copy" data-copy="hsl(200, 100%, 40%)">hsl(200, 100%, 40%)</button>
+            </div>
+        </div>
+
+        <!-- Palette -->
+        <div class="palette">
+            <div class="section-title" data-i18n="color_palette">Palette</div>
+            <div id="palette-row" class="palette-row"></div>
+        </div>
+
+        <!-- History -->
+        <div class="history">
+            <div class="section-title">
+                <span data-i18n="color_history">History</span>
+                <button id="clear-history" class="clear-btn" data-i18n="color_clear">Clear</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

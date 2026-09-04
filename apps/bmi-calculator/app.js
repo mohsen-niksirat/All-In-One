@@ -43,6 +43,25 @@
         bmi_back: 'Back to apps',
     });
 
+    I18N.register('ar', {
+        bmi_title: 'حاسبة كتلة الجسم',
+        bmi_height: 'الطول',
+        bmi_weight: 'الوزن',
+        bmi_cm: 'سم',
+        bmi_kg: 'كغ',
+        bmi_calc: 'احسب',
+        bmi_result: 'مؤشر كتلة الجسم',
+        bmi_underweight: 'نقص وزن',
+        bmi_normal: 'طبيعي',
+        bmi_overweight: 'زيادة وزن',
+        bmi_obese: 'سمنة',
+        bmi_history: 'السجل',
+        bmi_empty: 'لا حسابات بعد',
+        bmi_clear: 'مسح',
+        bmi_invalid: 'أدخل قيماً صحيحة',
+        bmi_back: 'العودة إلى التطبيقات',
+    });
+
     const NS = 'bmi-calculator';
 
     const CATEGORIES = [

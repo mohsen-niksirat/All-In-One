@@ -1,5 +1,6 @@
 /**
- * app.js — Unit Converter (core layer, bilingual).
+ * app.js — Unit Converter (core layer, trilingual fa/en/ar).
+ * Conversion math lives in the pure module converter.js.
  */
 (function () {
     'use strict';
@@ -37,70 +38,21 @@
         unit_cat_time: 'Time',
     });
 
-    // ---- Units ----
-    // factor: multiply to convert to the category's base unit
-    const CATEGORIES = {
-        length: {
-            units: [
-                { id: 'mm', fa: 'میلی‌متر', en: 'Millimeter', sym: 'mm', factor: 0.001 },
-                { id: 'cm', fa: 'سانتی‌متر', en: 'Centimeter', sym: 'cm', factor: 0.01 },
-                { id: 'm', fa: 'متر', en: 'Meter', sym: 'm', factor: 1 },
-                { id: 'km', fa: 'کیلومتر', en: 'Kilometer', sym: 'km', factor: 1000 },
-                { id: 'in', fa: 'اینچ', en: 'Inch', sym: 'in', factor: 0.0254 },
-                { id: 'ft', fa: 'فوت', en: 'Foot', sym: 'ft', factor: 0.3048 },
-                { id: 'yd', fa: 'یارد', en: 'Yard', sym: 'yd', factor: 0.9144 },
-                { id: 'mi', fa: 'مایل', en: 'Mile', sym: 'mi', factor: 1609.344 },
-            ],
-        },
-        weight: {
-            units: [
-                { id: 'mg', fa: 'میلی‌گرم', en: 'Milligram', sym: 'mg', factor: 1e-6 },
-                { id: 'g', fa: 'گرم', en: 'Gram', sym: 'g', factor: 0.001 },
-                { id: 'kg', fa: 'کیلوگرم', en: 'Kilogram', sym: 'kg', factor: 1 },
-                { id: 'ton', fa: 'تن', en: 'Tonne', sym: 't', factor: 1000 },
-                { id: 'lb', fa: 'پوند', en: 'Pound', sym: 'lb', factor: 0.45359237 },
-                { id: 'oz', fa: 'اونس', en: 'Ounce', sym: 'oz', factor: 0.028349523125 },
-            ],
-        },
-        temp: {
-            // special-cased conversions (Celsius base)
-            units: [
-                { id: 'c', fa: 'سلسیوس', en: 'Celsius', sym: '°C', temp: true },
-                { id: 'f', fa: 'فارنهایت', en: 'Fahrenheit', sym: '°F', temp: true },
-                { id: 'k', fa: 'کلوین', en: 'Kelvin', sym: 'K', temp: true },
-            ],
-            toBase: { c: x => x, f: x => (x - 32) * 5 / 9, k: x => x - 273.15 },
-            fromBase: { c: x => x, f: x => x * 9 / 5 + 32, k: x => x + 273.15 },
-        },
-        data: {
-            units: [
-                { id: 'b', fa: 'بیت', en: 'Bit', sym: 'bit', factor: 0.125 },
-                { id: 'B', fa: 'بایت', en: 'Byte', sym: 'B', factor: 1 },
-                { id: 'KB', fa: 'کیلوبایت', en: 'Kilobyte', sym: 'KB', factor: 1024 },
-                { id: 'MB', fa: 'مگابایت', en: 'Megabyte', sym: 'MB', factor: 1024 ** 2 },
-                { id: 'GB', fa: 'گیگابایت', en: 'Gigabyte', sym: 'GB', factor: 1024 ** 3 },
-                { id: 'TB', fa: 'ترابایت', en: 'Terabyte', sym: 'TB', factor: 1024 ** 4 },
-            ],
-        },
-        speed: {
-            units: [
-                { id: 'ms', fa: 'متر بر ثانیه', en: 'Meter/sec', sym: 'm/s', factor: 1 },
-                { id: 'kmh', fa: 'کیلومتر بر ساعت', en: 'Km/hour', sym: 'km/h', factor: 1 / 3.6 },
-                { id: 'mph', fa: 'مایل بر ساعت', en: 'Mile/hour', sym: 'mph', factor: 0.44704 },
-                { id: 'knot', fa: 'گره', en: 'Knot', sym: 'kn', factor: 0.514444 },
-            ],
-        },
-        time: {
-            units: [
-                { id: 'ms', fa: 'میلی‌ثانیه', en: 'Millisecond', sym: 'ms', factor: 0.001 },
-                { id: 's', fa: 'ثانیه', en: 'Second', sym: 's', factor: 1 },
-                { id: 'min', fa: 'دقیقه', en: 'Minute', sym: 'min', factor: 60 },
-                { id: 'h', fa: 'ساعت', en: 'Hour', sym: 'h', factor: 3600 },
-                { id: 'day', fa: 'روز', en: 'Day', sym: 'd', factor: 86400 },
-                { id: 'week', fa: 'هفته', en: 'Week', sym: 'wk', factor: 604800 },
-            ],
-        },
-    };
+    I18N.register('ar', {
+        unit_title: 'محوّل الوحدات',
+        unit_value: 'القيمة',
+        unit_from: 'من',
+        unit_to: 'إلى',
+        unit_result: 'النتيجة',
+        unit_swap: 'تبديل',
+        unit_back: 'العودة إلى التطبيقات',
+        unit_cat_length: 'الطول',
+        unit_cat_weight: 'الوزن',
+        unit_cat_temp: 'الحرارة',
+        unit_cat_data: 'البيانات',
+        unit_cat_speed: 'السرعة',
+        unit_cat_time: 'الوقت',
+    });
 
     const App = {
         category: 'length',
@@ -146,7 +98,7 @@
         },
 
         renderCategoryTabs() {
-            this.elements.catTabs.innerHTML = Object.keys(CATEGORIES).map(cat => {
+            this.elements.catTabs.innerHTML = Object.keys(UnitConverter.CATEGORIES).map(cat => {
                 const label = I18N.t('unit_cat_' + cat);
                 return `<button class="cat-tab${cat === this.category ? ' active' : ''}" data-cat="${cat}">${label}</button>`;
             }).join('');
@@ -163,9 +115,9 @@
         },
 
         renderUnitSelects() {
-            const cat = CATEGORIES[this.category];
+            const cat = UnitConverter.CATEGORIES[this.category];
             const lang = I18N.current;
-            const labelOf = u => `${lang === 'fa' ? u.fa : u.en} (${u.sym})`;
+            const labelOf = u => `${UnitConverter.label(u, lang)} (${u.sym})`;
 
             const opts = cat.units.map(u =>
                 `<option value="${u.id}">${labelOf(u)}</option>`
@@ -183,7 +135,6 @@
         },
 
         convert() {
-            const cat = CATEGORIES[this.category];
             const raw = parseFloat(this.elements.valueInput.value);
 
             if (isNaN(raw)) {
@@ -191,19 +142,12 @@
                 return;
             }
 
-            const from = this.elements.fromSelect.value;
-            const to = this.elements.toSelect.value;
-            let result;
-
-            if (cat.temp) {
-                // Temperature: special formulas (Celsius is the base)
-                const base = cat.toBase[from](raw);
-                result = cat.fromBase[to](base);
-            } else {
-                const fromUnit = cat.units.find(u => u.id === from);
-                const toUnit = cat.units.find(u => u.id === to);
-                result = (raw * fromUnit.factor) / toUnit.factor;
-            }
+            const result = UnitConverter.convert(
+                this.category,
+                raw,
+                this.elements.fromSelect.value,
+                this.elements.toSelect.value
+            );
 
             this.elements.result.textContent = this.format(result);
         },
@@ -211,7 +155,7 @@
         format(n) {
             if (!isFinite(n)) return '∞';
             if (Object.is(n, -0)) n = 0;
-            const locale = I18N.current === 'fa' ? 'fa-IR' : 'en-US';
+            const locale = I18N.current === 'fa' ? 'fa-IR' : (I18N.current === 'ar' ? 'ar-EG' : 'en-US');
             return new Intl.NumberFormat(locale, { maximumSignificantDigits: 10 }).format(n);
         },
     };
