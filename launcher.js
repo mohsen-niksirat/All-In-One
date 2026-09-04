@@ -285,6 +285,31 @@
         TG.haptic('light');
     });
 
+    // ---- Deep links ----
+    // Open a specific app when the hub URL carries #<app-id> or when Telegram
+    // starts the web app with ?startapp=<app-id> (start_param).
+    function openDeepLink() {
+        let id = '';
+        try { id = decodeURIComponent((location.hash || '').replace(/^#/, '')); } catch (e) { id = ''; }
+        if (!id) {
+            try { id = (TG.webApp && TG.webApp.initDataUnsafe && TG.webApp.initDataUnsafe.start_param) || ''; } catch (e) { id = ''; }
+        }
+        if (!id) return;
+        const app = APP_REGISTRY.find(a => a.id === id);
+        if (!app) return;
+        TG.haptic('light');
+        if (app.status === 'ready' && app.path) {
+            // Clear the hash so pressing Back lands on the launcher, not on a re-trigger.
+            try {
+                if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+            } catch (e) { /* ignore */ }
+            location.assign(app.path);
+        } else {
+            openSheet(app); // “soon” apps open their info sheet
+        }
+    }
+
     // ---- Init ----
     refresh();
+    openDeepLink();
 })();

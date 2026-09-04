@@ -16,6 +16,7 @@
         emo_make: 'ساخت پوستر',
         emo_download: '⬇ دانلود PNG',
         emo_downloaded: 'دانلود شد!',
+        emo_share: 'ارسال',
         emo_rand: 'تصادفی',
     });
 
@@ -29,6 +30,7 @@
         emo_make: 'Create poster',
         emo_download: '⬇ Download PNG',
         emo_downloaded: 'Downloaded!',
+        emo_share: 'Share',
         emo_rand: 'Random',
     });
 
@@ -42,6 +44,7 @@
         emo_make: 'إنشاء الملصق',
         emo_download: '⬇ تنزيل PNG',
         emo_downloaded: 'تم التنزيل!',
+        emo_share: 'مشاركة',
         emo_rand: 'عشوائي',
     });
 
@@ -78,6 +81,7 @@
                 bgOptions: document.getElementById('bg-options'),
                 make: document.getElementById('make'),
                 download: document.getElementById('download'),
+                share: document.getElementById('share'),
                 previewWrap: document.getElementById('preview-wrap'),
                 canvas: document.getElementById('poster'),
                 status: document.getElementById('status'),
@@ -123,6 +127,7 @@
                 TG.haptic('light');
             });
             this.elements.download.addEventListener('click', () => this.download());
+            this.elements.share.addEventListener('click', () => this.sharePng());
         },
 
         saveState() {
@@ -231,8 +236,7 @@
         },
 
         download() {
-            const cv = this.elements.canvas;
-            const href = cv.toDataURL ? cv.toDataURL('image/png') : null;
+            const href = this.pngDataUrl();
             if (!href) return;
             const a = document.createElement('a');
             a.href = href;
@@ -242,6 +246,29 @@
             a.remove();
             TG.toast(I18N.t('emo_downloaded'), 'success');
             TG.haptic('light');
+        },
+
+        pngDataUrl() {
+            const cv = this.elements.canvas;
+            return cv.toDataURL ? cv.toDataURL('image/png') : null;
+        },
+
+        /** Native share (sends the poster PNG as a file); falls back to download. */
+        async sharePng() {
+            const href = this.pngDataUrl();
+            if (!href) return;
+            try {
+                const blob = await (await fetch(href)).blob();
+                const file = new File([blob], 'poster.png', { type: 'image/png' });
+                if (typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], text: this.state.text });
+                    TG.haptic('light');
+                    return;
+                }
+            } catch (e) {
+                if (e && e.name === 'AbortError') return; // user cancelled — do nothing
+            }
+            this.download();
         },
     };
 

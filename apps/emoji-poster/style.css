@@ -124,6 +124,15 @@ body {
     margin-bottom: 10px;
 }
 
+.out-row {
+    display: flex;
+    gap: 8px;
+}
+
+.out-row .btn {
+    flex: 1;
+}
+
 /* ---- Status ---- */
 .status {
     font-size: 13px;

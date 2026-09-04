@@ -8,6 +8,8 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 
 - 🏠 **Launcher home** — all apps listed in one grid with search & filters
 - 📴 **Offline app-shell** — a service worker caches the core + every app you visit, so the hub keeps working with no connection
+- 📲 **Installable PWA** — manifest + generated icons; add the hub to your home screen
+- 🔗 **Deep links** — open any app directly: hub URL + `#<app-id>` (or `?startapp=<app-id>` from a bot)
 - 🌍 **Truly trilingual** — فارسی / English / العربية, switchable in one tap (choice is remembered)
 - ☁️ **Cross-device sync** — data mirrors to Telegram CloudStorage when running inside Telegram (localStorage fallback elsewhere)
 - 🧱 **Shared core layer** — `core/tg.js` (Telegram SDK), `core/store.js` (namespaced storage), `core/i18n.js` (translations), `core/ui.css` (theming)
@@ -88,6 +90,9 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── solar-system/    ← 🪐
     └── emoji-poster/    ← 🖼️
 sw.js                    ← offline app-shell (registered by core/tg.js)
+manifest.webmanifest      ← PWA install metadata
+icons/                   ← generated PNG icons (node scripts/gen-icons.js)
+scripts/gen-icons.js     ← dependency-free icon generator
 tests/
     ├── unit.test.js     ← core layer: Store, I18N, converter, password gen
     └── smoke.test.js    ← boots every page with a DOM shim, checks i18n coverage

@@ -1,0 +1,21 @@
+{
+    "name": "All-In-One — Telegram Mini Apps",
+    "short_name": "All-In-One",
+    "description": "27 free, serverless Telegram Mini Apps — one launcher, every tool. Works offline.",
+    "id": "./",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#0b1220",
+    "theme_color": "#50a9e8",
+    "lang": "en",
+    "dir": "auto",
+    "categories": ["utilities", "productivity", "lifestyle"],
+    "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ]
+}
