@@ -377,3 +377,149 @@ test('Backup.normalize: migrates older formats via the ladder and rejects newer 
         Backup.FORMAT = savedFmt;
     }
 });
+
+// ================= Backup unified format, catalog, encryption =================
+
+function backupSandbox(ls) {
+    const Store = load('core/store.js', { localStorage: ls || mockLocalStorage(), console }, 'Store');
+    return {
+        sandbox: {
+            localStorage: ls || mockLocalStorage(),
+            console,
+            Store,
+            I18N: { current: 'en' },
+            crypto: globalThis.crypto,
+            atob,
+            btoa,
+            TextEncoder,
+            TextDecoder,
+        },
+        Store,
+    };
+}
+
+test('Backup: unified FORMAT applies to storage and ai-chat envelopes', () => {
+    const Backup = load('core/backup.js', {}, 'Backup');
+    assert.strictEqual(Backup.FORMAT, 2, 'storage + chat backups must share FORMAT');
+
+    // storage envelope: items payload is exposed via .items
+    const s = Backup.normalize({ app: 'notes-app', format: 2, items: [{ id: 'a' }] });
+    assert.strictEqual(s.newer, false);
+    assert.strictEqual(s.items.length, 1);
+
+    // chat envelope: messages payload stays intact, .items stays null
+    const c = Backup.normalize({ app: 'ai-chat', format: 2, messages: [{ id: 'm1', role: 'user', content: 'hi' }] });
+    assert.strictEqual(c.items, null);
+    assert.strictEqual(c.env.messages.length, 1);
+
+    // legacy chat backup without a format field defaults to 1 and still normalizes
+    const legacy = Backup.normalize({ app: 'ai-chat', messages: [{ id: 'm1', role: 'user', content: 'hi' }] });
+    assert.strictEqual(legacy.newer, false);
+    assert.strictEqual(legacy.env.messages.length, 1);
+
+    // future formats are refused for both payload kinds
+    assert.strictEqual(Backup.normalize({ app: 'ai-chat', format: 3, messages: [] }).newer, true);
+    assert.strictEqual(Backup.normalize({ app: 'notes-app', format: 3, items: [] }).newer, true);
+});
+
+test('Backup: STORAGE_DEFS catalog covers every storage-backed app', () => {
+    const Backup = load('core/backup.js', {}, 'Backup');
+    const ids = Backup.STORAGE_DEFS.map(d => d.id);
+    assert.deepStrictEqual(
+        [...ids].sort(),
+        ['ai-chat', 'bookmark-manager', 'daily-journal', 'expense-tracker',
+         'goal-tracker', 'habit-tracker', 'notes-app', 'shopping-list'].sort()
+    );
+    for (const def of Backup.STORAGE_DEFS) {
+        assert.ok(['items', 'messages'].includes(def.payload), def.id + ': payload');
+        assert.strictEqual(typeof def.read, 'function', def.id + ': read');
+        assert.strictEqual(typeof def.write, 'function', def.id + ': write');
+        assert.strictEqual(Backup.defById(def.id), def, def.id + ': defById');
+    }
+    // payload keys match what each app's own export writes
+    assert.strictEqual(Backup.defById('ai-chat').payload, 'messages');
+    assert.strictEqual(Backup.defById('notes-app').payload, 'items');
+});
+
+test('Backup: last-backup bookkeeping round-trips in Store', () => {
+    const { sandbox, Store } = backupSandbox();
+    const Backup = load('core/backup.js', sandbox, 'Backup');
+    assert.strictEqual(Backup.lastBackup('notes-app'), 0);
+    Backup.markBackup('notes-app');
+    Backup.markBackup('ai-chat');
+    assert.ok(Backup.lastBackup('notes-app') > 0);
+    assert.ok(Backup.lastBackup('ai-chat') > 0);
+    assert.strictEqual(Backup.lastBackup('other-app'), 0);
+    const map = Store.getJSON('hub', 'lastBackups', {});
+    assert.strictEqual(typeof map['notes-app'], 'number');
+});
+
+test('Backup: multi-envelope collection + catalog read/write match app shapes', () => {
+    const { sandbox, Store } = backupSandbox();
+    const Backup = load('core/backup.js', sandbox, 'Backup');
+
+    Store.setJSON('notes-app', 'notes', [{ id: 'n1', text: 'hello', updated: 1 }]);
+    Store.setJSON('daily-journal', 'entries', { '2024-05-01': { mood: 2, text: 'good day', updated: 10 } });
+    Store.setJSON('ai-chat', 'history', [
+        { id: 'u1', role: 'user', content: 'hi', timestamp: 1 },
+        { id: 'a1', role: 'assistant', content: 'hello!', timestamp: 2, queued: true },
+        { junk: true }, // filtered by the def
+    ]);
+
+    const envelopes = Backup.collectEnvelopes();
+    assert.strictEqual(envelopes.length, 8);
+
+    const notes = envelopes.find(e => e.app === 'notes-app');
+    assert.strictEqual(notes.items[0].text, 'hello');
+    assert.strictEqual(notes.format, Backup.FORMAT);
+
+    const journal = envelopes.find(e => e.app === 'daily-journal');
+    assert.strictEqual(journal.items[0].id, '2024-05-01');
+    assert.strictEqual(journal.items[0].mood, 2);
+
+    const chat = envelopes.find(e => e.app === 'ai-chat');
+    assert.strictEqual(chat.messages.length, 2, 'junk history entries are filtered');
+
+    // journal write replaces the date-keyed object with the (merged) list
+    const jDef = Backup.defById('daily-journal');
+    jDef.write([
+        { id: '2024-05-01', mood: 2, text: 'good day', updated: 10 },
+        { id: '2024-05-03', mood: 3, text: 'nice', updated: 9 },
+    ]);
+    const obj = Store.getJSON('daily-journal', 'entries', {});
+    assert.strictEqual(obj['2024-05-03'].text, 'nice');
+    assert.strictEqual(obj['2024-05-01'].mood, 2);
+    assert.strictEqual(
+        JSON.stringify(jDef.read().map(i => i.id)),
+        JSON.stringify(['2024-05-01', '2024-05-03']),
+        'placeholder/empty days are excluded, real days survive a read/write cycle'
+    );
+
+    // ai-chat write keeps only valid messages
+    Backup.defById('ai-chat').write([{ id: 'u2', role: 'user', content: 'x', timestamp: 3 }]);
+    assert.strictEqual(Store.getJSON('ai-chat', 'history', []).length, 1);
+});
+
+test('Backup: password encryption round-trips and rejects the wrong password', async () => {
+    const { sandbox } = backupSandbox();
+    const Backup = load('core/backup.js', sandbox, 'Backup');
+    assert.ok(Backup.cryptoAvailable(), 'WebCrypto must be available to run this test');
+
+    const payload = {
+        kind: 'multi', format: 2,
+        apps: [{ app: 'notes-app', items: [{ id: 'a', text: 'secret note 秘密', updated: 1 }] }],
+    };
+    const env = await Backup.encryptEnvelope(payload, 'p@ss 123');
+    assert.strictEqual(env.kind, 'encrypted');
+    assert.ok(env.data && env.salt && env.iv, 'cipher material present');
+    assert.ok(!JSON.stringify(env).includes('secret'), 'plaintext must not leak into the envelope');
+
+    const back = await Backup.decryptEnvelope(env, 'p@ss 123');
+    assert.strictEqual(JSON.stringify(back), JSON.stringify(payload));
+
+    await assert.rejects(
+        () => Backup.decryptEnvelope(env, 'wrong-password'),
+        undefined,
+        'wrong password must fail the AES-GCM tag check'
+    );
+});

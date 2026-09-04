@@ -459,12 +459,14 @@ const Chat = {
     },
 
     /** Download the conversation as JSON (keeps roles, timestamps and the
-     *  queued/offline flags, so re-importing resumes unfinished sends). */
+     *  queued/offline flags, so re-importing resumes unfinished sends).
+     *  Stamps the SAME format number as every other backup (Backup.FORMAT)
+     *  so the shared migrator ladder understands chat files too. */
     exportChat() {
         try {
             const data = {
                 app: 'ai-chat',
-                format: 2,
+                format: (typeof Backup !== 'undefined' && Backup.FORMAT) || 2,
                 deviceId: this.deviceId(),
                 exportedAt: new Date().toISOString(),
                 messages: this.messages,
@@ -507,8 +509,19 @@ const Chat = {
         reader.onload = async () => {
             try {
                 const data = JSON.parse(String(reader.result));
-                if (!data || !Array.isArray(data.messages)) throw new Error('bad shape');
-                const msgs = data.messages.filter(m => m &&
+                // Run through the shared migrator ladder so chat backups from
+                // older formats import cleanly and future formats are refused.
+                let env = data;
+                if (typeof Backup !== 'undefined') {
+                    const norm = Backup.normalize(data);
+                    if (norm.newer) {
+                        TG.toast(I18N.t('chat_import_newer'), 'error');
+                        return;
+                    }
+                    env = norm.env || data;
+                }
+                if (!env || !Array.isArray(env.messages)) throw new Error('bad shape');
+                const msgs = env.messages.filter(m => m &&
                     (m.role === 'user' || m.role === 'assistant') &&
                     typeof m.content === 'string');
                 if (msgs.length === 0) throw new Error('empty');
@@ -528,7 +541,7 @@ const Chat = {
                     from = this.fmtDate(Math.min(...times));
                     to = this.fmtDate(Math.max(...times));
                 }
-                const sameDevice = data.deviceId && data.deviceId === this.deviceId();
+                const sameDevice = env.deviceId && env.deviceId === this.deviceId();
                 let preview = I18N.t('chat_import_preview', {
                     n: msgs.length, m: fresh.length, from, to,
                 });

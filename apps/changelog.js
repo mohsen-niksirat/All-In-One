@@ -7,6 +7,31 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.8.0',
+        icon: '🔐',
+        link: 'notes-app',
+        i18n: {
+            fa: [
+                'پشتیبان‌گیری همهٔ اپ‌ها در یک فایل — ساده یا رمزنگاری‌شده با رمز عبور — از دکمهٔ 💾',
+                'بازیابی، دادهٔ هر اپ را مورد‌به‌مورد ادغام می‌کند و چیزی حذف نمی‌شود؛ فایل تک‌اپ هم می‌پذیرد',
+                'یادآوری خودکار پشتیبان‌گیری: تاریخ آخرین پشتیبان هر اپ و هشدار پس از یک هفته',
+                'پشتیبان گفتگو (AI Chat) حالا همان قالب نسخه‌دار و نردبان مهاجرت بقیهٔ اپ‌ها را دارد',
+            ],
+            en: [
+                'One-tap “back up everything” to a single file — plain JSON or password-encrypted — from the 💾 button',
+                'Restore merges each app item-by-item and never deletes; single-app backup files are accepted too',
+                'Automatic backup reminders: per-app last-backup dates plus a nudge after a week',
+                'AI Chat backups now use the same versioned format and migrator ladder as every other app',
+            ],
+            ar: [
+                'نسخة احتياطية لكل التطبيقات في ملف واحد — عادية أو مشفّرة بكلمة مرور — من زر 💾',
+                'الاستعادة تدمج عنصراً بعنصر لكل تطبيق ولا تحذف شيئاً؛ وتقبل ملفات التطبيق الواحد أيضاً',
+                'تذكير تلقائي بالنسخ الاحتياطي: تاريخ آخر نسخة لكل تطبيق وتنبيه بعد أسبوع',
+                'نسخ محادثة AI Chat تستخدم الآن نفس الصيغة المرقّمة وسلّم الترحيل كباقي التطبيقات',
+            ],
+        },
+    },
+    {
         version: '2.7.0',
         icon: '🧭',
         link: 'habit-tracker',

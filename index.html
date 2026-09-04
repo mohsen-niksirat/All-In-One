@@ -23,6 +23,7 @@
         </div>
         <div class="header-actions">
             <div data-lang-switcher class="lang-switcher"></div>
+            <button type="button" id="backup-btn" class="icon-btn" data-i18n-title="hub_backup_btn" title="Data & backups">💾</button>
             <button type="button" id="refresh-btn" class="icon-btn" data-i18n-title="hub_refresh_title" title="Check for updates">↻</button>
             <span id="version-badge" class="version-badge" title="All-In-One"></span>
         </div>
@@ -35,8 +36,22 @@
             <input id="search" type="search" data-i18n-placeholder="hub_search" placeholder="Search apps..." autocomplete="off">
         </div>
         <div id="stats" class="stats"></div>
+
+        <!-- Backup reminder bar (shown when an app with data is overdue) -->
+        <div id="backup-bar" class="backup-bar hidden" role="note">
+            <span class="backup-bar-ico">💾</span>
+            <div class="backup-bar-txt">
+                <div id="backup-bar-title" class="backup-bar-title"></div>
+                <div id="backup-bar-sub" class="backup-bar-sub"></div>
+            </div>
+            <button type="button" id="backup-bar-btn" class="btn btn-secondary bk-small">Back up</button>
+            <button type="button" id="backup-bar-x" class="backup-x" data-i18n-title="hub_backup_dismiss" title="Not now">✕</button>
+        </div>
+
         <div id="app-grid" class="app-grid"></div>
     </main>
+
+    <input type="file" id="bk-import-file" accept=".json,application/json" hidden>
 
     <!-- App info / about sheet -->
     <div id="app-sheet" class="modal-overlay hidden">
@@ -48,6 +63,11 @@
         <div class="modal-box sheet-box" id="changelog-box"></div>
     </div>
 
+    <!-- Data & backups sheet (opens from the 💾 header button) -->
+    <div id="backup-sheet" class="modal-overlay hidden">
+        <div class="modal-box sheet-box" id="backup-box"></div>
+    </div>
+
     <!-- Telegram Mini App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -55,6 +75,7 @@
     <script src="core/tg.js"></script>
     <script src="core/store.js"></script>
     <script src="core/i18n.js"></script>
+    <script src="core/backup.js"></script>
 
     <!-- Registry + changelog + launcher -->
     <script src="apps/registry.js"></script>

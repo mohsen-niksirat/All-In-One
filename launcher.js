@@ -40,6 +40,32 @@
         tag_offline: 'آفلاین',
         tag_storage: 'ذخیره‌سازی',
         tag_static: 'استاتیک',
+        hub_backup_btn: 'پشتیبان‌گیری و داده‌ها',
+        hub_backup_title: 'پشتیبان‌گیری و داده‌ها',
+        hub_backup_sub: 'از همهٔ اپ‌های دارای داده یک فایل بگیرید — ساده یا رمزنگاری‌شده با رمز عبور. بازیابی فقط ادغام می‌کند و چیزی حذف نمی‌شود.',
+        hub_backup_all: 'پشتیبان همه (JSON)',
+        hub_backup_enc: 'پشتیبان رمزنگاری‌شده',
+        hub_backup_restore: 'بازیابی از فایل',
+        hub_backup_none: 'داده‌ای برای پشتیبان نیست',
+        hub_backup_never: 'هنوز پشتیبان نگرفته',
+        hub_backup_last: 'آخرین پشتیبان: {date}',
+        hub_backup_due: '{n} اپ داده‌ای دارند که مدت‌هاست پشتیبان نگرفته‌اند',
+        hub_backup_now: 'همین حالا پشتیبان بگیر',
+        hub_backup_dismiss: 'فعلاً نه',
+        hub_backup_done: 'پشتیبان همهٔ اپ‌ها آماده شد ✓',
+        hub_restore_preview: 'فایل شامل {n} اپ است ({a} مورد جدید، {u} به‌روزرسانی) — ادامه می‌دهید؟',
+        hub_restored: 'دادهٔ {n} اپ ادغام شد ✓',
+        hub_restore_bad: 'فایل پشتیبان شناخته‌شده نیست',
+        hub_pw_set: 'رمز عبور فایل پشتیبان را انتخاب کنید',
+        hub_pw_ask: 'رمز عبور فایل را وارد کنید',
+        hub_pw_ph: 'رمز عبور',
+        hub_pw_repeat_ph: 'تکرار رمز عبور',
+        hub_pw_mismatch: 'رمزها یکی نیستند',
+        hub_pw_short: 'رمز باید دست‌کم ۴ نویسه باشد',
+        hub_pw_wrong: 'رمز اشتباه است یا فایل آسیب دیده',
+        hub_pw_ok: 'تأیید',
+        hub_pw_cancel: 'انصراف',
+        hub_enc_unsupported: 'رمزنگاری در این مرورگر در دسترس نیست',
     });
 
     I18N.register('en', {
@@ -74,6 +100,32 @@
         tag_offline: 'Offline',
         tag_storage: 'Storage',
         tag_static: 'Static',
+        hub_backup_btn: 'Data & backups',
+        hub_backup_title: 'Data & backups',
+        hub_backup_sub: 'Back up every app that stores data into one file — plain or password-encrypted. Restoring merges and never deletes anything.',
+        hub_backup_all: 'Back up all (JSON)',
+        hub_backup_enc: 'Encrypted backup',
+        hub_backup_restore: 'Restore from file',
+        hub_backup_none: 'Nothing to back up yet',
+        hub_backup_never: 'Never backed up',
+        hub_backup_last: 'Last backup: {date}',
+        hub_backup_due: '{n} app(s) with data haven’t been backed up recently',
+        hub_backup_now: 'Back up now',
+        hub_backup_dismiss: 'Not now',
+        hub_backup_done: 'Backed up all apps ✓',
+        hub_restore_preview: 'File covers {n} apps ({a} new items, {u} updates) — merge it in?',
+        hub_restored: 'Merged data for {n} apps ✓',
+        hub_restore_bad: 'Unrecognized backup file',
+        hub_pw_set: 'Choose a password for the backup file',
+        hub_pw_ask: 'Enter the backup password',
+        hub_pw_ph: 'Password',
+        hub_pw_repeat_ph: 'Repeat password',
+        hub_pw_mismatch: 'Passwords do not match',
+        hub_pw_short: 'Password must be at least 4 characters',
+        hub_pw_wrong: 'Wrong password or damaged file',
+        hub_pw_ok: 'OK',
+        hub_pw_cancel: 'Cancel',
+        hub_enc_unsupported: 'Encryption is not available in this browser',
     });
 
     I18N.register('ar', {
@@ -108,6 +160,32 @@
         tag_offline: 'دون اتصال',
         tag_storage: 'تخزين',
         tag_static: 'ثابت',
+        hub_backup_btn: 'النسخ الاحتياطي والبيانات',
+        hub_backup_title: 'النسخ الاحتياطي والبيانات',
+        hub_backup_sub: 'انسخ جميع التطبيقات التي تخزّن البيانات في ملف واحد — عادي أو مشفّر بكلمة مرور. الاستعادة تدمج ولا تحذف شيئاً.',
+        hub_backup_all: 'نسخ الكل (JSON)',
+        hub_backup_enc: 'نسخة مشفّرة',
+        hub_backup_restore: 'استعادة من ملف',
+        hub_backup_none: 'لا يوجد شيء للنسخ بعد',
+        hub_backup_never: 'لم تُنشأ نسخة بعد',
+        hub_backup_last: 'آخر نسخة: {date}',
+        hub_backup_due: '{n} تطبيقات لديها بيانات لم تُنسخ منذ مدة',
+        hub_backup_now: 'انسخ الآن',
+        hub_backup_dismiss: 'ليس الآن',
+        hub_backup_done: 'تم نسخ جميع التطبيقات ✓',
+        hub_restore_preview: 'يغطي الملف {n} تطبيقات ({a} عناصر جديدة، {u} تحديثات) — هل ندمجها؟',
+        hub_restored: 'تم دمج بيانات {n} تطبيقات ✓',
+        hub_restore_bad: 'ملف نسخة احتياطية غير معروف',
+        hub_pw_set: 'اختر كلمة مرور للملف الاحتياطي',
+        hub_pw_ask: 'أدخل كلمة مرور الملف',
+        hub_pw_ph: 'كلمة المرور',
+        hub_pw_repeat_ph: 'أعد كتابة كلمة المرور',
+        hub_pw_mismatch: 'كلمتا المرور غير متطابقتين',
+        hub_pw_short: 'كلمة المرور يجب أن تكون 4 أحرف على الأقل',
+        hub_pw_wrong: 'كلمة مرور خاطئة أو ملف تالف',
+        hub_pw_ok: 'موافق',
+        hub_pw_cancel: 'إلغاء',
+        hub_enc_unsupported: 'التشفير غير متاح في هذا المتصفح',
     });
 
     TG.init();
@@ -307,6 +385,7 @@
             if (app) openSheet(app);
         }
         if (!changelogSheet.classList.contains('hidden')) openChangelog();
+        refreshBackupUI();
         TG.haptic('light');
     });
 
@@ -498,8 +577,330 @@
         if (snap.top && window.scrollTo) window.scrollTo(0, snap.top);
     }
 
+    // ---- Data & backups ----
+    // One-tap export of every storage-backed app (plain or password-
+    // encrypted JSON), restore with per-app merge-by-id, per-app last-backup
+    // dates, and a reminder bar when an app with data is overdue.
+    const DAY_MS = 86400000;
+    const BACKUP_INTERVAL_DAYS = 7;
+    const NUDGE_SUPPRESS_MS = 3 * DAY_MS;
+
+    const backupBar = document.getElementById('backup-bar');
+    const backupBarTitle = document.getElementById('backup-bar-title');
+    const backupBarSub = document.getElementById('backup-bar-sub');
+    const backupBarBtn = document.getElementById('backup-bar-btn');
+    const backupBarX = document.getElementById('backup-bar-x');
+    const backupSheet = document.getElementById('backup-sheet');
+    const backupBox = document.getElementById('backup-box');
+    const bkImportFile = document.getElementById('bk-import-file');
+
+    function appMeta(id) {
+        const app = APP_REGISTRY.find(a => a.id === id);
+        return app ? localize(app) : null;
+    }
+
+    function defItemCount(def) {
+        try {
+            const list = def.read();
+            return (list && list.length) ? list.length : 0;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    /** Apps that have data but no backup in the last week. */
+    function dueBackupApps() {
+        const now = Date.now();
+        const due = [];
+        Backup.STORAGE_DEFS.forEach(def => {
+            if (defItemCount(def) === 0) return;
+            const last = Backup.lastBackup(def.id);
+            if (last === 0 || (now - last) > BACKUP_INTERVAL_DAYS * DAY_MS) due.push(def.id);
+        });
+        return due;
+    }
+
+    function renderBackupBar() {
+        const due = dueBackupApps();
+        const suppressed = parseInt(Store.get('hub', 'backupNudge', 0), 10) || 0;
+        const show = due.length > 0 && (Date.now() - suppressed) > NUDGE_SUPPRESS_MS;
+        backupBar.classList.toggle('hidden', !show);
+        if (!show) return;
+        backupBarTitle.textContent = I18N.t('hub_backup_due', { n: due.length });
+        const names = due
+            .map(id => { const m = appMeta(id); return m && m.name ? m.name : id; })
+            .slice(0, 3);
+        backupBarSub.textContent = names.join(' · ') + (due.length > 3 ? '…' : '');
+        backupBarBtn.textContent = I18N.t('hub_backup_now');
+    }
+
+    function openBackupSheet() {
+        renderBackupSheet();
+        backupSheet.classList.remove('hidden');
+        TG.haptic('light');
+    }
+
+    function closeBackupSheet() {
+        backupSheet.classList.add('hidden');
+    }
+
+    function lastBackupLine(id) {
+        const ts = Backup.lastBackup(id);
+        return ts > 0 ? I18N.t('hub_backup_last', { date: Backup.fmtDate(ts) }) : I18N.t('hub_backup_never');
+    }
+
+    function renderBackupSheet() {
+        const rows = Backup.STORAGE_DEFS.map(def => {
+            const meta = appMeta(def.id);
+            const count = defItemCount(def);
+            return `
+                <div class="bk-row">
+                    <div class="bk-ico">${meta && meta.icon ? meta.icon : '📦'}</div>
+                    <div class="bk-meta">
+                        <div class="bk-name">${meta && meta.name ? meta.name : def.id}</div>
+                        <div class="bk-date">${count > 0 ? lastBackupLine(def.id) : I18N.t('hub_backup_none')}</div>
+                    </div>
+                    ${count > 0 ? `<span class="chip">${count}</span>` : ''}
+                </div>`;
+        }).join('');
+        backupBox.innerHTML = `
+            <div class="sheet-head">
+                <div class="sheet-icon">💾</div>
+                <div class="sheet-title"><h3>${I18N.t('hub_backup_title')}</h3></div>
+            </div>
+            <p class="sheet-desc">${I18N.t('hub_backup_sub')}</p>
+            <div class="bk-list">${rows}</div>
+            <div class="bk-actions">
+                <button type="button" class="btn btn-primary" data-act="backup-all">${I18N.t('hub_backup_all')}</button>
+                <button type="button" class="btn btn-primary" data-act="backup-enc">${I18N.t('hub_backup_enc')}</button>
+                <button type="button" class="btn btn-secondary" data-act="restore">${I18N.t('hub_backup_restore')}</button>
+            </div>
+            <div id="pw-area" class="pw-area hidden">
+                <div id="pw-title" class="pw-title"></div>
+                <input type="password" id="pw-input" class="pw-input" placeholder="${I18N.t('hub_pw_ph')}" autocomplete="off">
+                <input type="password" id="pw-input2" class="pw-input hidden" placeholder="${I18N.t('hub_pw_repeat_ph')}" autocomplete="off">
+                <div id="pw-err" class="pw-err"></div>
+                <div class="pw-btns">
+                    <button type="button" class="btn btn-primary" data-act="pw-ok">${I18N.t('hub_pw_ok')}</button>
+                    <button type="button" class="btn btn-secondary" data-act="pw-cancel">${I18N.t('hub_pw_cancel')}</button>
+                </div>
+            </div>
+            <div class="sheet-actions">
+                <button type="button" class="btn btn-secondary" data-act="backup-close">${I18N.t('hub_close')}</button>
+            </div>`;
+    }
+
+    function refreshBackupUI() {
+        renderBackupBar();
+        if (!backupSheet.classList.contains('hidden')) renderBackupSheet();
+    }
+
+    // ---- Password area (used for encrypted export + encrypted restore) ----
+    let pwMode = 'set';          // 'set' (new password) or 'ask' (restore)
+    let pendingEncrypted = null; // encrypted envelope awaiting its password
+
+    function openPasswordArea(mode) {
+        pwMode = mode;
+        pendingEncrypted = null;
+        const area = document.getElementById('pw-area');
+        const title = document.getElementById('pw-title');
+        const pw1 = document.getElementById('pw-input');
+        const pw2 = document.getElementById('pw-input2');
+        const err = document.getElementById('pw-err');
+        if (!area) return;
+        title.textContent = I18N.t(mode === 'set' ? 'hub_pw_set' : 'hub_pw_ask');
+        pw1.value = '';
+        pw2.value = '';
+        pw2.classList.toggle('hidden', mode !== 'set');
+        err.textContent = '';
+        area.classList.remove('hidden');
+        pw1.focus();
+    }
+
+    function closePasswordArea() {
+        const area = document.getElementById('pw-area');
+        if (area) area.classList.add('hidden');
+        pendingEncrypted = null;
+    }
+
+    function pwError(msg) {
+        const err = document.getElementById('pw-err');
+        if (err) err.textContent = msg;
+    }
+
+    function markAllBackedUp() {
+        Backup.STORAGE_DEFS.forEach(d => Backup.markBackup(d.id));
+    }
+
+    function doBackupAll() {
+        try {
+            const date = new Date().toISOString().slice(0, 10);
+            const multi = Backup.multiEnvelope();
+            Backup.saveJSON('all-in-one-backup-' + date + '.json', multi);
+            markAllBackedUp();
+            TG.toast(I18N.t('hub_backup_done'), 'success');
+            TG.haptic('medium');
+            refreshBackupUI();
+        } catch (e) {
+            TG.toast(I18N.t('core_import_fail'), 'error');
+        }
+    }
+
+    async function doEncryptedBackup(password) {
+        if (!Backup.cryptoAvailable()) {
+            pwError(I18N.t('hub_enc_unsupported'));
+            return;
+        }
+        try {
+            const date = new Date().toISOString().slice(0, 10);
+            const multi = Backup.multiEnvelope();
+            const env = await Backup.encryptEnvelope(multi, password);
+            Backup.saveJSON('all-in-one-backup-enc-' + date + '.json', env);
+            markAllBackedUp();
+            closePasswordArea();
+            TG.toast(I18N.t('hub_backup_done'), 'success');
+            TG.haptic('medium');
+            refreshBackupUI();
+        } catch (e) {
+            pwError(I18N.t('hub_pw_wrong'));
+        }
+    }
+
+    // ---- Restore (plain or encrypted, single-app or multi-app files) ----
+    async function restorePayload(data) {
+        let envelopes = [];
+        if (Array.isArray(data.apps)) {
+            envelopes = data.apps;
+        } else if (data.app && Backup.defById(data.app)) {
+            envelopes = [data];
+        } else {
+            TG.toast(I18N.t('hub_restore_bad'), 'error');
+            return;
+        }
+
+        const results = [];
+        for (const env of envelopes) {
+            const def = Backup.defById(env && env.app);
+            if (!def) continue;
+            const norm = Backup.normalize(env);
+            if (norm.newer) continue;
+            const ee = norm.env || env;
+            const incoming = Array.isArray(ee[def.payload]) ? ee[def.payload] : [];
+            const local = def.read() || [];
+            results.push({ def, merged: Backup.mergeLists(local, incoming) });
+        }
+        if (results.length === 0) {
+            TG.toast(I18N.t('hub_restore_bad'), 'error');
+            return;
+        }
+
+        const added = results.reduce((s, r) => s + r.merged.added, 0);
+        const updated = results.reduce((s, r) => s + r.merged.updated, 0);
+        if (added === 0 && updated === 0) {
+            TG.toast(I18N.t('core_import_none'), 'info');
+            return;
+        }
+
+        let preview = I18N.t('hub_restore_preview', { n: results.length, a: added, u: updated });
+        if (data.deviceId && data.deviceId === Backup.deviceId()) {
+            preview += ' ' + I18N.t('core_import_same_device');
+        }
+        const ok = await TG.confirm(preview);
+        if (!ok) return;
+        results.forEach(r => r.def.write(r.merged.list));
+        TG.toast(I18N.t('hub_restored', { n: results.length }), 'success');
+        TG.haptic('medium');
+        refreshBackupUI();
+    }
+
+    async function submitPassword() {
+        const pw1 = document.getElementById('pw-input');
+        const pw2 = document.getElementById('pw-input2');
+        if (!pw1 || !pw1.value) return;
+        const password = pw1.value;
+        if (pwMode === 'set') {
+            if (!pw2 || password !== pw2.value) {
+                pwError(I18N.t('hub_pw_mismatch'));
+                return;
+            }
+            if (password.length < 4) {
+                pwError(I18N.t('hub_pw_short'));
+                return;
+            }
+            await doEncryptedBackup(password);
+        } else if (pendingEncrypted) {
+            const env = pendingEncrypted;
+            closePasswordArea();
+            try {
+                const payload = await Backup.decryptEnvelope(env, password);
+                await restorePayload(payload);
+            } catch (e) {
+                TG.toast(I18N.t('hub_pw_wrong'), 'error');
+            }
+        }
+    }
+
+    backupBox.addEventListener('click', (e) => {
+        const btn = e.target.closest ? e.target.closest('[data-act]') : null;
+        if (!btn) return;
+        const act = btn.dataset.act;
+        if (act === 'backup-close') closeBackupSheet();
+        else if (act === 'backup-all') doBackupAll();
+        else if (act === 'backup-enc') openPasswordArea('set');
+        else if (act === 'restore') { if (bkImportFile) bkImportFile.click(); }
+        else if (act === 'pw-ok') submitPassword();
+        else if (act === 'pw-cancel') closePasswordArea();
+    });
+
+    backupSheet.addEventListener('click', (e) => {
+        if (e.target === backupSheet) closeBackupSheet();
+    });
+
+    function restoreFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = async () => {
+            let data = null;
+            try {
+                data = JSON.parse(String(reader.result));
+            } catch (e) {
+                TG.toast(I18N.t('hub_restore_bad'), 'error');
+                return;
+            }
+            if (!data || typeof data !== 'object') {
+                TG.toast(I18N.t('hub_restore_bad'), 'error');
+                return;
+            }
+            if (data.kind === 'encrypted') {
+                if (!Backup.cryptoAvailable()) {
+                    TG.toast(I18N.t('hub_enc_unsupported'), 'error');
+                    return;
+                }
+                pendingEncrypted = data;
+                openPasswordArea('ask');
+                return;
+            }
+            await restorePayload(data);
+        };
+        reader.onerror = () => TG.toast(I18N.t('hub_restore_bad'), 'error');
+        reader.readAsText(file);
+    }
+
+    if (bkImportFile) bkImportFile.addEventListener('change', () => {
+        if (bkImportFile.files && bkImportFile.files[0]) restoreFromFile(bkImportFile.files[0]);
+        bkImportFile.value = '';
+    });
+
+    const backupHeaderBtn = document.getElementById('backup-btn');
+    if (backupHeaderBtn) backupHeaderBtn.addEventListener('click', openBackupSheet);
+    if (backupBarBtn) backupBarBtn.addEventListener('click', openBackupSheet);
+    if (backupBarX) backupBarX.addEventListener('click', () => {
+        Store.set('hub', 'backupNudge', Date.now());
+        renderBackupBar();
+    });
+
     // ---- Init ----
     refresh();
     openDeepLink();
     restoreHubSnapshot();
+    refreshBackupUI();
 })();

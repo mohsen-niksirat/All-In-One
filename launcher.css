@@ -444,3 +444,155 @@ body {
     font-size: 12px;
     padding: 8px;
 }
+/* ===== Data & backups (header button, reminder bar, backup sheet) ===== */
+
+#backup-btn {
+    font-size: 15px;
+}
+
+.backup-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2px 20px 10px;
+    padding: 10px 12px;
+    background: var(--accent-soft);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+}
+
+.backup-bar .backup-bar-ico {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.backup-bar .backup-bar-txt {
+    flex: 1;
+    min-width: 0;
+}
+
+.backup-bar-title {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.backup-bar-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.backup-bar .bk-small {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.backup-x {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+/* ---- Backup sheet ---- */
+.bk-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 40vh;
+    overflow-y: auto;
+    margin: 12px 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bk-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg-soft, transparent);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.bk-ico {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.bk-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.bk-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.bk-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.bk-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.bk-actions .btn {
+    flex: 1 1 45%;
+    margin: 0;
+}
+
+/* ---- Password area ---- */
+.pw-area {
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.pw-title {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.pw-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--card-bg, #fff);
+    color: var(--text-color);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.pw-err {
+    color: #e0555a;
+    font-size: 12px;
+    min-height: 16px;
+    margin-top: 2px;
+}
+
+.pw-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.pw-btns .btn {
+    flex: 1;
+    margin: 0;
+}
