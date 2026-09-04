@@ -16,18 +16,18 @@
     </header>
 
     <main class="app-page">
-        <!-- No-key state -->
+        <!-- Free-mode note (no key: BBC feeds) -->
         <div id="need-key" class="need-key hidden">
-            <div class="nk-icon">🔑</div>
-            <h3 data-i18n="nws_need_key_title">API key required</h3>
-            <p data-i18n="nws_need_key_text">This app needs a free GNews API key to fetch headlines.</p>
+            <div class="nk-icon">🔓</div>
+            <h3 data-i18n="nws_need_key_title">Free mode — BBC feeds</h3>
+            <p data-i18n="nws_need_key_text">Reading free BBC feeds. Add a free GNews key to unlock categories & search.</p>
             <button id="nk-open-settings" class="btn btn-primary btn-block" data-i18n="nws_open_settings">Open settings</button>
         </div>
 
         <!-- Controls -->
-        <div id="controls" class="controls hidden">
+        <div id="controls" class="controls">
             <div class="cats" id="cats"></div>
-            <div class="row2">
+            <div class="row2" id="search-row">
                 <input id="q" type="search" data-i18n-placeholder="nws_search_ph" placeholder="Search news..." autocomplete="off">
                 <button id="q-btn" class="btn btn-primary" data-i18n="nws_search">Search</button>
             </div>

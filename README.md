@@ -7,6 +7,7 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 ## ✨ Features
 
 - 🏠 **Launcher home** — all apps listed in one grid with search & filters
+- 📴 **Offline app-shell** — a service worker caches the core + every app you visit, so the hub keeps working with no connection
 - 🌍 **Truly trilingual** — فارسی / English / العربية, switchable in one tap (choice is remembered)
 - ☁️ **Cross-device sync** — data mirrors to Telegram CloudStorage when running inside Telegram (localStorage fallback elsewhere)
 - 🧱 **Shared core layer** — `core/tg.js` (Telegram SDK), `core/store.js` (namespaced storage), `core/i18n.js` (translations), `core/ui.css` (theming)
@@ -41,8 +42,11 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 | 🌐 **Translator** | Translate 20 languages — free service, no key needed |
 | 💱 **Currency** | Live conversion for 160+ currencies incl. IRR |
 | 🌍 **World Clock** | Live clocks for cities worldwide — fully offline |
+| 🎡 **Wheel of Actions** | Spin the wheel to pick from your options — offline |
+| 🪐 **Solar System** | Animated planet orbits & facts — offline |
+| 🖼️ **Emoji Poster** | Turn an emoji + headline into a PNG poster — offline |
 
-…and **3 more apps on the roadmap** (wheel of actions, solar system, emoji poster) — see `apps/registry.js`.
+🎉 **All 27 roadmap apps are ready.**
 
 ## 🧱 Project Structure
 
@@ -79,7 +83,11 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── news-reader/     ← 📰 (GNews, free key)
     ├── translator/      ← 🌐 (MyMemory, no key)
     ├── currency/        ← 💱 (open.er-api.com, no key)
-    └── world-clock/     ← 🌍 (offline)
+    ├── world-clock/     ← 🌍 (offline)
+    ├── wheel-of-actions/ ← 🎡
+    ├── solar-system/    ← 🪐
+    └── emoji-poster/    ← 🖼️
+sw.js                    ← offline app-shell (registered by core/tg.js)
 tests/
     ├── unit.test.js     ← core layer: Store, I18N, converter, password gen
     └── smoke.test.js    ← boots every page with a DOM shim, checks i18n coverage

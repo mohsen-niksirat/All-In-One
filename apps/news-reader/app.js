@@ -1,7 +1,8 @@
 /**
- * app.js — News Reader (GNews — free key, CORS enabled).
- * Key is entered once in the in-app settings screen and stored on-device
- * (mirrored to Telegram CloudStorage inside Telegram), exactly like AI Chat.
+ * app.js — News Reader with two modes:
+ *  1. Free mode (no key): BBC RSS feeds via rss2json (fa / en / ar) — zero setup.
+ *  2. GNews mode (free key entered in the in-app settings screen): categories,
+ *     full-text search, more languages. Key stored on-device like AI Chat.
  */
 (function () {
     'use strict';
@@ -18,8 +19,8 @@
         nws_save: 'ذخیره',
         nws_close: 'بستن',
         nws_saved: 'کلید ذخیره شد!',
-        nws_need_key_title: 'کلید API لازم است',
-        nws_need_key_text: 'این اپ برای دریافت اخبار به کلید رایگان GNews نیاز دارد. کلید را یک‌بار در تنظیمات وارد کنید تا همیشه ذخیره بماند.',
+        nws_need_key_title: 'حالت رایگان — فیدهای BBC',
+        nws_need_key_text: 'بدون کلید از فیدهای BBC استفاده می‌شود. برای دسته‌بندی و جستجو، کلید رایگان GNews را در تنظیمات اضافه کنید.',
         nws_open_settings: 'باز کردن تنظیمات',
         nws_search: 'جستجو',
         nws_search_ph: 'جستجوی خبر...',
@@ -51,8 +52,8 @@
         nws_save: 'Save',
         nws_close: 'Close',
         nws_saved: 'Key saved!',
-        nws_need_key_title: 'API key required',
-        nws_need_key_text: 'This app needs a free GNews API key to fetch headlines. Enter it once in the settings and it stays saved.',
+        nws_need_key_title: 'Free mode — BBC feeds',
+        nws_need_key_text: 'Reading free BBC feeds. Add a free GNews key in the settings to unlock categories & search.',
         nws_open_settings: 'Open settings',
         nws_search: 'Search',
         nws_search_ph: 'Search news...',
@@ -84,8 +85,8 @@
         nws_save: 'حفظ',
         nws_close: 'إغلاق',
         nws_saved: 'تم حفظ المفتاح!',
-        nws_need_key_title: 'مطلوب مفتاح API',
-        nws_need_key_text: 'يحتاج هذا التطبيق إلى مفتاح GNews مجاني لجلب العناوين. أدخله مرة واحدة في الإعدادات وسيبقى محفوظاً.',
+        nws_need_key_title: 'الوضع المجاني — موجزات BBC',
+        nws_need_key_text: 'تقرأ موجزات BBC المجانية. أضف مفتاح GNews المجاني في الإعدادات لتفعيل الفئات والبحث.',
         nws_open_settings: 'فتح الإعدادات',
         nws_search: 'بحث',
         nws_search_ph: 'ابحث في الأخبار...',
@@ -108,13 +109,22 @@
 
     const NS = 'news-reader';
 
-    // GNews content languages (Persian is not offered by GNews yet).
+    // Free-mode feeds (BBC): language → RSS url. Persian works here even though GNews lacks it.
+    const FEEDS = {
+        fa: 'https://feeds.bbci.co.uk/persian/rss.xml',
+        en: 'https://feeds.bbci.co.uk/news/world/rss.xml',
+        ar: 'https://feeds.bbci.co.uk/arabic/rss.xml',
+    };
+
+    // GNews content languages (fa is not offered by GNews).
     const LANG_OPTS = [
         ['en', 'English'], ['ar', 'العربية'], ['fr', 'Français'], ['de', 'Deutsch'],
         ['es', 'Español'], ['ru', 'Русский'], ['hi', 'हिन्दी'], ['zh', '中文'], ['ja', '日本語'],
     ];
 
     const CATS = ['general', 'world', 'business', 'technology', 'sports', 'science', 'health', 'entertainment'];
+
+    const RSS2JSON = 'https://api.rss2json.com/v1/api.json';
 
     const App = {
         state: { cat: 'general', q: '', lang: 'en', fetching: false },
@@ -137,6 +147,7 @@
                 cats: document.getElementById('cats'),
                 q: document.getElementById('q'),
                 qBtn: document.getElementById('q-btn'),
+                searchRow: document.getElementById('search-row'),
                 refresh: document.getElementById('refresh'),
                 lang: document.getElementById('lang'),
                 status: document.getElementById('status'),
@@ -144,7 +155,6 @@
             };
 
             this.setupSettings();
-            this.renderCats();
             this.setupLang();
             this.setupQuery();
             this.elements.refresh.addEventListener('click', () => this.fetch());
@@ -152,25 +162,30 @@
             document.addEventListener('i18n:changed', () => {
                 document.title = I18N.t('nws_title');
                 this.renderCats();
-                if (this.hasKey()) this.fetch(true);
+                if (this.hasKey() && this.state.lang === 'fa') this.state.lang = 'en';
+                this.renderLang();
+                this.fetch(true);
             });
             document.title = I18N.t('nws_title');
 
-            this.checkKey();
+            this.checkMode();
         },
 
         hasKey() {
             return Boolean(Store.get(NS, 'gnewsKey', ''));
         },
 
-        // ---- Key gate + settings modal (same pattern as AI Chat) ----
-        checkKey() {
-            const has = this.hasKey();
-            this.elements.needKey.classList.toggle('hidden', has);
-            this.elements.controls.classList.toggle('hidden', !has);
-            if (has) this.fetch();
+        // ---- Mode: keyless BBC RSS  vs  GNews ----
+        checkMode() {
+            const keyed = this.hasKey();
+            this.elements.needKey.classList.toggle('hidden', keyed);
+            if (keyed && this.state.lang === 'fa') this.state.lang = 'en';
+            this.renderLang();
+            this.renderCats();
+            this.fetch();
         },
 
+        // ---- Settings modal (same pattern as AI Chat) ----
         setupSettings() {
             const open = () => {
                 this.elements.keyInput.value = Store.get(NS, 'gnewsKey', '');
@@ -189,7 +204,7 @@
                 if (key) {
                     Store.set(NS, 'gnewsKey', key);
                     this.elements.modal.classList.add('hidden');
-                    this.checkKey();
+                    this.checkMode();
                     TG.toast(I18N.t('nws_saved'), 'success');
                     TG.haptic('medium');
                 } else {
@@ -198,8 +213,13 @@
             });
         },
 
-        // ---- Categories ----
+        // ---- Categories (GNews mode only) ----
         renderCats() {
+            const keyed = this.hasKey();
+            if (!keyed) {
+                this.elements.cats.innerHTML = '';
+                return;
+            }
             this.elements.cats.innerHTML = CATS.map(c =>
                 `<button type="button" class="cat-pill${c === this.state.cat ? ' active' : ''}" data-cat="${c}">${I18N.t('nws_cat_' + c)}</button>`
             ).join('');
@@ -217,13 +237,26 @@
 
         // ---- Language + query ----
         setupLang() {
-            this.elements.lang.innerHTML = LANG_OPTS.map(([code, label]) =>
-                `<option value="${code}"${code === this.state.lang ? ' selected' : ''}>${label}</option>`
-            ).join('');
+            this.renderLang();
             this.elements.lang.addEventListener('change', () => {
                 this.state.lang = this.elements.lang.value;
                 this.fetch();
             });
+        },
+
+        renderLang() {
+            const keyed = this.hasKey();
+            this.elements.searchRow.classList.toggle('hidden', !keyed);
+            const opts = keyed
+                ? LANG_OPTS
+                : [['fa', 'فارسی'], ['en', 'English'], ['ar', 'العربية']];
+            const current = opts.some(([c]) => c === this.state.lang)
+                ? this.state.lang
+                : (keyed ? 'en' : 'fa');
+            this.state.lang = current;
+            this.elements.lang.innerHTML = opts.map(([code, label]) =>
+                `<option value="${code}"${code === current ? ' selected' : ''}>${label}</option>`
+            ).join('');
         },
 
         setupQuery() {
@@ -247,8 +280,7 @@
         },
 
         async fetch(silent) {
-            const key = Store.get(NS, 'gnewsKey', '');
-            if (!key || this.state.fetching) return;
+            if (this.state.fetching) return;
             if (typeof fetch !== 'function') {
                 this.setStatus(I18N.t('nws_error_net'), true);
                 return;
@@ -256,29 +288,11 @@
             this.state.fetching = true;
             if (!silent) this.setStatus(I18N.t('nws_loading'));
             try {
-                const base = this.state.q
-                    ? 'https://gnews.io/api/v4/search'
-                    : 'https://gnews.io/api/v4/top-headlines';
-                const params = new URLSearchParams({
-                    lang: this.state.lang,
-                    max: '10',
-                    apikey: key,
-                });
-                if (this.state.q) params.set('q', this.state.q);
-                else params.set('category', this.state.cat);
-
-                const res = await fetch(`${base}?${params}`);
-                if (res.status === 401 || res.status === 403) {
-                    this.setStatus(I18N.t('nws_error_key'), true);
-                    return;
+                if (this.hasKey()) {
+                    await this.fetchGNews();
+                } else {
+                    await this.fetchRSS();
                 }
-                if (!res.ok) {
-                    this.setStatus(I18N.t('nws_error_http', { code: res.status }), true);
-                    return;
-                }
-                const data = await res.json();
-                this.renderFeed(data.articles || []);
-                this.setStatus('');
             } catch (e) {
                 this.setStatus(I18N.t('nws_error_net'), true);
             } finally {
@@ -286,12 +300,70 @@
             }
         },
 
+        async fetchGNews() {
+            const key = Store.get(NS, 'gnewsKey', '');
+            const base = this.state.q
+                ? 'https://gnews.io/api/v4/search'
+                : 'https://gnews.io/api/v4/top-headlines';
+            const params = new URLSearchParams({
+                lang: this.state.lang,
+                max: '10',
+                apikey: key,
+            });
+            if (this.state.q) params.set('q', this.state.q);
+            else params.set('category', this.state.cat);
+
+            const res = await fetch(`${base}?${params}`);
+            if (res.status === 401 || res.status === 403) {
+                this.setStatus(I18N.t('nws_error_key'), true);
+                return;
+            }
+            if (!res.ok) {
+                this.setStatus(I18N.t('nws_error_http', { code: res.status }), true);
+                return;
+            }
+            const data = await res.json();
+            this.renderFeed((data.articles || []).map(a => ({
+                title: a.title, url: a.url, image: a.image,
+                description: a.description,
+                source: (a.source && a.source.name) || '',
+                time: a.publishedAt,
+            })));
+            this.setStatus('');
+        },
+
+        async fetchRSS() {
+            const url = `${RSS2JSON}?rss_url=${encodeURIComponent(FEEDS[this.state.lang] || FEEDS.en)}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            if (!data || data.status !== 'ok') {
+                this.setStatus(I18N.t('nws_error_net'), true);
+                return;
+            }
+            const feedTitle = data.feed && data.feed.title ? data.feed.title : 'BBC';
+            this.renderFeed((data.items || []).slice(0, 15).map(it => ({
+                title: it.title,
+                url: it.link,
+                image: it.thumbnail || (it.enclosure && it.enclosure.link) || '',
+                description: this.stripHtml(it.description || '').slice(0, 200),
+                source: feedTitle,
+                time: it.pubDate,
+            })));
+            this.setStatus('');
+        },
+
+        stripHtml(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent || '';
+        },
+
         // ---- Rendering ----
-        timeAgo(iso) {
-            if (!iso) return '';
-            const then = new Date(iso).getTime();
-            const diff = Math.max(0, Date.now() - then);
-            const mins = Math.floor(diff / 60000);
+        timeAgo(str) {
+            if (!str) return '';
+            const then = new Date(str).getTime();
+            if (isNaN(then)) return '';
+            const mins = Math.floor(Math.max(0, Date.now() - then) / 60000);
             if (mins < 1) return 'now';
             if (mins < 60) return mins + 'm';
             const hrs = Math.floor(mins / 60);
@@ -331,8 +403,8 @@
                             <div class="art-title">${this.escape(a.title || '')}</div>
                             ${a.description ? `<p class="art-desc">${this.escape(a.description)}</p>` : ''}
                             <div class="art-meta">
-                                <span class="art-src">${this.escape((a.source && a.source.name) || '')}</span>
-                                <span class="art-time">${this.timeAgo(a.publishedAt)}</span>
+                                <span class="art-src">${this.escape(a.source)}</span>
+                                <span class="art-time">${this.timeAgo(a.time)}</span>
                             </div>
                         </div>
                     </button>

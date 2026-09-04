@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Solar System</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="sol_back" title="Back to apps">‹</a>
+        <h1 data-i18n="sol_title">Solar System</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <div class="offline-note" data-i18n="sol_note">⚡ Offline — planets orbit in real (relative) speed</div>
+
+        <!-- Orbits -->
+        <div class="stage">
+            <div class="sun"></div>
+            <div class="orbit" data-orbit="0"><span class="planet" style="--pd:10px;--pc:#d9d9d9"></span></div>
+            <div class="orbit" data-orbit="1"><span class="planet" style="--pd:12px;--pc:#e8c07a"></span></div>
+            <div class="orbit" data-orbit="2"><span class="planet" style="--pd:12px;--pc:#6fa8dc"></span></div>
+            <div class="orbit" data-orbit="3"><span class="planet" style="--pd:10px;--pc:#d1694e"></span></div>
+            <div class="orbit" data-orbit="4"><span class="planet" style="--pd:24px;--pc:#d9a066"></span></div>
+            <div class="orbit" data-orbit="5"><span class="planet" style="--pd:20px;--pc:#e3c77a"></span></div>
+            <div class="orbit" data-orbit="6"><span class="planet" style="--pd:16px;--pc:#8fd1e0"></span></div>
+            <div class="orbit" data-orbit="7"><span class="planet" style="--pd:16px;--pc:#5a6bd8"></span></div>
+        </div>
+
+        <!-- Planet picker -->
+        <div id="planets" class="planets" data-i18n-title="sol_pick" title="Tap a planet"></div>
+
+        <!-- Details -->
+        <div id="detail" class="detail hidden"></div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

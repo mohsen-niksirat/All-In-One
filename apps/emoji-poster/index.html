@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Emoji Poster</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="emo_back" title="Back to apps">‹</a>
+        <h1 data-i18n="emo_title">Emoji Poster</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Editor -->
+        <label class="field-label" data-i18n="emo_text_label">Headline</label>
+        <input id="text" type="text" maxlength="26" data-i18n-placeholder="emo_text_ph" placeholder="Poster headline..." autocomplete="off">
+
+        <label class="field-label" data-i18n="emo_emoji_label">Emoji</label>
+        <div class="emoji-row">
+            <div id="emoji-options" class="emoji-options"></div>
+            <button id="emoji-rand" class="icon-btn" data-i18n-title="emo_rand" title="Random">🎲</button>
+        </div>
+
+        <label class="field-label" data-i18n="emo_bg_label">Background</label>
+        <div id="bg-options" class="bg-options"></div>
+
+        <div class="row2">
+            <button id="make" class="btn btn-primary" data-i18n="emo_make">Create poster</button>
+        </div>
+
+        <!-- Preview -->
+        <div id="preview-wrap" class="preview-wrap hidden">
+            <canvas id="poster" width="1080" height="1350"></canvas>
+            <button id="download" class="btn btn-secondary btn-block" data-i18n="emo_download">⬇ Download PNG</button>
+        </div>
+
+        <div id="status" class="status" role="status"></div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

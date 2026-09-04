@@ -15,6 +15,10 @@
         cur_converting: 'در حال دریافت نرخ…',
         cur_err: 'دریافت نرخ ناموفق بود — اتصال را بررسی کنید',
         cur_rate: '۱ {from} = {rate} {to}',
+        cur_market: 'نرخ بازار و طلا',
+        cur_market_usd: 'دلار آمریکا',
+        cur_market_gold: 'اونس جهانی طلا',
+        cur_market_refresh: '↻ تازه‌سازی',
     });
 
     I18N.register('en', {
@@ -26,6 +30,10 @@
         cur_converting: 'Fetching rates…',
         cur_err: 'Could not fetch rates — check your connection',
         cur_rate: '1 {from} = {rate} {to}',
+        cur_market: 'Market & gold',
+        cur_market_usd: 'US Dollar',
+        cur_market_gold: 'Global gold',
+        cur_market_refresh: '↻ Refresh',
     });
 
     I18N.register('ar', {
@@ -37,6 +45,10 @@
         cur_converting: 'جارٍ جلب الأسعار…',
         cur_err: 'تعذّر جلب الأسعار — تحقق من اتصالك',
         cur_rate: '1 {from} = {rate} {to}',
+        cur_market: 'أسعار السوق والذهب',
+        cur_market_usd: 'الدولار الأمريكي',
+        cur_market_gold: 'الذهب العالمي',
+        cur_market_refresh: '↻ تحديث',
     });
 
     const NS = 'currency';
@@ -82,7 +94,13 @@
                 resTo: document.getElementById('res-to'),
                 resRate: document.getElementById('res-rate'),
                 quick: document.getElementById('quick'),
+                market: document.getElementById('market'),
+                mUsd: document.getElementById('m-usd'),
+                mXau: document.getElementById('m-xau'),
+                mXauIrr: document.getElementById('m-xau-irr'),
+                mRefresh: document.getElementById('m-refresh'),
             };
+            this.elements.market.loading = false;
 
             const last = Store.getJSON(NS, 'last', { from: 'USD', to: 'IRR' });
             this.fillSelect(this.elements.from, last.from);
@@ -91,6 +109,9 @@
 
             this.setupEvents();
             this.renderQuick();
+
+            this.elements.mRefresh.addEventListener('click', () => this.marketRefresh());
+            this.marketRefresh();
 
             document.addEventListener('i18n:changed', () => {
                 document.title = I18N.t('cur_title');
@@ -207,6 +228,41 @@
             this.elements.resRate.textContent = I18N.t('cur_rate', {
                 from: r.from, rate: this.fmtRate(r.rate), to: r.to,
             });
+        },
+
+        // ---- Market ticker (USD/IRR + XAU via free APIs) ----
+        async marketRefresh() {
+            const els = this.elements;
+            if (els.market.loading) return;
+            els.market.loading = true;
+            els.market.classList.remove('hidden');
+            ['mUsd', 'mXau', 'mXauIrr'].forEach(k => {
+                els[k].textContent = '…';
+                els[k].classList.add('loading');
+            });
+            try {
+                // Gold spot (USD per troy ounce) — free, no key, CORS enabled.
+                const [fx, gold] = await Promise.all([
+                    this.fetchRates('USD'),
+                    typeof fetch === 'function'
+                        ? fetch('https://api.gold-api.com/price/XAU').then(r => r.json())
+                        : Promise.resolve(null),
+                ]);
+                const usdIrr = fx.rates.IRR;
+                const goldUsd = gold && gold.price ? gold.price : null;
+                if (!usdIrr) throw new Error('no IRR');
+
+                els.mUsd.textContent = `1 USD = ${this.fmtRate(usdIrr)} IRR`;
+                if (goldUsd) {
+                    els.mXau.textContent = `1 oz = $${this.fmt(goldUsd, 0)}`;
+                    els.mXauIrr.textContent = `1 oz = ${this.fmt(goldUsd * usdIrr, 0)} IRR`;
+                }
+            } catch (e) {
+                els.market.classList.add('hidden');
+            } finally {
+                els.market.loading = false;
+                ['mUsd', 'mXau', 'mXauIrr'].forEach(k => els[k].classList.remove('loading'));
+            }
         },
 
         renderQuick() {

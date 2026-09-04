@@ -133,6 +133,74 @@ body {
     unicode-bidi: embed;
 }
 
+/* ---- Market ticker ---- */
+.market {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    margin: 4px 0 14px;
+}
+
+.m-head {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.m-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.m-row:last-of-type {
+    border-bottom: none;
+}
+
+.m-label {
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.m-code {
+    font-size: 11px;
+    color: var(--text-secondary);
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.m-value {
+    font-size: 14px;
+    font-weight: 700;
+    direction: ltr;
+    unicode-bidi: embed;
+    white-space: nowrap;
+}
+
+.m-value.loading {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.m-refresh {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-color);
+    padding: 8px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+}
+
 /* ---- Quick pairs ---- */
 .quick {
     display: flex;

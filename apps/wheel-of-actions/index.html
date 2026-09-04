@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wheel of Actions</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="whl_back" title="Back to apps">‹</a>
+        <h1 data-i18n="whl_title">Wheel of Actions</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Options -->
+        <label class="field-label" data-i18n="whl_ph">One option per line</label>
+        <textarea id="items" rows="4" data-i18n-placeholder="whl_ph" placeholder="One option per line"></textarea>
+        <div class="row2">
+            <button id="demo" class="btn btn-secondary" data-i18n="whl_demo">Load sample</button>
+            <button id="spin" class="btn btn-primary" data-i18n="whl_spin">Spin</button>
+        </div>
+
+        <!-- Wheel -->
+        <div class="wheel-wrap">
+            <div class="pointer">▼</div>
+            <div id="wheel-inner" class="wheel-inner">
+                <canvas id="wheel-canvas" width="600" height="600"></canvas>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result" class="result hidden"></div>
+        <div id="recent-label" class="recent-label hidden" data-i18n="whl_recent">Recent winners:</div>
+        <div id="recent" class="recent"></div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

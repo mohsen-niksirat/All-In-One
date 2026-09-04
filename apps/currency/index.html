@@ -39,6 +39,24 @@
             <div class="res-rate" id="res-rate"></div>
         </div>
 
+        <!-- Market ticker: USD/IRR + global gold (XAU) -->
+        <div id="market" class="market hidden">
+            <div class="m-head">💹 <span data-i18n="cur_market">Market</span></div>
+            <div class="m-row">
+                <span class="m-label"><span data-i18n="cur_market_usd">US Dollar</span> <b class="m-code">USD/IRR</b></span>
+                <span class="m-value" id="m-usd"></span>
+            </div>
+            <div class="m-row">
+                <span class="m-label"><span data-i18n="cur_market_gold">Global gold</span> <b class="m-code">XAU/USD</b></span>
+                <span class="m-value" id="m-xau"></span>
+            </div>
+            <div class="m-row">
+                <span class="m-label"><span data-i18n="cur_market_gold">Global gold</span> <b class="m-code">XAU/IRR</b></span>
+                <span class="m-value" id="m-xau-irr"></span>
+            </div>
+            <button id="m-refresh" class="m-refresh" data-i18n="cur_market_refresh">↻ Refresh</button>
+        </div>
+
         <!-- Popular quick pairs -->
         <div id="quick" class="quick hidden"></div>
     </main>

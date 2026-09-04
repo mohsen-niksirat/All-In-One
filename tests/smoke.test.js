@@ -298,7 +298,7 @@ test('registry integrity', () => {
     }
 
     const ready = registry.filter(a => a.status === 'ready');
-    assert.strictEqual(ready.length, 24, 'expected 24 ready apps');
+    assert.strictEqual(ready.length, 27, 'expected 27 ready apps');
 
     // tag_* translations exist for every tag used by every app
     const launcherDicts = boot.get('I18N').dicts;

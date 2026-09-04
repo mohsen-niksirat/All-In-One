@@ -27,7 +27,30 @@ const TG = {
             console.log('Running outside Telegram (browser preview)');
         }
         if (options.backHref) this.setupBack(options.backHref);
+        this.registerServiceWorker();
         return this;
+    },
+
+    /**
+     * Register the root service worker (offline app-shell) once per origin.
+     * The SW URL is derived from this script's own URL (…/core/tg.js → …/sw.js),
+     * so it works on GitHub Pages sub-paths (/All-In-One/) and the launcher alike.
+     */
+    registerServiceWorker() {
+        try {
+            if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+            const script = document.currentScript && document.currentScript.src;
+            if (!script) return;
+            const u = new URL(script);
+            const parts = u.pathname.split('/');
+            parts.pop(); // tg.js
+            parts.pop(); // core
+            const swUrl = new URL(parts.join('/') + '/sw.js', u.origin);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (e) {
+            // never let SW registration break an app
+        }
     },
 
     /** Map Telegram theme params onto CSS variables. */

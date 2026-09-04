@@ -1,0 +1,193 @@
+/* ===== Solar System app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.offline-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* ---- Orbit stage ---- */
+.stage {
+    position: relative;
+    width: min(94vw, 400px);
+    height: min(94vw, 400px);
+    margin: 6px auto 8px;
+}
+
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffe9a8, #ffb300 55%, #f57f17);
+    box-shadow: 0 0 28px 8px rgba(255, 190, 60, 0.5);
+    z-index: 5;
+}
+
+.orbit {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    animation: orbit-spin var(--t, 12s) linear infinite;
+}
+
+@keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Orbit i: planet travels on a circle of radius R around the sun. */
+.orbit[data-orbit="0"] { inset: calc(50% - 30px);  --t: 10s; }
+.orbit[data-orbit="1"] { inset: calc(50% - 55px);  --t: 24s; }
+.orbit[data-orbit="2"] { inset: calc(50% - 80px);  --t: 40s; }
+.orbit[data-orbit="3"] { inset: calc(50% - 104px); --t: 75s; }
+.orbit[data-orbit="4"] { inset: calc(50% - 130px); --t: 130s; }
+.orbit[data-orbit="5"] { inset: calc(50% - 152px); --t: 320s; }
+.orbit[data-orbit="6"] { inset: calc(50% - 168px); --t: 640s; }
+.orbit[data-orbit="7"] { inset: calc(50% - 180px); --t: 1000s; }
+
+.orbit.active {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 12px var(--accent-soft);
+}
+
+.planet {
+    position: absolute;
+    top: -1px;
+    left: calc(50% - var(--pd) / 2);
+    width: var(--pd);
+    height: var(--pd);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.4), var(--pc));
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Planet picker chips ---- */
+.planets {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 0 12px;
+    scrollbar-width: none;
+}
+
+.planets::-webkit-scrollbar {
+    display: none;
+}
+
+.planet-chip {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 10px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    min-width: 54px;
+}
+
+.planet-chip.active {
+    border-color: var(--accent-color);
+    background: var(--accent-soft);
+}
+
+.planet-chip .pc-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--pc);
+}
+
+.planet-chip .pc-name {
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ---- Detail card ---- */
+.detail {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+}
+
+.detail .d-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.detail .d-emoji {
+    font-size: 26px;
+}
+
+.detail h3 {
+    font-size: 17px;
+}
+
+.detail .d-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 12px;
+}
+
+.fact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.fact {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.fact .f-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.fact .f-value {
+    font-size: 13px;
+    font-weight: 700;
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
