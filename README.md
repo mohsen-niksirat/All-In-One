@@ -31,8 +31,13 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 | 🧩 **JSON Formatter** | Format, validate & minify JSON |
 | 📄 **Markdown Preview** | Live markdown rendering + copy HTML |
 | 🎨 **Color Picker** | HEX/RGB/HSL values, palettes & history |
+| 🔖 **Bookmarks** | Save links with tags & search |
+| 📝 **Notes** | Text notes with folders |
+| 🛒 **Shopping List** | Checkable shared shopping list |
+| 📔 **Journal** | Daily writing with mood tracking |
+| 🎯 **Goal Tracker** | Set goals and track progress |
 
-…and **13 more apps on the roadmap** (bookmarks, notes, weather, currency, world clock and more) — see `apps/registry.js`.
+…and **8 more apps on the roadmap** (weather, currency, world clock and more) — see `apps/registry.js`.
 
 ## 🧱 Project Structure
 
@@ -59,7 +64,12 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── qr-generator/    ← 🔳 (vendored qrcode.js, MIT)
     ├── json-formatter/  ← 🧩
     ├── markdown-preview/ ← 📄
-    └── color-picker/    ← 🎨
+    ├── color-picker/    ← 🎨
+    ├── bookmark-manager/ ← 🔖
+    ├── notes-app/       ← 📝
+    ├── shopping-list/   ← 🛒
+    ├── daily-journal/   ← 📔
+    └── goal-tracker/    ← 🎯
 tests/
     ├── unit.test.js     ← core layer: Store, I18N, converter, password gen
     └── smoke.test.js    ← boots every page with a DOM shim, checks i18n coverage

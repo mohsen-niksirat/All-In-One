@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shopping List</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="shop_back" title="Back to apps">‹</a>
+        <h1 data-i18n="shop_title">Shopping List</h1>
+        <span class="check-count" id="check-count"></span>
+    </header>
+
+    <main class="app-page">
+        <!-- Add item -->
+        <div class="add-row">
+            <input id="item-input" data-i18n-placeholder="shop_add_ph" placeholder="Add item..." autocomplete="off">
+            <button id="add-btn" class="btn btn-primary" data-i18n="shop_add">Add</button>
+        </div>
+
+        <!-- Quick items -->
+        <div id="quick-row" class="quick-row"></div>
+
+        <!-- List -->
+        <div id="item-list" class="item-list"></div>
+
+        <!-- Footer -->
+        <div class="list-footer">
+            <span id="progress" class="progress"></span>
+            <button id="clear-done" class="clear-btn" data-i18n="shop_clear_done">Clear checked</button>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

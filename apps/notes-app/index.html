@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Notes</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="note_back" title="Back to apps">‹</a>
+        <h1 data-i18n="note_title">Notes</h1>
+        <button id="new-btn" class="icon-btn accent" data-i18n-title="note_new" title="New note">➕</button>
+    </header>
+
+    <main class="app-page">
+        <!-- Search + folder filter -->
+        <input id="note-search" data-i18n-placeholder="note_search" placeholder="Search notes..." autocomplete="off">
+        <div id="folder-chips" class="folder-chips"></div>
+
+        <!-- Notes grid -->
+        <div id="note-list" class="note-list"></div>
+
+        <!-- Editor (hidden until a note is opened) -->
+        <div id="editor" class="editor hidden">
+            <div class="editor-card card">
+                <input id="ed-folder" data-i18n-placeholder="note_folder_ph" placeholder="Folder (optional)" autocomplete="off">
+                <input id="ed-title" data-i18n-placeholder="note_title_ph" placeholder="Title" autocomplete="off">
+                <textarea id="ed-body" rows="10" data-i18n-placeholder="note_body_ph" placeholder="Write your note..."></textarea>
+                <div class="editor-actions">
+                    <button id="ed-save" class="btn btn-primary" data-i18n="note_save">Save</button>
+                    <button id="ed-cancel" class="btn btn-secondary" data-i18n="note_cancel">Cancel</button>
+                    <button id="ed-delete" class="btn btn-danger" data-i18n="note_delete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

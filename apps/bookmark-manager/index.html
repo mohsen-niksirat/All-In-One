@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bookmarks</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="bm_back" title="Back to apps">‹</a>
+        <h1 data-i18n="bm_title">Bookmarks</h1>
+        <span class="count" id="count"></span>
+    </header>
+
+    <main class="app-page">
+        <!-- Add bookmark -->
+        <div class="add-form">
+            <input id="bm-title" data-i18n-placeholder="bm_title_ph" placeholder="Title" autocomplete="off">
+            <input id="bm-url" dir="ltr" data-i18n-placeholder="bm_url_ph" placeholder="https://..." autocomplete="off">
+            <div class="add-row2">
+                <input id="bm-tags" data-i18n-placeholder="bm_tags_ph" placeholder="Tags, comma separated" autocomplete="off">
+                <button id="add-btn" class="btn btn-primary" data-i18n="bm_add">Add</button>
+            </div>
+        </div>
+
+        <!-- Search + tag filter -->
+        <input id="bm-search" data-i18n-placeholder="bm_search" placeholder="Search..." autocomplete="off">
+        <div id="tag-chips" class="tag-chips"></div>
+
+        <!-- List -->
+        <div id="bm-list" class="bm-list"></div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

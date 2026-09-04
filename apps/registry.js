@@ -189,8 +189,8 @@ const APP_REGISTRY = [
             ar: { name: 'العلامات المرجعية', desc: 'احفظ الروابط مع وسوم وبحث' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/bookmark-manager/',
+        status: 'ready',
     },
     {
         id: 'notes-app',
@@ -201,8 +201,8 @@ const APP_REGISTRY = [
             ar: { name: 'الملاحظات', desc: 'ملاحظات نصية مع مجلدات' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/notes-app/',
+        status: 'ready',
     },
     {
         id: 'shopping-list',
@@ -213,8 +213,8 @@ const APP_REGISTRY = [
             ar: { name: 'قائمة التسوق', desc: 'قائمة تسوق قابلة للتحديد' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/shopping-list/',
+        status: 'ready',
     },
     {
         id: 'daily-journal',
@@ -225,8 +225,8 @@ const APP_REGISTRY = [
             ar: { name: 'اليوميات', desc: 'كتابة يومية مع تتبّع المزاج' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/daily-journal/',
+        status: 'ready',
     },
     {
         id: 'goal-tracker',
@@ -237,8 +237,8 @@ const APP_REGISTRY = [
             ar: { name: 'متتبّع الأهداف', desc: 'حدّد الأهداف وتتبّع التقدم' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/goal-tracker/',
+        status: 'ready',
     },
 
     // ===== Free APIs (coming soon) =====

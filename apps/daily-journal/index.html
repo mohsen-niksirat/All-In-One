@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Journal</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="jour_back" title="Back to apps">‹</a>
+        <h1 data-i18n="jour_title">Journal</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Date navigation -->
+        <div class="date-nav">
+            <button id="prev-day" class="nav-btn">‹</button>
+            <button id="date-label" class="date-label"></button>
+            <button id="next-day" class="nav-btn">›</button>
+        </div>
+        <div class="date-sub">
+            <button id="today-btn" class="today-btn" data-i18n="jour_today">Today</button>
+            <span id="streak" class="streak"></span>
+        </div>
+
+        <!-- Mood -->
+        <div class="mood-row" id="mood-row">
+            <button class="mood" data-mood="0">😞</button>
+            <button class="mood" data-mood="1">🙁</button>
+            <button class="mood" data-mood="2">😐</button>
+            <button class="mood" data-mood="3">🙂</button>
+            <button class="mood" data-mood="4">😄</button>
+        </div>
+
+        <!-- Entry -->
+        <textarea id="entry" rows="12" data-i18n-placeholder="jour_ph" placeholder="How was your day?..."></textarea>
+        <button id="save-btn" class="btn btn-primary btn-block" data-i18n="jour_save">Save</button>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>
