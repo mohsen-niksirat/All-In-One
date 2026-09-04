@@ -306,12 +306,16 @@
         if (typeof APP_CHANGELOG === 'undefined') return;
         const entries = APP_CHANGELOG.map((entry) => {
             const lines = entry.i18n[I18N.current] || entry.i18n.en || [];
+            const tryBtn = entry.link
+                ? `<button type="button" class="btn btn-primary cl-link" data-app-link="${entry.link}">${I18N.t('hub_open')}</button>`
+                : '';
             return `
                 <div class="cl-entry">
                     <div class="cl-ver">v${entry.version}</div>
                     <ul class="cl-lines">
                         ${lines.map(l => `<li>${l}</li>`).join('')}
                     </ul>
+                    ${tryBtn ? `<div class="cl-actions">${tryBtn}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -341,17 +345,15 @@
     changelogSheet.addEventListener('click', (e) => {
         if (e.target === changelogSheet) closeChangelog();
     });
+    changelogBox.addEventListener('click', (e) => {
+        const btn = e.target.closest ? e.target.closest('[data-app-link]') : null;
+        if (btn) launchApp(btn.dataset.appLink);
+    });
 
     // ---- Deep links ----
     // Open a specific app when the hub URL carries #<app-id> or when Telegram
     // starts the web app with ?startapp=<app-id> (start_param).
-    function openDeepLink() {
-        let id = '';
-        try { id = decodeURIComponent((location.hash || '').replace(/^#/, '')); } catch (e) { id = ''; }
-        if (!id) {
-            try { id = (TG.webApp && TG.webApp.initDataUnsafe && TG.webApp.initDataUnsafe.start_param) || ''; } catch (e) { id = ''; }
-        }
-        if (!id) return;
+    function launchApp(id) {
         const app = APP_REGISTRY.find(a => a.id === id);
         if (!app) return;
         TG.haptic('light');
@@ -364,6 +366,15 @@
         } else {
             openSheet(app); // “soon” apps open their info sheet
         }
+    }
+
+    function openDeepLink() {
+        let id = '';
+        try { id = decodeURIComponent((location.hash || '').replace(/^#/, '')); } catch (e) { id = ''; }
+        if (!id) {
+            try { id = (TG.webApp && TG.webApp.initDataUnsafe && TG.webApp.initDataUnsafe.start_param) || ''; } catch (e) { id = ''; }
+        }
+        if (id) launchApp(id);
     }
 
     // ---- Init ----

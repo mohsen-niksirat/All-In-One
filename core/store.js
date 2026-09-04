@@ -163,8 +163,17 @@ const Store = {
         return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     },
 
-    /** Format a timestamp as a localized time string. */
+    /** Format a timestamp as a time string whose digits follow the UI language.
+     *  (fa/ar get their native digit forms via the Intl locale, not Latin.) */
     time(ts) {
-        return new Date(ts).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+        let locale = 'en-US';
+        if (typeof I18N !== 'undefined' && I18N.current) {
+            locale = I18N.current === 'fa' ? 'fa-IR' : (I18N.current === 'ar' ? 'ar-EG' : 'en-US');
+        }
+        try {
+            return new Date(ts).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+            return new Date(ts).toLocaleTimeString();
+        }
     },
 };

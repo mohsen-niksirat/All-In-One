@@ -60,8 +60,7 @@ const Chat = {
             const el = this.elements.messages.querySelector(`[data-id="${aiMsg.id}"]`);
             if (el) {
                 this.queued.push({ aiMsg, aiElement: el });
-                const bubble = el.querySelector('.message-bubble');
-                if (bubble) bubble.innerHTML = `<span class="queued-text">⏳ ${I18N.t('chat_queued')}</span>`;
+                this.renderQueuedBubble(aiMsg, el);
             }
         });
         this.updateOutboxNote();
@@ -191,11 +190,13 @@ const Chat = {
             },
             // onDone
             (fullContent) => {
+                const wasQueued = aiMsg.queued === true;
                 aiMsg.content = fullContent;
                 aiMsg.timestamp = Date.now();
                 delete aiMsg.queued;
                 bubble.innerHTML = this.formatMessage(fullContent || I18N.t('chat_empty_response'));
                 this.updateMessageMeta(aiElement, aiMsg);
+                if (wasQueued) this.showDelivered(aiElement);
                 this.saveHistory();
                 this.updateOutboxNote();
                 this.scrollToBottom();
@@ -238,12 +239,32 @@ const Chat = {
         }
         aiMsg.queued = true;
         this.queued.push({ aiMsg, aiElement });
-        const bubble = aiElement.querySelector('.message-bubble');
-        if (bubble) bubble.innerHTML = `<span class="queued-text">⏳ ${I18N.t('chat_queued')}</span>`;
+        this.renderQueuedBubble(aiMsg, aiElement);
         this.updateMessageMeta(aiElement, aiMsg);
         this.saveHistory();
         this.updateOutboxNote();
         this.finishStreaming();
+    },
+
+    /** Bubble content for a queued turn: status chip + manual retry button. */
+    renderQueuedBubble(aiMsg, aiElement) {
+        const bubble = aiElement.querySelector('.message-bubble');
+        if (!bubble) return;
+        bubble.innerHTML = `
+            <span class="queued-text">⏳ ${I18N.t('chat_queued')}</span>
+            <button type="button" class="queued-retry">↻ ${I18N.t('chat_retry')}</button>
+        `;
+        const btn = bubble.querySelector('.queued-retry');
+        if (btn) btn.addEventListener('click', () => this.retryItem(aiMsg, aiElement));
+    },
+
+    /** Resend one queued turn (manual retry button or auto-flush). */
+    async retryItem(aiMsg, aiElement) {
+        if (this.isStreaming) return;
+        const i = this.queued.findIndex(q => q.aiMsg.id === aiMsg.id);
+        if (i >= 0) this.queued.splice(i, 1);
+        this.updateOutboxNote();
+        await this.streamResponse(aiMsg, aiElement);
     },
 
     /** Resend every queued message (triggered by the browser's 'online' event). */
@@ -254,8 +275,21 @@ const Chat = {
         for (const item of pending) {
             // Skip entries whose thread was cleared or regenerated meanwhile.
             if (!this.messages.some(m => m.id === item.aiMsg.id)) continue;
-            await this.streamResponse(item.aiMsg, item.aiElement);
+            await this.retryItem(item.aiMsg, item.aiElement);
         }
+    },
+
+    /** Brief '✓ Delivered' chip when a queued message finally goes through. */
+    showDelivered(aiElement) {
+        const meta = aiElement.querySelector('.message-meta');
+        if (!meta) return;
+        const chip = document.createElement('span');
+        chip.className = 'delivered-chip';
+        chip.textContent = '✓ ' + I18N.t('chat_delivered');
+        meta.appendChild(chip);
+        setTimeout(() => {
+            try { chip.remove(); } catch (e) { /* already gone */ }
+        }, 2600);
     },
 
     /** Show/hide the 'N message(s) queued' note above the composer. */

@@ -421,6 +421,31 @@ header {
     font-style: italic;
 }
 
+.queued-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-color);
+}
+
+.queued-retry:active {
+    transform: scale(0.96);
+}
+
+.delivered-chip {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
 /* ===== Modal ===== */
 .modal {
     position: fixed;

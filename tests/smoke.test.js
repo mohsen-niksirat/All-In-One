@@ -318,6 +318,7 @@ test('changelog integrity: documents the current release in fa/en/ar', () => {
     );
 
     const seen = new Set();
+    const registry = boot.get('APP_REGISTRY');
     for (const entry of changelog) {
         assert.ok(!seen.has(entry.version), 'duplicate changelog version: ' + entry.version);
         seen.add(entry.version);
@@ -326,6 +327,12 @@ test('changelog integrity: documents the current release in fa/en/ar', () => {
             assert.ok(
                 Array.isArray(entry.i18n[lang]) && entry.i18n[lang].length > 0,
                 `changelog entry ${entry.version} missing ${lang} lines`
+            );
+        }
+        if (entry.link !== undefined) {
+            assert.ok(
+                registry.some(a => a.id === entry.link),
+                `changelog entry ${entry.version} links to unknown app: ${entry.link}`
             );
         }
     }

@@ -2,11 +2,37 @@
  * apps/changelog.js — "What's new" entries per release, shown from the
  * version badge on the launcher. Newest first; the smoke test asserts the
  * top entry's version equals TG.APP_VERSION (core/tg.js), so document every
- * release here when you run scripts/release.js.
+ * release here when you run scripts/release.js. Optional `link` is the id of
+ * the app that best shows off that release (the sheet's 'Open app' button).
  */
 const APP_CHANGELOG = [
     {
+        version: '2.3.0',
+        link: 'ai-chat',
+        i18n: {
+            fa: [
+                'وضعیت زندهٔ هر پیام: ⏳ در صف → ✓ تحویل‌شد + دکمهٔ «تلاش دوباره»',
+                'نشان زمان به‌روزرسانی داخل کارت آب‌وهوا و بالای فهرست اخبار',
+                'ارقام فارسی/عربی در ساعت همهٔ اپ‌ها',
+                'دکمهٔ «باز کردن اپ» در دفترچهٔ نسخه‌ها',
+            ],
+            en: [
+                'Live per-message status: ⏳ queued → ✓ delivered, plus a retry button',
+                'Pinned last-refreshed chip on the Weather card and News toolbar',
+                'Persian/Arabic digits for times across all apps',
+                "'Open app' buttons in 'What's new' for each release",
+            ],
+            ar: [
+                'حالة حية لكل رسالة: ⏳ في الانتظار ← ✓ تم الإرسال + زر «إعادة المحاولة»',
+                'شارة آخر تحديث مثبتة في بطاقة الطقس وشريط الأخبار',
+                'أرقام فارسية/عربية في أوقات جميع التطبيقات',
+                'أزرار «فتح التطبيق» في لوحة «ما الجديد» لكل إصدار',
+            ],
+        },
+    },
+    {
         version: '2.2.0',
+        link: 'ai-chat',
         i18n: {
             fa: [
                 'دفترچهٔ «تازه‌های نسخه» با لمس نشان نسخه',
@@ -27,6 +53,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '2.1.0',
+        link: 'news-reader',
         i18n: {
             fa: [
                 'نشان نسخه و به‌روزرسانی خودکار روی همهٔ صفحه‌ها',
@@ -47,6 +74,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '2.0.0',
+        link: 'weather',
         i18n: {
             fa: [
                 'سرویس‌ورکر به‌روزرسانی اجباری — نسخهٔ جدید بلافاصله نمایش داده می‌شود',

@@ -160,12 +160,14 @@ body {
     padding: 4px 10px;
 }
 
-/* ---- Last-updated line ---- */
-.updated {
+/* ---- 'Last refreshed' chip pinned inside the current card ---- */
+.cur-refresh {
     font-size: 11px;
     color: var(--text-secondary);
     text-align: center;
-    margin: -2px 0 10px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
 }
 
 /* ---- 7-day list ---- */
@@ -230,10 +232,4 @@ body {
     margin-left: 6px;
 }
 
-/* ---- Offline 'saved at' stamp inside day rows ---- */
-.day-stamp {
-    font-size: 10px;
-    color: var(--text-secondary);
-    flex-shrink: 0;
-    white-space: nowrap;
-}
+

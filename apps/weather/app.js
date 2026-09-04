@@ -21,7 +21,6 @@
         wea_err: 'خطا در دریافت آب‌وهوا — اتصال اینترنت را بررسی کنید',
         wea_updated: 'آخرین به‌روزرسانی: {time}',
         wea_cached: '⚠️ آفلاین — نمایش آخرین دادهٔ ذخیره‌شده',
-        wea_stamp: 'ذخیره {time}',
         wea_c0: 'آسمان صاف',
         wea_c1: 'کمی ابری',
         wea_c2: 'نیمه‌ابری',
@@ -48,7 +47,6 @@
         wea_err: 'Could not load weather — check your connection',
         wea_updated: 'Last updated: {time}',
         wea_cached: '⚠️ Offline — showing last saved data',
-        wea_stamp: 'saved {time}',
         wea_c0: 'Clear sky',
         wea_c1: 'Mostly clear',
         wea_c2: 'Partly cloudy',
@@ -75,7 +73,6 @@
         wea_err: 'تعذّر تحميل الطقس — تحقق من اتصالك',
         wea_updated: 'آخر تحديث: {time}',
         wea_cached: '⚠️ دون اتصال — عرض آخر بيانات محفوظة',
-        wea_stamp: 'محفوظ {time}',
         wea_c0: 'سماء صافية',
         wea_c1: 'صافٍ غالباً',
         wea_c2: 'غائم جزئياً',
@@ -265,17 +262,17 @@
             const cacheKey = this.locKey(loc);
             const cached = Store.getJSON(NS, cacheKey);
 
-            const apply = (data, ts, savedTs) => {
+            const apply = (data, ts) => {
                 this.elements.locName.textContent = loc.name;
                 this.elements.forecast.classList.remove('hidden');
                 this.renderCurrent(data.current);
-                this.renderDaily(data.daily, savedTs);
+                this.renderDaily(data.daily);
                 this.showUpdated(ts);
             };
 
             // Instant render from the last saved snapshot — works fully offline.
             if (cached && cached.data && cached.data.current && cached.data.daily) {
-                apply(cached.data, cached.ts, cached.ts);
+                apply(cached.data, cached.ts);
             }
 
             if (typeof fetch !== 'function') {
@@ -293,7 +290,7 @@
                 const data = await res.json();
                 if (!data.current || !data.daily) throw new Error('bad payload');
                 const ts = Date.now();
-                apply(data, ts, null);
+                apply(data, ts);
                 Store.setJSON(NS, cacheKey, { ts, data });
                 if (!silent) {
                     this.setStatus('');
@@ -337,7 +334,7 @@
             `;
         },
 
-        renderDaily(daily, savedTs) {
+        renderDaily(daily) {
             const weekdayFmt = new Intl.DateTimeFormat(this.locale(), { weekday: 'short' });
             this.elements.daily.innerHTML = daily.time.map((dateStr, i) => {
                 const c = this.cond(daily.weather_code[i]);
@@ -346,16 +343,12 @@
                 const rain = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : 0;
                 const today = i === 0;
                 const name = weekdayFmt.format(new Date(dateStr + 'T12:00:00'));
-                const stamp = savedTs
-                    ? `<span class="day-stamp">🕓 ${I18N.t('wea_stamp', { time: this.fmtTime(savedTs) })}</span>`
-                    : '';
                 return `
                     <div class="day-row">
                         <span class="day-name">${today ? '• ' : ''}${name}</span>
                         <span class="day-icon">${c.icon}</span>
                         ${rain >= 10 ? `<span class="day-rain">${I18N.t('wea_precip')} ${rain}%</span>` : '<span class="day-rain"></span>'}
                         <span class="day-temps"><span class="day-max">${max}°</span><span class="day-min">${min}°</span></span>
-                        ${stamp}
                     </div>
                 `;
             }).join('');

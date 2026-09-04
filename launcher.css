@@ -346,6 +346,12 @@ body {
 }
 
 /* ---- Changelog sheet ---- */
+#changelog-box {
+    max-height: 78vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .cl-list {
     display: flex;
     flex-direction: column;
@@ -388,4 +394,14 @@ body {
 .cl-lines li::before {
     content: '• ';
     color: var(--text-secondary);
+}
+
+.cl-actions {
+    margin-top: 8px;
+}
+
+.cl-link {
+    width: 100%;
+    font-size: 12px;
+    padding: 8px;
 }

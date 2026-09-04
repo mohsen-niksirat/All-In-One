@@ -237,8 +237,3 @@ body {
     flex: 1;
 }
 
-/* ---- Offline 'saved at' stamp inside article rows ---- */
-.art-stamp {
-    color: var(--text-secondary);
-    font-size: 11px;
-}
