@@ -448,6 +448,66 @@ const Chat = {
         }
     },
 
+    /** Download the conversation as JSON (keeps roles, timestamps and the
+     *  queued/offline flags, so re-importing resumes unfinished sends). */
+    exportChat() {
+        try {
+            const data = {
+                app: 'ai-chat',
+                format: 1,
+                exportedAt: new Date().toISOString(),
+                messages: this.messages,
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ai-chat-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => {
+                try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
+            }, 1500);
+            TG.toast(I18N.t('chat_exported'), 'success');
+        } catch (e) {
+            TG.toast(I18N.t('chat_import_fail'), 'error');
+        }
+    },
+
+    /** Replace the conversation from an exported JSON file. */
+    importChat(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const data = JSON.parse(String(reader.result));
+                if (!data || !Array.isArray(data.messages)) throw new Error('bad shape');
+                const msgs = data.messages.filter(m => m &&
+                    (m.role === 'user' || m.role === 'assistant') &&
+                    typeof m.content === 'string');
+                if (msgs.length === 0) throw new Error('empty');
+
+                this.messages = msgs;
+                this.queued = [];
+                this.elements.messages.querySelectorAll('.message').forEach(el => el.remove());
+                this.hideWelcome();
+                this.messages.forEach(msg => this.renderMessage(msg, false));
+                this.saveHistory();
+                this.updateLastSync();
+                this.updateTokenCount();
+                this.scrollToBottom();
+                // Re-queue any turns that were mid-flight when the backup was made.
+                this.resumeQueued();
+                TG.toast(I18N.t('chat_imported', { n: msgs.length }), 'success');
+            } catch (e) {
+                TG.toast(I18N.t('chat_import_fail'), 'error');
+            }
+        };
+        reader.onerror = () => TG.toast(I18N.t('chat_import_fail'), 'error');
+        reader.readAsText(file);
+    },
+
     clearChat() {
         this.messages = [];
         Store.remove(this.NS, 'history');

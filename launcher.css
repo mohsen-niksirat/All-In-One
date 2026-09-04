@@ -11,6 +11,37 @@ body {
     cursor: pointer;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#refresh-btn {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+/* ---- Pull-to-refresh hint ---- */
+.pull-hint {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    overflow: hidden;
+    z-index: 60;
+    pointer-events: none;
+}
+
 /* ---- Header ---- */
 .launcher-header {
     display: flex;
@@ -370,12 +401,20 @@ body {
 }
 
 .cl-ver {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--accent-color);
     direction: ltr;
     text-align: right;
     margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.cl-ver .cl-icon {
+    font-size: 15px;
 }
 
 [dir="ltr"] .cl-ver {

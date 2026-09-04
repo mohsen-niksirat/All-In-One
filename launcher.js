@@ -29,6 +29,12 @@
         hub_coming: 'این اپ به‌زودی در دسترس می‌شود',
         hub_update_ready: 'نسخهٔ جدید آماده است — در حال به‌روزرسانی…',
         hub_changelog_title: 'تازه‌های نسخه',
+        hub_refresh_title: 'بررسی به‌روزرسانی',
+        hub_pull_check: '↓ برای بررسی به‌روزرسانی بکشید',
+        hub_release_check: 'رها کنید تا بررسی شود',
+        hub_refresh_check: 'در حال بررسی به‌روزرسانی…',
+        hub_up_to_date: 'بروز است ✓',
+        hub_no_sw: 'در این مرورگر بررسی ممکن نیست',
         tag_serverless: 'سرورلس',
         tag_freeapi: 'API رایگان',
         tag_offline: 'آفلاین',
@@ -57,6 +63,12 @@
         hub_coming: 'This app is coming soon',
         hub_update_ready: 'New version ready — updating…',
         hub_changelog_title: "What's new",
+        hub_refresh_title: 'Check for updates',
+        hub_pull_check: '↓ Pull down to check for updates',
+        hub_release_check: 'Release to check',
+        hub_refresh_check: 'Checking for updates…',
+        hub_up_to_date: "You're up to date ✓",
+        hub_no_sw: 'Update check unavailable here',
         tag_serverless: 'Serverless',
         tag_freeapi: 'Free API',
         tag_offline: 'Offline',
@@ -85,6 +97,12 @@
         hub_coming: 'هذا التطبيق قادم قريباً',
         hub_update_ready: 'الإصدار الجديد جاهز — جارٍ التحديث…',
         hub_changelog_title: 'ما الجديد',
+        hub_refresh_title: 'التحقق من التحديثات',
+        hub_pull_check: '↓ اسحب للأسفل للتحقق من التحديثات',
+        hub_release_check: 'أفلت للتحقق',
+        hub_refresh_check: 'جارٍ التحقق من التحديثات…',
+        hub_up_to_date: 'أنت على أحدث إصدار ✓',
+        hub_no_sw: 'التحقق غير متاح في هذا المتصفح',
         tag_serverless: 'بدون خادم',
         tag_freeapi: 'واجهة مجانية',
         tag_offline: 'دون اتصال',
@@ -311,7 +329,7 @@
                 : '';
             return `
                 <div class="cl-entry">
-                    <div class="cl-ver">v${entry.version}</div>
+                    <div class="cl-ver"><span class="cl-icon">${entry.icon || '✨'}</span> v${entry.version}</div>
                     <ul class="cl-lines">
                         ${lines.map(l => `<li>${l}</li>`).join('')}
                     </ul>
@@ -375,6 +393,74 @@
             try { id = (TG.webApp && TG.webApp.initDataUnsafe && TG.webApp.initDataUnsafe.start_param) || ''; } catch (e) { id = ''; }
         }
         if (id) launchApp(id);
+    }
+
+    // ---- Update check (manual button + pull-to-refresh) ----
+    // Both paths just ask the service worker to re-fetch sw.js; if a newer
+    // build exists, TG.init's controllerchange handler reloads automatically.
+    function refreshCheck() {
+        if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
+            TG.toast(I18N.t('hub_no_sw'), 'info');
+            return;
+        }
+        TG.toast(I18N.t('hub_refresh_check'));
+        navigator.serviceWorker.ready
+            .then((reg) => {
+                let found = false;
+                reg.addEventListener('updatefound', () => { found = true; });
+                return reg.update()
+                    .then(() => new Promise(res => setTimeout(res, 2000)))
+                    .then(() => { if (!found) TG.toast(I18N.t('hub_up_to_date'), 'info'); });
+            })
+            .catch(() => TG.toast(I18N.t('hub_no_sw'), 'info'));
+    }
+
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) refreshBtn.addEventListener('click', refreshCheck);
+
+    // ---- Pull-to-refresh (touch): pull down from the top past the threshold. ----
+    const pullHint = document.getElementById('pull-hint');
+    const PULL_THRESHOLD = 70;
+    let pullStartY = 0;
+    let pullActive = false;
+
+    function setPull(dist, armed) {
+        if (!pullHint) return;
+        pullHint.style.height = Math.min(dist, 60) + 'px';
+        pullHint.textContent = I18N.t(armed ? 'hub_release_check' : 'hub_pull_check');
+        document.body.style.transform = dist > 0 ? `translateY(${Math.min(dist, 60)}px)` : '';
+    }
+
+    function endPull(dy) {
+        pullActive = false;
+        document.body.style.transform = '';
+        if (pullHint) pullHint.style.height = '0px';
+        if (dy >= PULL_THRESHOLD) refreshCheck();
+    }
+
+    if (window.addEventListener) {
+        window.addEventListener('touchstart', (e) => {
+            if ((window.scrollY || 0) > 0 || !e.touches || e.touches.length !== 1) return;
+            pullStartY = e.touches[0].clientY;
+            pullActive = true;
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (!pullActive || !e.touches || !pullHint) return;
+            const dy = e.touches[0].clientY - pullStartY;
+            if (dy <= 0) {
+                setPull(0, false);
+                return;
+            }
+            setPull(dy * 0.5, dy >= PULL_THRESHOLD);
+        }, { passive: true });
+        window.addEventListener('touchend', (e) => {
+            if (!pullActive) return;
+            const dy = e.changedTouches && e.changedTouches[0]
+                ? e.changedTouches[0].clientY - pullStartY
+                : 0;
+            endPull(dy);
+        }, { passive: true });
+        window.addEventListener('touchcancel', () => endPull(0));
     }
 
     // ---- Init ----

@@ -104,6 +104,15 @@
                         <label for="max-tokens-input" data-i18n="chat_max_tokens">Max tokens</label>
                         <input type="number" id="max-tokens-input" value="1024" min="100" max="4096" class="setting-input">
                     </div>
+                    <div class="setting-group">
+                        <label data-i18n="chat_data_title">Conversation data</label>
+                        <div class="data-actions">
+                            <button type="button" id="export-btn" class="save-btn data-btn" data-i18n="chat_export">Export (JSON)</button>
+                            <button type="button" id="import-btn" class="save-btn data-btn" data-i18n="chat_import">Import (JSON)</button>
+                            <input type="file" id="import-file" accept="application/json,.json" hidden>
+                        </div>
+                        <p class="setting-hint" data-i18n="chat_data_hint">Backup — queued offline messages are included</p>
+                    </div>
                     <button id="save-settings" class="save-btn" data-i18n="chat_save">Save settings</button>
                 </div>
             </div>

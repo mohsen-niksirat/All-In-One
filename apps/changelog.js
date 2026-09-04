@@ -7,7 +7,30 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.4.0',
+        icon: '💾',
+        link: 'ai-chat',
+        i18n: {
+            fa: [
+                'خروجی/ورودی گفتگو به صورت JSON — پیام‌های در صف هم حفظ می‌شوند',
+                'کشیدن صفحه به پایین یا دکمهٔ ↻ برای بررسی به‌روزرسانی',
+                'آیکون برای هر نسخه در دفترچهٔ «تازه‌های نسخه»',
+            ],
+            en: [
+                'Export/import your chat as JSON — queued messages survive the round-trip',
+                'Pull down (or tap ↻) to check for updates',
+                'Each release gets an icon in “What’s new”',
+            ],
+            ar: [
+                'تصدير/استيراد المحادثة بصيغة JSON — تُحفظ رسائل قائمة الانتظار',
+                'اسحب للأسفل (أو اضغط ↻) للتحقق من التحديثات',
+                'أيقونة لكل إصدار في لوحة «ما الجديد»',
+            ],
+        },
+    },
+    {
         version: '2.3.0',
+        icon: '📨',
         link: 'ai-chat',
         i18n: {
             fa: [
@@ -32,6 +55,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '2.2.0',
+        icon: '📣',
         link: 'ai-chat',
         i18n: {
             fa: [
@@ -53,6 +77,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '2.1.0',
+        icon: '🔖',
         link: 'news-reader',
         i18n: {
             fa: [
@@ -74,6 +99,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '2.0.0',
+        icon: '⚡',
         link: 'weather',
         i18n: {
             fa: [
@@ -95,6 +121,7 @@ const APP_CHANGELOG = [
     },
     {
         version: '1.0.0',
+        icon: '🧩',
         i18n: {
             fa: [
                 '۲۷ مینی‌اپ سرورلس، همگی رایگان و سه‌زبانه',

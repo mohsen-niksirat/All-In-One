@@ -552,6 +552,26 @@ header {
     background: var(--accent-hover);
 }
 
+.data-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.data-btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.data-btn:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-color);
+}
+
 /* ===== Toast (positioned above input in chat) ===== */
 .toast {
     position: fixed;

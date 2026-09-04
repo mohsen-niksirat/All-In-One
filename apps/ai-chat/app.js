@@ -37,6 +37,13 @@ I18N.register('fa', {
     chat_queued_note: '📤 {n} پیام در صف ارسال — به محض اتصال اینترنت خودکار ارسال می‌شود',
     chat_retry: 'تلاش دوباره',
     chat_delivered: 'تحویل شد',
+    chat_data_title: 'داده‌های گفتگو',
+    chat_export: 'خروجی (JSON)',
+    chat_import: 'ورودی (JSON)',
+    chat_data_hint: 'پشتیبان‌گیری — پیام‌های در صف ارسال هم ذخیره می‌شوند',
+    chat_exported: 'گفتگو ذخیره شد ✓',
+    chat_imported: '{n} پیام وارد شد ✓',
+    chat_import_fail: 'فایل نامعتبر است',
     chat_clear_confirm: 'آیا مطمئن هستید که می‌خواهید تمام پیام‌ها را پاک کنید؟',
     chat_no_key_title: '⚠️ API Key تنظیم نشده',
     chat_no_key_text: 'برای شروع چت، کلید API خود را از بخش تنظیمات وارد کنید.',
@@ -81,6 +88,13 @@ I18N.register('en', {
     chat_queued_note: '📤 {n} queued message(s) — sending automatically on reconnect',
     chat_retry: 'Retry',
     chat_delivered: 'Delivered',
+    chat_data_title: 'Conversation data',
+    chat_export: 'Export (JSON)',
+    chat_import: 'Import (JSON)',
+    chat_data_hint: 'Backup — queued offline messages are included',
+    chat_exported: 'Conversation exported ✓',
+    chat_imported: 'Imported {n} messages ✓',
+    chat_import_fail: 'Invalid file',
     chat_clear_confirm: 'Are you sure you want to clear all messages?',
     chat_no_key_title: '⚠️ API Key not set',
     chat_no_key_text: 'To start chatting, enter your API key in the settings.',
@@ -125,6 +139,13 @@ I18N.register('ar', {
     chat_queued_note: '📤 {n} رسالة في قائمة الانتظار — ستُرسل تلقائياً عند الاتصال',
     chat_retry: 'إعادة المحاولة',
     chat_delivered: 'تم الإرسال',
+    chat_data_title: 'بيانات المحادثة',
+    chat_export: 'تصدير (JSON)',
+    chat_import: 'استيراد (JSON)',
+    chat_data_hint: 'نسخة احتياطية — تشمل رسائل قائمة الانتظار',
+    chat_exported: 'تم تصدير المحادثة ✓',
+    chat_imported: 'تم استيراد {n} رسالة ✓',
+    chat_import_fail: 'ملف غير صالح',
     chat_clear_confirm: 'هل أنت متأكد من مسح كل الرسائل؟',
     chat_no_key_title: '⚠️ لم يتم تعيين مفتاح API',
     chat_no_key_text: 'لبدء المحادثة، أدخل مفتاح API من الإعدادات.',
@@ -207,6 +228,17 @@ const App = {
             if (e.target === modal) {
                 modal.classList.add('hidden');
             }
+        });
+
+        // Export / import the conversation (JSON keeps queued messages intact)
+        const exportBtn = document.getElementById('export-btn');
+        const importBtn = document.getElementById('import-btn');
+        const importFile = document.getElementById('import-file');
+        if (exportBtn) exportBtn.addEventListener('click', () => Chat.exportChat());
+        if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+        if (importFile) importFile.addEventListener('change', () => {
+            if (importFile.files && importFile.files[0]) Chat.importChat(importFile.files[0]);
+            importFile.value = '';
         });
 
         saveBtn.addEventListener('click', () => {
