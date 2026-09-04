@@ -77,6 +77,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.render();
 
             document.addEventListener('i18n:changed', () => {
@@ -121,6 +122,29 @@
 
         save() {
             Store.setJSON(NS, 'bookmarks', this.bookmarks);
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('bookmarks-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'bookmark-manager',
+                    items: this.bookmarks,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.bookmarks, (merged) => {
+                        this.bookmarks = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         allTags() {

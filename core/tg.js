@@ -9,7 +9,7 @@ const TG = {
     /** Release version — shown in the header badge on every page.
      *  Keep in sync with sw.js (CACHE = 'allinone-v<major>'): run
      *  `node scripts/release.js` to bump both; tests enforce the sync. */
-    APP_VERSION: '2.5.0',
+    APP_VERSION: '2.6.0',
 
     /**
      * Initialize the Telegram WebApp SDK.
@@ -68,7 +68,9 @@ const TG = {
             try {
                 document.dispatchEvent(new CustomEvent('sw:update'));
             } catch (e) { /* ignore */ }
-            setTimeout(() => location.reload(), 1500);
+            // No forced reload — show a banner and let the user reload when
+            // they are ready (the next navigation is network-first anyway).
+            this.showUpdateBanner();
         });
         navigator.serviceWorker.ready
             .then((reg) => {
@@ -157,6 +159,29 @@ const TG = {
             }
         } catch (e) {
             // ignore
+        }
+    },
+
+    /** "New version ready — Reload" banner shown once after an update. */
+    showUpdateBanner() {
+        try {
+            if (document.getElementById('update-banner')) return;
+            const t = (k) => (typeof I18N !== 'undefined' ? I18N.t(k) : k);
+            const banner = document.createElement('div');
+            banner.id = 'update-banner';
+            banner.className = 'update-banner';
+            const text = document.createElement('span');
+            text.textContent = '🆕 ' + t('core_update_ready');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ub-btn';
+            btn.textContent = '↻ ' + t('core_update_reload');
+            btn.addEventListener('click', () => location.reload());
+            banner.appendChild(text);
+            banner.appendChild(btn);
+            document.body.appendChild(banner);
+        } catch (e) {
+            // never let an update notice break the page
         }
     },
 

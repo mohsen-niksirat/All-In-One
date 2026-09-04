@@ -311,12 +311,9 @@
     });
 
     // ---- Version badge + update detection ----
-    // The badge itself (vX.Y.Z, ↻ flash + auto-reload on update) lives in
-    // core/tg.js so every page has it. Here we add the localized toast when
-    // an update is detected, and the changelog sheet opened by tapping the
-    // badge (only the launcher loads the changelog data).
-    document.addEventListener('sw:update', () => TG.toast(I18N.t('hub_update_ready')));
-
+    // The badge (vX.Y.Z) and the 'new version — reload' banner live in
+    // core/tg.js so every page has them. Here we add the changelog sheet
+    // opened by tapping the badge (only the launcher loads the data).
     const changelogSheet = document.getElementById('changelog-sheet');
     const changelogBox = document.getElementById('changelog-box');
 

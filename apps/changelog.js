@@ -7,6 +7,28 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.6.0',
+        icon: '📦',
+        link: 'notes-app',
+        i18n: {
+            fa: [
+                'پشتیبان‌گیری JSON برای یادداشت‌ها، بوکمارک‌ها و فهرست خرید',
+                'ورودی به‌جای جایگزینی ادغام می‌شود — هیچ‌چیز حذف نمی‌شود',
+                'اعلان «نسخهٔ جدید» با دکمهٔ بارگذاری مجدد، بدون رفرش اجباری',
+            ],
+            en: [
+                'JSON backups for Notes, Bookmarks and Shopping List',
+                'Imports merge instead of replacing — nothing is deleted',
+                '“New version ready” banner with a reload button (no forced refresh)',
+            ],
+            ar: [
+                'نسخ احتياطية JSON للملاحظات والإشارات المرجعية وقائمة التسوق',
+                'الاستيراد يدمج بدلاً من الاستبدال — لا يُحذف شيء',
+                'لافتة «نسخة جديدة جاهزة» مع زر إعادة التحميل (دون تحديث إجباري)',
+            ],
+        },
+    },
+    {
         version: '2.5.0',
         icon: '🗂️',
         link: 'ai-chat',

@@ -63,6 +63,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.renderQuick();
             this.render();
 
@@ -119,6 +120,29 @@
 
         save() {
             Store.setJSON(NS, 'items', this.items);
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('shopping-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'shopping-list',
+                    items: this.items,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.items, (merged) => {
+                        this.items = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         toggle(id) {

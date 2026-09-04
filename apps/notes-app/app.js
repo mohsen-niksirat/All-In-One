@@ -84,6 +84,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.render();
 
             document.addEventListener('i18n:changed', () => {
@@ -106,6 +107,29 @@
 
         save() {
             Store.setJSON(NS, 'notes', this.notes);
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('notes-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'notes-app',
+                    items: this.notes,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.notes, (merged) => {
+                        this.notes = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         folders() {

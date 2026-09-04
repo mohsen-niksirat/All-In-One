@@ -324,3 +324,29 @@ test('release sync: sw.js CACHE version equals TG.APP_VERSION', () => {
         "sw.js cache version must match TG.APP_VERSION — run `node scripts/release.js` to bump both"
     );
 });
+
+// ================= Backup merge =================
+
+test('Backup.mergeLists: adds missing ids, newer edits win, nothing deleted', () => {
+    const Backup = load('core/backup.js', {}, 'Backup');
+    const local = [
+        { id: 'a', name: 'keep', ts: 100 },
+        { id: 'b', name: 'old', ts: 200 },
+    ];
+    const incoming = [
+        { id: 'b', name: 'newer edit', ts: 300 },   // replaces
+        { id: 'c', name: 'brand new', ts: 150 },    // appended
+        { id: 'a', name: 'older edit', ts: 50 },    // ignored
+        { id: 'd' },                                 // no ts → still appended
+        { id: null },                                // malformed → skipped
+    ];
+    const res = Backup.mergeLists(local, incoming);
+    assert.strictEqual(res.added, 2, 'adds c and d');
+    assert.strictEqual(res.updated, 1, 'b is a newer edit');
+    const byId = Object.fromEntries(res.list.map(i => [i.id, i]));
+    assert.strictEqual(byId.a.name, 'keep', 'older incoming edit ignored');
+    assert.strictEqual(byId.b.name, 'newer edit', 'newer incoming edit wins');
+    assert.strictEqual(byId.c.name, 'brand new');
+    assert.strictEqual(byId.d.id, 'd');
+    assert.strictEqual(res.list.length, 4);
+});

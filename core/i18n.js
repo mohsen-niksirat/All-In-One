@@ -102,3 +102,43 @@ const I18N = {
         return this.nativeNames[lang] || lang.toUpperCase();
     },
 };
+
+// ---- Core-level strings, available on every page (page dicts merge on top).
+I18N.register('fa', {
+    core_update_ready: 'نسخهٔ جدید آماده است',
+    core_update_reload: 'بارگذاری مجدد',
+    core_export: 'خروجی (JSON)',
+    core_import: 'ورودی (JSON)',
+    core_exported: 'پشتیبان ذخیره شد ✓',
+    core_import_none: 'مورد جدیدی برای ادغام نبود',
+    core_import_preview: 'فایل شامل {n} مورد ({from} تا {to}) است؛ {m} مورد جدید. ادغام چیزی را حذف نمی‌کند — ادامه می‌دهید؟',
+    core_import_same_device: '(پشتیبان همین دستگاه)',
+    core_import_fail: 'فایل نامعتبر است',
+    core_merged: '{n} مورد جدید اضافه شد ✓',
+});
+
+I18N.register('en', {
+    core_update_ready: 'A new version is ready',
+    core_update_reload: 'Reload',
+    core_export: 'Export (JSON)',
+    core_import: 'Import (JSON)',
+    core_exported: 'Backup saved ✓',
+    core_import_none: 'No new items to merge',
+    core_import_preview: 'File has {n} items ({from} → {to}); {m} are new. Merging never deletes — continue?',
+    core_import_same_device: '(same-device backup)',
+    core_import_fail: 'Invalid file',
+    core_merged: 'Merged {n} new items ✓',
+});
+
+I18N.register('ar', {
+    core_update_ready: 'نسخة جديدة جاهزة',
+    core_update_reload: 'إعادة التحميل',
+    core_export: 'تصدير (JSON)',
+    core_import: 'استيراد (JSON)',
+    core_exported: 'تم حفظ النسخة الاحتياطية ✓',
+    core_import_none: 'لا توجد عناصر جديدة للدمج',
+    core_import_preview: 'يحتوي الملف على {n} عنصر ({from} ← {to})؛ {m} منها جديد. الدمج لا يحذف شيئاً — هل نتابع؟',
+    core_import_same_device: '(نسخة احتياطية من نفس الجهاز)',
+    core_import_fail: 'ملف غير صالح',
+    core_merged: 'تم دمج {n} عنصر جديد ✓',
+});

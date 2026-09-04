@@ -321,6 +321,51 @@ body.in-tg .back-btn {
     margin-bottom: 10px;
 }
 
+/* ---- New-version banner (injected by core/tg.js) ---- */
+.update-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--accent-color);
+    text-align: center;
+}
+
+.update-banner .ub-btn {
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--user-bubble-text);
+    background: var(--accent-color);
+    border: none;
+    cursor: pointer;
+}
+
+/* ---- Backup row (notes / bookmarks / shopping) ---- */
+.backup-row {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0 18px;
+}
+
+.backup-row .btn {
+    flex: 1;
+    padding: 9px;
+    font-size: 12px;
+}
+
 /* ---- Version badge (every page; injected by core/tg.js) ---- */
 .version-badge {
     font-size: 10px;
