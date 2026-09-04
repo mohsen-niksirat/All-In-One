@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="bmi_back" title="Back to apps">‹</a>
+        <h1 data-i18n="bmi_title">BMI Calculator</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Inputs -->
+        <div class="inputs">
+            <div class="field">
+                <label for="height-input" data-i18n="bmi_height">Height</label>
+                <div class="input-unit">
+                    <input type="number" id="height-input" value="170" min="50" max="250" step="any" inputmode="decimal">
+                    <span class="unit" data-i18n="bmi_cm">cm</span>
+                </div>
+            </div>
+            <div class="field">
+                <label for="weight-input" data-i18n="bmi_weight">Weight</label>
+                <div class="input-unit">
+                    <input type="number" id="weight-input" value="70" min="20" max="300" step="any" inputmode="decimal">
+                    <span class="unit" data-i18n="bmi_kg">kg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate -->
+        <button id="calc-btn" class="btn btn-primary btn-block btn-big" data-i18n="bmi_calc">Calculate</button>
+
+        <!-- Result -->
+        <div id="result-box" class="result-box card hidden">
+            <div class="result-label" data-i18n="bmi_result">Body Mass Index</div>
+            <div id="bmi-value" class="bmi-value">—</div>
+            <div id="bmi-category" class="bmi-category">—</div>
+            <div class="bmi-bar">
+                <div id="bmi-marker" class="bmi-marker"></div>
+            </div>
+            <div class="bmi-scale">
+                <span data-i18n="bmi_underweight">Underweight</span>
+                <span data-i18n="bmi_normal">Normal</span>
+                <span data-i18n="bmi_overweight">Overweight</span>
+                <span data-i18n="bmi_obese">Obese</span>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history">
+            <div class="section-title">
+                <span data-i18n="bmi_history">History</span>
+                <button id="clear-history" class="clear-btn" data-i18n="bmi_clear">Clear</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

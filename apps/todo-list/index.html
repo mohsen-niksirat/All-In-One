@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="../../core/ui.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-btn" href="../../" data-i18n-title="todo_back" title="Back to apps">‹</a>
+        <h1 data-i18n="todo_title">Todo List</h1>
+        <div data-lang-switcher class="lang-switcher"></div>
+    </header>
+
+    <main class="app-page">
+        <!-- Add task -->
+        <div class="add-row">
+            <input id="task-input" data-i18n-placeholder="todo_add_placeholder" placeholder="New task..." autocomplete="off">
+            <button id="add-btn" class="btn btn-primary" data-i18n="todo_add">Add</button>
+        </div>
+
+        <!-- Priority selector -->
+        <div class="priority-row">
+            <span class="prio-label" data-i18n="todo_priority">Priority</span>
+            <div class="prio-options">
+                <button class="prio-chip low active" data-prio="low" data-i18n="todo_prio_low">Low</button>
+                <button class="prio-chip medium" data-prio="medium" data-i18n="todo_prio_medium">Medium</button>
+                <button class="prio-chip high" data-prio="high" data-i18n="todo_prio_high">High</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-i18n="todo_all">All</button>
+            <button class="filter-btn" data-filter="active" data-i18n="todo_active">Active</button>
+            <button class="filter-btn" data-filter="done" data-i18n="todo_done">Done</button>
+        </div>
+
+        <!-- List -->
+        <div id="task-list" class="task-list"></div>
+
+        <!-- Footer -->
+        <div class="list-footer">
+            <span id="active-count" class="active-count"></span>
+            <button id="clear-done" class="clear-btn" data-i18n="todo_clear_done">Clear completed</button>
+        </div>
+    </main>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Core layer -->
+    <script src="../../core/tg.js"></script>
+    <script src="../../core/store.js"></script>
+    <script src="../../core/i18n.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+</html>

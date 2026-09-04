@@ -75,8 +75,8 @@ const APP_REGISTRY = [
             en: { name: 'Todo List', desc: 'Daily tasks with priorities' },
         },
         tags: ['storage'],
-        path: null,
-        status: 'soon',
+        path: 'apps/todo-list/',
+        status: 'ready',
     },
     {
         id: 'habit-tracker',
@@ -255,8 +255,8 @@ const APP_REGISTRY = [
             en: { name: 'BMI Calculator', desc: 'Body mass index with history' },
         },
         tags: ['offline'],
-        path: null,
-        status: 'soon',
+        path: 'apps/bmi-calculator/',
+        status: 'ready',
     },
     {
         id: 'stopwatch',
@@ -266,8 +266,8 @@ const APP_REGISTRY = [
             en: { name: 'Stopwatch', desc: 'Precision timer with lap times' },
         },
         tags: ['offline'],
-        path: null,
-        status: 'soon',
+        path: 'apps/stopwatch/',
+        status: 'ready',
     },
     {
         id: 'world-clock',

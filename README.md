@@ -21,8 +21,11 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
 | 📐 **Unit Converter** | Length, weight, temperature, data, speed, time |
 | 🔐 **Password Generator** | Strong random passwords with strength meter & history |
 | 🎲 **Random Picker** | Pick a random winner from your list, with history |
+| ✅ **Todo List** | Daily tasks with priorities, filters & completion tracking |
+| ⏱️ **Stopwatch** | Precision timer with lap recording |
+| ⚖️ **BMI Calculator** | Body mass index with category scale & history |
 
-…and **22 more apps on the roadmap** (todo list, habits, expenses, weather, notes, QR codes and more) — see `apps/registry.js`.
+…and **19 more apps on the roadmap** (habits, expenses, weather, notes, QR codes and more) — see `apps/registry.js`.
 
 ## 🧱 Project Structure
 
@@ -40,7 +43,10 @@ A collection of **free, serverless Telegram Mini Apps** — one launcher page, m
     ├── pomodoro/        ← 🍅 (index.html + style.css + app.js)
     ├── unit-converter/  ← 📐
     ├── password-generator/ ← 🔐
-    └── random-picker/   ← 🎲
+    ├── random-picker/   ← 🎲
+    ├── todo-list/       ← ✅
+    ├── stopwatch/       ← ⏱️
+    └── bmi-calculator/  ← ⚖️
 ```
 
 ## 🆕 How to Add a New App

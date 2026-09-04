@@ -1,0 +1,192 @@
+/* ===== Todo List app styles ===== */
+
+body {
+    min-height: 100%;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ---- Add row ---- */
+.add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.add-row input {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+}
+
+.add-row .btn {
+    padding: 12px 18px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* ---- Priority ---- */
+.priority-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.prio-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.prio-options {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+}
+
+.prio-chip {
+    flex: 1;
+    padding: 7px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.15s;
+}
+
+.prio-chip.active.low { background: var(--success-color); border-color: var(--success-color); color: #fff; }
+.prio-chip.active.medium { background: var(--warning-color); border-color: var(--warning-color); color: #fff; }
+.prio-chip.active.high { background: var(--danger-color); border-color: var(--danger-color); color: #fff; }
+
+/* ---- Filters ---- */
+.filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.filter-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.15s;
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    color: var(--user-bubble-text);
+}
+
+/* ---- Task list ---- */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+    animation: slide-in 0.2s ease;
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.task-item .prio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.prio-dot.low { background: var(--success-color); }
+.prio-dot.medium { background: var(--warning-color); }
+.prio-dot.high { background: var(--danger-color); }
+
+.task-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.task-item .task-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.task-item.done .task-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.task-item .del-btn {
+    color: var(--text-secondary);
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.task-item .del-btn:active {
+    background: var(--bg-secondary);
+    color: var(--danger-color);
+}
+
+/* ---- Footer ---- */
+.list-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.clear-btn {
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+/* ---- Empty state ---- */
+.task-list .empty-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 30px 10px;
+}
