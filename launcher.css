@@ -651,3 +651,54 @@ body {
     font-weight: 700;
     font-size: 15px;
 }
+
+/* ===== Restore: drop hint + card backup chips ===== */
+
+/* Generic visibility toggle (launcher pages only — apps have their own). */
+.hidden {
+    display: none !important;
+}
+
+.drop-hint {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--modal-bg);
+    pointer-events: none;
+}
+
+.drop-hint::before {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 2px dashed var(--accent-color);
+    border-radius: 18px;
+}
+
+.drop-hint span {
+    position: relative;
+    background: var(--card-bg);
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 22px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.card-backup {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.card-backup span {
+    font-weight: 600;
+}
+
+[dir="rtl"] .card-backup {
+    text-align: right;
+}

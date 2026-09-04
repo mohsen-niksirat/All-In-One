@@ -7,6 +7,28 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.10.0',
+        icon: '📥',
+        link: 'notes-app',
+        i18n: {
+            fa: [
+                'بازیابی با کشیدن‌ورهاکردن فایل پشتیبان روی صفحه یا چسباندن (Paste) متن آن',
+                'روی کارت هر اپ دارای پشتیبان، تاریخ آخرین پشتیبان نشان داده می‌شود',
+                'تست مرورگر: چرخهٔ کامل پشتیبان‌گیری، پاک‌شدن داده و بازیابی',
+            ],
+            en: [
+                'Restore by drag-and-dropping a backup file onto the page, or pasting its JSON',
+                'Each backed-up app card now shows its last backup date',
+                'Browser-level test: full export → wipe → restore cycle through the launcher',
+            ],
+            ar: [
+                'استعادة بسحب ملف النسخة الاحتياطية وإفلاته على الصفحة أو بلصق JSON',
+                'بطاقة كل تطبيق منسوخ تعرض الآن تاريخ آخر نسخة احتياطية',
+                'اختبار متصفح: دورة كاملة تصدير ← مسح ← استعادة عبر المشغّل',
+            ],
+        },
+    },
+    {
         version: '2.9.0',
         icon: '🎨',
         link: 'ai-chat',

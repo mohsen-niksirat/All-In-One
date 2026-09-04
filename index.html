@@ -54,6 +54,11 @@
 
     <input type="file" id="bk-import-file" accept=".json,application/json" hidden>
 
+    <!-- Drop target shown while dragging a backup file onto the page -->
+    <div id="drop-hint" class="drop-hint hidden" aria-hidden="true">
+        <span data-i18n="hub_restore_drop">Drop the backup file here to restore</span>
+    </div>
+
     <!-- App info / about sheet -->
     <div id="app-sheet" class="modal-overlay hidden">
         <div class="modal-box sheet-box" id="sheet-box"></div>

@@ -119,6 +119,22 @@ function bootPage(htmlFile, presetStorage = {}) {
     const localStorageMock = makeLocalStorage();
     for (const [k, v] of Object.entries(presetStorage || {})) localStorageMock.setItem(k, String(v));
 
+    // Minimal FileReader: restoreFromFile() reads `file.text` asynchronously.
+    class MockFileReader {
+        constructor() {
+            this.onload = null;
+            this.onerror = null;
+            this.result = null;
+        }
+        readAsText(file) {
+            const text = (file && typeof file.text === 'string') ? file.text : '';
+            setTimeout(() => {
+                this.result = text;
+                if (this.onload) this.onload({ target: this });
+            }, 0);
+        }
+    }
+
     const sandbox = {
         console,
         setTimeout,
@@ -130,6 +146,7 @@ function bootPage(htmlFile, presetStorage = {}) {
         Intl,
         URL,
         TextDecoder,
+        FileReader: MockFileReader,
         crypto: globalThis.crypto,
         navigator: { language: 'en' },
         localStorage: localStorageMock,
@@ -423,4 +440,72 @@ test('theme engine: an unknown saved theme falls back to default', () => {
     const boot = bootPage('index.html', { 'tma:hub:theme': 'nope-xyz' });
     const TG = boot.get('TG');
     assert.strictEqual(TG.getTheme(), 'default');
+});
+
+test('backup cycle: file-picker restore merges a full export back after a wipe', async () => {
+    const seed = {
+        'tma:notes-app:notes': JSON.stringify([{ id: 'n1', title: 'Hello', body: 'world', folder: '', created: 100, updated: 100 }]),
+        'tma:shopping-list:items': JSON.stringify([{ id: 's1', name: 'Milk', checked: false, updated: 100 }]),
+        'tma:bookmark-manager:bookmarks': JSON.stringify([]),
+    };
+    const boot = bootPage('index.html', seed);
+    const Backup = boot.get('Backup');
+    const Store = boot.get('Store');
+
+    // 1) Export: capture the exact multi-app payload the launcher would save.
+    const fileJson = JSON.stringify(Backup.multiEnvelope());
+    assert.ok(fileJson.includes('"kind":"multi"'), 'multi-app envelope');
+
+    // 2) Wipe both apps' data.
+    Store.remove('notes-app', 'notes');
+    Store.remove('shopping-list', 'items');
+    assert.strictEqual(JSON.stringify(Store.getJSON('notes-app', 'notes', [])), '[]');
+    assert.strictEqual(JSON.stringify(Store.getJSON('shopping-list', 'items', [])), '[]');
+
+    // 3) Restore through the launcher's own file-input handler.
+    boot.sandbox.confirm = () => true;
+    const input = boot.sandbox.document.getElementById('bk-import-file');
+    input.files = [{ text: fileJson }];
+    input.dispatchEvent({ type: 'change' });
+
+    // Wait for the async FileReader + confirm + merge to finish.
+    for (let i = 0; i < 100; i++) {
+        if (Store.getJSON('notes-app', 'notes', []).length === 1) break;
+        await new Promise(r => setTimeout(r, 10));
+    }
+
+    const notes = Store.getJSON('notes-app', 'notes', []);
+    assert.strictEqual(notes.length, 1, 'notes merged back');
+    assert.strictEqual(notes[0].title, 'Hello');
+    const items = Store.getJSON('shopping-list', 'items', []);
+    assert.strictEqual(items.length, 1, 'shopping list merged back');
+    assert.strictEqual(items[0].name, 'Milk');
+});
+
+test('backup cycle: pasted backup JSON restores without the file picker', async () => {
+    const seed = {
+        'tma:goal-tracker:goals': JSON.stringify([{ id: 'g1', title: 'Learn piano', updated: 100 }]),
+    };
+    const boot = bootPage('index.html', seed);
+    const Backup = boot.get('Backup');
+    const Store = boot.get('Store');
+
+    const fileJson = JSON.stringify(Backup.multiEnvelope());
+    Store.remove('goal-tracker', 'goals');
+    assert.strictEqual(JSON.stringify(Store.getJSON('goal-tracker', 'goals', [])), '[]');
+
+    boot.sandbox.confirm = () => true;
+    boot.sandbox.document.dispatchEvent({
+        type: 'paste',
+        clipboardData: { files: null, getData: () => fileJson },
+        preventDefault() {},
+    });
+
+    for (let i = 0; i < 100; i++) {
+        if (Store.getJSON('goal-tracker', 'goals', []).length === 1) break;
+        await new Promise(r => setTimeout(r, 10));
+    }
+    const goals = Store.getJSON('goal-tracker', 'goals', []);
+    assert.strictEqual(goals.length, 1, 'goal restored via paste');
+    assert.strictEqual(goals[0].title, 'Learn piano');
 });

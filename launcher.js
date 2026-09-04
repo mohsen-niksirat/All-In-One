@@ -70,6 +70,7 @@
         hub_theme_title: 'تم برنامه',
         hub_theme_sub: 'رنگ تم روی همهٔ اپ‌ها اعمال می‌شود؛ روشن/تیره همچنان با تلگرام هماهنگ است',
         hub_theme_saved: 'تم اعمال شد ✓',
+        hub_restore_drop: 'فایل پشتیبان را رها کنید تا بازیابی شود',
         theme_default: 'پیش‌فرض (تلگرام)',
         theme_ocean: 'اقیانوس',
         theme_sunset: 'غروب',
@@ -140,6 +141,7 @@
         hub_theme_title: 'Theme',
         hub_theme_sub: 'The accent color applies across all apps; light/dark still follows Telegram',
         hub_theme_saved: 'Theme applied ✓',
+        hub_restore_drop: 'Drop the backup file here to restore',
         theme_default: 'Default (Telegram)',
         theme_ocean: 'Ocean',
         theme_sunset: 'Sunset',
@@ -210,6 +212,7 @@
         hub_theme_title: 'المظهر',
         hub_theme_sub: 'يُطبَّق لون المظهر على جميع التطبيقات؛ الفاتح/الداكن يتبع تلغرام تلقائياً',
         hub_theme_saved: 'تم تطبيق المظهر ✓',
+        hub_restore_drop: 'أفلت ملف النسخة الاحتياطية هنا للاستعادة',
         theme_default: 'الافتراضي (تلغرام)',
         theme_ocean: 'محيط',
         theme_sunset: 'غروب',
@@ -240,6 +243,12 @@
         const tags = (app.tags || [])
             .map(t => `<span class="chip">${I18N.t('tag_' + t)}</span>`)
             .join('');
+        // Last-backup date for storage-backed apps that have one
+        const bkTs = (app.status === 'ready' && typeof Backup !== 'undefined'
+            && Backup.defById(app.id)) ? Backup.lastBackup(app.id) : 0;
+        const bkChip = bkTs > 0
+            ? `<div class="card-backup">💾 <span>${Backup.fmtDate(bkTs)}</span></div>`
+            : '';
 
         const inner = `
             <div class="app-icon">${app.icon}</div>
@@ -248,6 +257,7 @@
                 <div class="name-en">${app.i18n.en.name}</div>
                 <p>${meta.desc}</p>
                 <div class="app-tags">${tags}</div>
+                ${bkChip}
             </div>
         `;
 
@@ -726,6 +736,11 @@
         if (!backupSheet.classList.contains('hidden')) renderBackupSheet();
     }
 
+    /** Re-render the grid so last-backup chips stay fresh after actions. */
+    function refreshBackupChips() {
+        applyFilter();
+    }
+
     // ---- Password area (used for encrypted export + encrypted restore) ----
     let pwMode = 'set';          // 'set' (new password) or 'ask' (restore)
     let pendingEncrypted = null; // encrypted envelope awaiting its password
@@ -772,6 +787,7 @@
             TG.toast(I18N.t('hub_backup_done'), 'success');
             TG.haptic('medium');
             refreshBackupUI();
+            refreshBackupChips();
         } catch (e) {
             TG.toast(I18N.t('core_import_fail'), 'error');
         }
@@ -792,6 +808,7 @@
             TG.toast(I18N.t('hub_backup_done'), 'success');
             TG.haptic('medium');
             refreshBackupUI();
+            refreshBackupChips();
         } catch (e) {
             pwError(I18N.t('hub_pw_wrong'));
         }
@@ -842,6 +859,7 @@
         TG.toast(I18N.t('hub_restored', { n: results.length }), 'success');
         TG.haptic('medium');
         refreshBackupUI();
+        refreshBackupChips();
     }
 
     async function submitPassword() {
@@ -887,34 +905,99 @@
         if (e.target === backupSheet) closeBackupSheet();
     });
 
+    /** Shared entry for every restore path (file picker, drag & drop, paste). */
+    function restoreText(text) {
+        let data = null;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            TG.toast(I18N.t('hub_restore_bad'), 'error');
+            return;
+        }
+        if (!data || typeof data !== 'object') {
+            TG.toast(I18N.t('hub_restore_bad'), 'error');
+            return;
+        }
+        if (data.kind === 'encrypted') {
+            if (!Backup.cryptoAvailable()) {
+                TG.toast(I18N.t('hub_enc_unsupported'), 'error');
+                return;
+            }
+            pendingEncrypted = data;
+            openPasswordArea('ask');
+            return;
+        }
+        restorePayload(data);
+    }
+
     function restoreFromFile(file) {
         const reader = new FileReader();
-        reader.onload = async () => {
-            let data = null;
-            try {
-                data = JSON.parse(String(reader.result));
-            } catch (e) {
-                TG.toast(I18N.t('hub_restore_bad'), 'error');
-                return;
-            }
-            if (!data || typeof data !== 'object') {
-                TG.toast(I18N.t('hub_restore_bad'), 'error');
-                return;
-            }
-            if (data.kind === 'encrypted') {
-                if (!Backup.cryptoAvailable()) {
-                    TG.toast(I18N.t('hub_enc_unsupported'), 'error');
-                    return;
-                }
-                pendingEncrypted = data;
-                openPasswordArea('ask');
-                return;
-            }
-            await restorePayload(data);
-        };
+        reader.onload = () => restoreText(String(reader.result));
         reader.onerror = () => TG.toast(I18N.t('hub_restore_bad'), 'error');
         reader.readAsText(file);
     }
+
+    // ---- Drag & drop / paste restore (in addition to the file picker) ----
+    const dropHint = document.getElementById('drop-hint');
+    let dragDepth = 0;
+
+    function hasFiles(e) {
+        return !!(e && e.dataTransfer && e.dataTransfer.types &&
+            Array.prototype.includes.call(e.dataTransfer.types, 'Files'));
+    }
+
+    function looksLikeBackup(text) {
+        const s = String(text || '').trim();
+        if (!s.startsWith('{')) return false;
+        return /"(app|apps|format|kind|messages)"/.test(s.slice(0, 2000));
+    }
+
+    // Listen on window in real browsers (events bubble up from anywhere); the
+    // DOM-shimmed test environment has no window.addEventListener, so fall back
+    // to the document (events dispatched there in tests).
+    const evtTarget = (typeof window !== 'undefined' && window.addEventListener) ? window : document;
+    const onGlobal = (type, fn) => {
+        try { evtTarget.addEventListener(type, fn); } catch (e) { /* ignore */ }
+    };
+
+    onGlobal('dragenter', (e) => {
+        if (!hasFiles(e)) return;
+        dragDepth++;
+        if (dropHint) dropHint.classList.remove('hidden');
+    });
+    onGlobal('dragover', (e) => {
+        if (hasFiles(e)) e.preventDefault();
+    });
+    onGlobal('dragleave', () => {
+        dragDepth = Math.max(0, dragDepth - 1);
+        if (dragDepth === 0 && dropHint) dropHint.classList.add('hidden');
+    });
+    onGlobal('drop', (e) => {
+        dragDepth = 0;
+        if (dropHint) dropHint.classList.add('hidden');
+        if (!hasFiles(e)) return;
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (!f) return;
+        e.preventDefault();
+        TG.haptic('light');
+        restoreFromFile(f);
+    });
+    // Pasting a backup file or raw backup JSON also restores.
+    onGlobal('paste', (e) => {
+        const cd = e.clipboardData;
+        if (!cd) return;
+        const file = cd.files && cd.files[0];
+        if (file) {
+            e.preventDefault();
+            restoreFromFile(file);
+            return;
+        }
+        const text = (typeof cd.getData === 'function') ? cd.getData('text/plain') : '';
+        if (text && looksLikeBackup(text)) {
+            e.preventDefault();
+            restoreText(text);
+        }
+    });
 
     if (bkImportFile) bkImportFile.addEventListener('change', () => {
         if (bkImportFile.files && bkImportFile.files[0]) restoreFromFile(bkImportFile.files[0]);
