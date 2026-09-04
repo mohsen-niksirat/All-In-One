@@ -9,6 +9,38 @@
  */
 const Backup = {
 
+    /** Current backup envelope format. Backups written with a lower format
+     *  number are migrated through the app's registered ladder; backups from
+     *  a NEWER format are politely rejected instead of mis-parsed. */
+    FORMAT: 1,
+
+    /** app id → { fromFormat: migrator(envelope) → next envelope }. */
+    MIGRATORS: {},
+
+    registerMigrator(app, fromFormat, fn) {
+        if (!this.MIGRATORS[app]) this.MIGRATORS[app] = {};
+        this.MIGRATORS[app][fromFormat] = fn;
+    },
+
+    /** Parse + migrate an envelope to { items } or { newer: true }. */
+    normalize(data) {
+        if (!data || typeof data !== 'object') return { items: null, newer: false };
+        const fmt = data.format || 1;
+        if (fmt > this.FORMAT) return { items: null, newer: true };
+        let cur = data;
+        const steps = this.MIGRATORS[data.app];
+        if (steps) {
+            for (let v = fmt; v < this.FORMAT; v++) {
+                if (typeof steps[v] === 'function') {
+                    const next = steps[v](cur);
+                    if (next) cur = next;
+                }
+            }
+        }
+        const items = cur && Array.isArray(cur.items) ? cur.items : null;
+        return { items, newer: false };
+    },
+
     /** Stable per-device id (shared with all apps). */
     deviceId() {
         let id = Store.get('hub', 'deviceId', '');
@@ -23,7 +55,7 @@ const Backup = {
     download(filename, envelope) {
         try {
             const data = Object.assign({
-                format: 1,
+                format: this.FORMAT,
                 deviceId: this.deviceId(),
                 exportedAt: new Date().toISOString(),
             }, envelope);
@@ -88,7 +120,12 @@ const Backup = {
         reader.onload = async () => {
             try {
                 const data = JSON.parse(String(reader.result));
-                const incoming = data && Array.isArray(data.items) ? data.items : null;
+                const norm = this.normalize(data);
+                if (norm.newer) {
+                    TG.toast(I18N.t('core_import_newer'), 'error');
+                    return;
+                }
+                const incoming = norm.items;
                 if (!incoming || incoming.length === 0) throw new Error('bad shape');
 
                 const merged = this.mergeLists(localItems || [], incoming);

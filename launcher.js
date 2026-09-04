@@ -460,7 +460,46 @@
         window.addEventListener('touchcancel', () => endPull(0));
     }
 
+    // ---- Keep your place across the update banner reload ----
+    // When an update is detected ('sw:update' fires just before the banner
+    // shows), snapshot the launcher state; after the Reload tap we restore
+    // search text, the open sheet (info/changelog) and the scroll position.
+    function saveHubSnapshot() {
+        try {
+            if (typeof sessionStorage === 'undefined') return;
+            sessionStorage.setItem('hub:snapshot', JSON.stringify({
+                search: searchInput.value,
+                top: window.scrollY || 0,
+                sheet: sheetAppId || (!changelogSheet.classList.contains('hidden') ? 'changelog' : null),
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    document.addEventListener('sw:update', saveHubSnapshot);
+
+    function restoreHubSnapshot() {
+        let snap = null;
+        try {
+            if (typeof sessionStorage === 'undefined') return;
+            snap = JSON.parse(sessionStorage.getItem('hub:snapshot') || 'null');
+            sessionStorage.removeItem('hub:snapshot');
+        } catch (e) { return; }
+        if (!snap) return;
+        if (snap.search) {
+            searchInput.value = snap.search;
+            applyFilter();
+        }
+        if (snap.sheet === 'changelog') {
+            openChangelog();
+        } else if (snap.sheet) {
+            const app = APP_REGISTRY.find(a => a.id === snap.sheet);
+            if (app) openSheet(app);
+        }
+        if (snap.top && window.scrollTo) window.scrollTo(0, snap.top);
+    }
+
     // ---- Init ----
     refresh();
     openDeepLink();
+    restoreHubSnapshot();
 })();

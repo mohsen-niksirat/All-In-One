@@ -114,6 +114,7 @@ I18N.register('fa', {
     core_import_preview: 'فایل شامل {n} مورد ({from} تا {to}) است؛ {m} مورد جدید. ادغام چیزی را حذف نمی‌کند — ادامه می‌دهید؟',
     core_import_same_device: '(پشتیبان همین دستگاه)',
     core_import_fail: 'فایل نامعتبر است',
+    core_import_newer: 'این پشتیبان از نسخهٔ جدیدتری از برنامه است',
     core_merged: '{n} مورد جدید اضافه شد ✓',
 });
 
@@ -127,6 +128,7 @@ I18N.register('en', {
     core_import_preview: 'File has {n} items ({from} → {to}); {m} are new. Merging never deletes — continue?',
     core_import_same_device: '(same-device backup)',
     core_import_fail: 'Invalid file',
+    core_import_newer: 'This backup is from a newer version of the app',
     core_merged: 'Merged {n} new items ✓',
 });
 
@@ -140,5 +142,6 @@ I18N.register('ar', {
     core_import_preview: 'يحتوي الملف على {n} عنصر ({from} ← {to})؛ {m} منها جديد. الدمج لا يحذف شيئاً — هل نتابع؟',
     core_import_same_device: '(نسخة احتياطية من نفس الجهاز)',
     core_import_fail: 'ملف غير صالح',
+    core_import_newer: 'هذه النسخة الاحتياطية من إصدار أحدث من التطبيق',
     core_merged: 'تم دمج {n} عنصر جديد ✓',
 });

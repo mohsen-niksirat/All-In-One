@@ -7,6 +7,28 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.7.0',
+        icon: '🧭',
+        link: 'habit-tracker',
+        i18n: {
+            fa: [
+                'پشتیبان JSON برای عادت‌ها، هزینه‌ها، دفتر خاطرات و اهداف',
+                'قالب نسخه‌دار پشتیبان — فایل‌های قدیمی به‌روز می‌شوند، نه رد',
+                '«به‌روزرسانی» جای صفحه را حفظ می‌کند: جستجو، برگهٔ باز و اسکرول',
+            ],
+            en: [
+                'JSON backups for Habits, Expenses, Journal and Goals',
+                'Versioned backup schema — old files migrate instead of failing',
+                'Update reload keeps your place: search, open sheet and scroll',
+            ],
+            ar: [
+                'نسخ احتياطية JSON للعادات والمصاريف والمذكرات والأهداف',
+                'مخطط نسخ احتياطية مُرقّم — تُرحَّل الملفات القديمة بدل رفضها',
+                'تحديث يحفظ مكانك: البحث واللوحة المفتوحة والتمرير',
+            ],
+        },
+    },
+    {
         version: '2.6.0',
         icon: '📦',
         link: 'notes-app',

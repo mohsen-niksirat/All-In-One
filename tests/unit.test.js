@@ -350,3 +350,30 @@ test('Backup.mergeLists: adds missing ids, newer edits win, nothing deleted', ()
     assert.strictEqual(byId.d.id, 'd');
     assert.strictEqual(res.list.length, 4);
 });
+
+test('Backup.normalize: migrates older formats via the ladder and rejects newer ones', () => {
+    const Backup = load('core/backup.js', {}, 'Backup');
+
+    // Current-format envelopes pass straight through.
+    const plain = Backup.normalize({ format: 1, items: [{ id: 'a' }, { id: 'b' }] });
+    assert.strictEqual(plain.newer, false);
+    assert.strictEqual(plain.items.length, 2);
+
+    // Simulate a v2 format and a v1→v2 migrator: v1 stored items.list.
+    Backup.registerMigrator('demo-app', 1, (d) => ({
+        app: d.app, format: 2, items: (d.items && d.items.list) || [],
+    }));
+    const savedFmt = Backup.FORMAT;
+    Backup.FORMAT = 2;
+    try {
+        const legacy = Backup.normalize({ app: 'demo-app', format: 1, items: { list: [{ id: 'x' }] } });
+        assert.strictEqual(legacy.newer, false);
+        assert.deepStrictEqual(legacy.items.map(i => i.id), ['x'], 'migrator unwraps items.list');
+
+        const newer = Backup.normalize({ app: 'demo-app', format: 3, items: [] });
+        assert.strictEqual(newer.newer, true, 'future formats rejected');
+        assert.strictEqual(newer.items, null);
+    } finally {
+        Backup.FORMAT = savedFmt;
+    }
+});

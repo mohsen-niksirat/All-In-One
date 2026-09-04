@@ -62,6 +62,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.render();
 
             document.addEventListener('i18n:changed', () => {
@@ -102,11 +103,35 @@
             Store.setJSON(NS, 'goals', this.goals);
         },
 
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('goals-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'goal-tracker',
+                    items: this.goals,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.goals, (merged) => {
+                        this.goals = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
+        },
+
         adjust(id, delta) {
             const goal = this.goals.find(g => g.id === id);
             if (!goal) return;
             const step = Math.max(1, Math.round(goal.target / 10));
             goal.current = Math.max(0, Math.round((goal.current + delta * step) * 100) / 100);
+            goal.updated = Date.now();
             this.save();
             this.render();
             TG.haptic('light');

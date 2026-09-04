@@ -61,6 +61,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.render();
 
             document.addEventListener('i18n:changed', () => {
@@ -122,6 +123,41 @@
 
         save() {
             Store.setJSON(NS, 'entries', this.entries);
+        },
+
+        // Journal entries live in a date-keyed object; backups serialize them
+        // as an array of { id: 'YYYY-MM-DD', … } items (merge-by-date).
+        serializeEntries() {
+            return Object.entries(this.entries)
+                .filter(([, e]) => (e && (e.text || (e.mood >= 0))))
+                .map(([date, e]) => ({ id: date, date: date, mood: e.mood, text: e.text, updated: e.updated || 0 }));
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('journal-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'daily-journal',
+                    items: this.serializeEntries(),
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.serializeEntries(), (merged) => {
+                        const obj = {};
+                        merged.forEach(it => {
+                            obj[it.id] = { mood: it.mood === undefined ? -1 : it.mood, text: it.text || '', updated: it.updated || 0 };
+                        });
+                        this.entries = obj;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         saveCurrent() {

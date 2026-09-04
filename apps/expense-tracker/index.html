@@ -49,6 +49,13 @@
                 <button id="clear-all" class="clear-btn" data-i18n="exp_clear">Clear all</button>
             </div>
             <div id="expense-list" class="expense-list"></div>
+
+            <!-- JSON backup (export / merge-import) -->
+            <div class="backup-row">
+                <button type="button" id="export-btn" class="btn btn-secondary" data-i18n="core_export">Export (JSON)</button>
+                <button type="button" id="import-btn" class="btn btn-secondary" data-i18n="core_import">Import (JSON)</button>
+                <input type="file" id="import-file" accept="application/json,.json" hidden>
+            </div>
         </div>
     </main>
 
@@ -59,6 +66,7 @@
     <script src="../../core/tg.js"></script>
     <script src="../../core/store.js"></script>
     <script src="../../core/i18n.js"></script>
+    <script src="../../core/backup.js"></script>
 
     <!-- App -->
     <script src="app.js"></script>

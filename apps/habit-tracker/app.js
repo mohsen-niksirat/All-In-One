@@ -52,6 +52,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.render();
 
             document.addEventListener('i18n:changed', () => {
@@ -79,6 +80,29 @@
 
         save() {
             Store.setJSON(NS, 'habits', this.habits);
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('habits-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'habit-tracker',
+                    items: this.habits,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.habits, (merged) => {
+                        this.habits = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         // ---- Date helpers (local timezone) ----
@@ -131,6 +155,7 @@
             } else {
                 habit.dates.push(key);
             }
+            habit.updated = Date.now();
             this.save();
             this.render();
             TG.haptic('light');

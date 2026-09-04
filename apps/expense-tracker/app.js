@@ -108,6 +108,7 @@
             };
 
             this.setupEvents();
+            this.setupBackup();
             this.renderCategories();
             this.render();
 
@@ -158,6 +159,29 @@
 
         save() {
             Store.setJSON(NS, 'expenses', this.expenses);
+        },
+
+        setupBackup() {
+            const exportBtn = document.getElementById('export-btn');
+            const importBtn = document.getElementById('import-btn');
+            const importFile = document.getElementById('import-file');
+            if (exportBtn) exportBtn.addEventListener('click', () => {
+                Backup.download('expenses-backup-' + new Date().toISOString().slice(0, 10) + '.json', {
+                    app: 'expense-tracker',
+                    items: this.expenses,
+                });
+            });
+            if (importBtn) importBtn.addEventListener('click', () => importFile.click());
+            if (importFile) importFile.addEventListener('change', () => {
+                if (importFile.files && importFile.files[0]) {
+                    Backup.importList(importFile.files[0], this.expenses, (merged) => {
+                        this.expenses = merged;
+                        this.save();
+                        this.render();
+                    });
+                }
+                importFile.value = '';
+            });
         },
 
         renderCategories() {
