@@ -38,11 +38,20 @@ function makeClassList() {
     };
 }
 
+function makeStyle() {
+    const props = {};
+    return {
+        props,
+        setProperty(k, v) { props[k] = String(v); },
+        removeProperty(k) { delete props[k]; },
+    };
+}
+
 function makeElement(tag) {
     return {
         tagName: (tag || 'div').toUpperCase(),
         children: [],
-        style: {},
+        style: makeStyle(),
         dataset: {},
         classList: makeClassList(),
         attributes: {},
@@ -101,11 +110,14 @@ function makeLocalStorage() {
 }
 
 /** Boot one page: run every local <script> in order, then dispatch DOMContentLoaded. */
-function bootPage(htmlFile) {
+function bootPage(htmlFile, presetStorage = {}) {
     const html = fs.readFileSync(path.join(ROOT, htmlFile), 'utf8');
     const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)]
         .map(m => m[1])
         .filter(s => !s.startsWith('http'));
+
+    const localStorageMock = makeLocalStorage();
+    for (const [k, v] of Object.entries(presetStorage || {})) localStorageMock.setItem(k, String(v));
 
     const sandbox = {
         console,
@@ -120,7 +132,7 @@ function bootPage(htmlFile) {
         TextDecoder,
         crypto: globalThis.crypto,
         navigator: { language: 'en' },
-        localStorage: makeLocalStorage(),
+        localStorage: localStorageMock,
         location: { href: '' },
     };
     sandbox.window = sandbox;
@@ -385,4 +397,30 @@ test('registry integrity', () => {
             }
         }
     }
+});
+test('theme engine: a saved accent applies its CSS variables on boot and resets on default', () => {
+    // Preset the persisted choice (namespace-prefixed key, as Store writes it).
+    const boot = bootPage('index.html', { 'tma:hub:theme': 'ocean' });
+    const TG = boot.get('TG');
+
+    assert.strictEqual(TG.getTheme(), 'ocean', 'reads the saved theme from Store');
+
+    const props = boot.sandbox.document.documentElement.style.props;
+    assert.strictEqual(props['--accent-color'], '#0ea5e9');
+    assert.strictEqual(props['--accent-hover'], '#0284c7');
+    assert.strictEqual(props['--user-bubble-bg'], '#0ea5e9');
+    assert.strictEqual(props['--user-bubble-text'], '#ffffff');
+    assert.ok(props['--accent-soft'], 'soft accent set');
+
+    // Switching back to the default removes only the overrides the engine added.
+    TG.setTheme('default');
+    assert.strictEqual(TG.getTheme(), 'default');
+    assert.strictEqual(boot.sandbox.document.documentElement.style.props['--accent-color'], undefined);
+    assert.strictEqual(boot.sandbox.document.documentElement.style.props['--user-bubble-bg'], undefined);
+});
+
+test('theme engine: an unknown saved theme falls back to default', () => {
+    const boot = bootPage('index.html', { 'tma:hub:theme': 'nope-xyz' });
+    const TG = boot.get('TG');
+    assert.strictEqual(TG.getTheme(), 'default');
 });

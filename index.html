@@ -23,6 +23,7 @@
         </div>
         <div class="header-actions">
             <div data-lang-switcher class="lang-switcher"></div>
+            <button type="button" id="theme-btn" class="icon-btn" data-i18n-title="hub_theme_btn" title="Choose theme">🎨</button>
             <button type="button" id="backup-btn" class="icon-btn" data-i18n-title="hub_backup_btn" title="Data & backups">💾</button>
             <button type="button" id="refresh-btn" class="icon-btn" data-i18n-title="hub_refresh_title" title="Check for updates">↻</button>
             <span id="version-badge" class="version-badge" title="All-In-One"></span>
@@ -66,6 +67,11 @@
     <!-- Data & backups sheet (opens from the 💾 header button) -->
     <div id="backup-sheet" class="modal-overlay hidden">
         <div class="modal-box sheet-box" id="backup-box"></div>
+    </div>
+
+    <!-- Theme picker sheet (opens from the 🎨 header button) -->
+    <div id="theme-sheet" class="modal-overlay hidden">
+        <div class="modal-box sheet-box" id="theme-box"></div>
     </div>
 
     <!-- Telegram Mini App SDK -->

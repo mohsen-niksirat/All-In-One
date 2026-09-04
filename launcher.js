@@ -66,6 +66,16 @@
         hub_pw_ok: 'تأیید',
         hub_pw_cancel: 'انصراف',
         hub_enc_unsupported: 'رمزنگاری در این مرورگر در دسترس نیست',
+        hub_theme_btn: 'انتخاب تم',
+        hub_theme_title: 'تم برنامه',
+        hub_theme_sub: 'رنگ تم روی همهٔ اپ‌ها اعمال می‌شود؛ روشن/تیره همچنان با تلگرام هماهنگ است',
+        hub_theme_saved: 'تم اعمال شد ✓',
+        theme_default: 'پیش‌فرض (تلگرام)',
+        theme_ocean: 'اقیانوس',
+        theme_sunset: 'غروب',
+        theme_forest: 'جنگل',
+        theme_royal: 'سلطنتی',
+        theme_candy: 'صورتی',
     });
 
     I18N.register('en', {
@@ -126,6 +136,16 @@
         hub_pw_ok: 'OK',
         hub_pw_cancel: 'Cancel',
         hub_enc_unsupported: 'Encryption is not available in this browser',
+        hub_theme_btn: 'Choose theme',
+        hub_theme_title: 'Theme',
+        hub_theme_sub: 'The accent color applies across all apps; light/dark still follows Telegram',
+        hub_theme_saved: 'Theme applied ✓',
+        theme_default: 'Default (Telegram)',
+        theme_ocean: 'Ocean',
+        theme_sunset: 'Sunset',
+        theme_forest: 'Forest',
+        theme_royal: 'Royal',
+        theme_candy: 'Candy',
     });
 
     I18N.register('ar', {
@@ -186,6 +206,16 @@
         hub_pw_ok: 'موافق',
         hub_pw_cancel: 'إلغاء',
         hub_enc_unsupported: 'التشفير غير متاح في هذا المتصفح',
+        hub_theme_btn: 'اختيار المظهر',
+        hub_theme_title: 'المظهر',
+        hub_theme_sub: 'يُطبَّق لون المظهر على جميع التطبيقات؛ الفاتح/الداكن يتبع تلغرام تلقائياً',
+        hub_theme_saved: 'تم تطبيق المظهر ✓',
+        theme_default: 'الافتراضي (تلغرام)',
+        theme_ocean: 'محيط',
+        theme_sunset: 'غروب',
+        theme_forest: 'غابة',
+        theme_royal: 'ملكي',
+        theme_candy: 'وردي',
     });
 
     TG.init();
@@ -385,6 +415,7 @@
             if (app) openSheet(app);
         }
         if (!changelogSheet.classList.contains('hidden')) openChangelog();
+        if (typeof themeSheet !== 'undefined' && !themeSheet.classList.contains('hidden')) renderThemeSheet();
         refreshBackupUI();
         TG.haptic('light');
     });
@@ -897,6 +928,65 @@
         Store.set('hub', 'backupNudge', Date.now());
         renderBackupBar();
     });
+
+    // ---- Accent theme picker (choice is saved globally and applies to
+    // every app page on its next load via core/tg.js) ----
+    const themeSheet = document.getElementById('theme-sheet');
+    const themeBox = document.getElementById('theme-box');
+
+    function openThemeSheet() {
+        renderThemeSheet();
+        themeSheet.classList.remove('hidden');
+        TG.haptic('light');
+    }
+
+    function closeThemeSheet() {
+        themeSheet.classList.add('hidden');
+    }
+
+    function renderThemeSheet() {
+        const current = TG.getTheme();
+        const rows = TG.THEMES.map(t => {
+            const checked = t.id === current;
+            const dot = t.id === 'default'
+                ? '<span class="th-dot th-dot-default"></span>'
+                : `<span class="th-dot" style="background:${t.accent}"></span>`;
+            return `
+                <button type="button" class="th-row${checked ? ' active' : ''}" data-theme-id="${t.id}">
+                    ${dot}
+                    <span class="th-name">${I18N.t('theme_' + t.id)}</span>
+                    ${checked ? '<span class="th-check">✓</span>' : ''}
+                </button>`;
+        }).join('');
+        themeBox.innerHTML = `
+            <div class="sheet-head">
+                <div class="sheet-icon">🎨</div>
+                <div class="sheet-title"><h3>${I18N.t('hub_theme_title')}</h3></div>
+            </div>
+            <p class="sheet-desc">${I18N.t('hub_theme_sub')}</p>
+            <div class="th-list">${rows}</div>
+            <div class="sheet-actions">
+                <button type="button" class="btn btn-secondary" data-theme-close>${I18N.t('hub_close')}</button>
+            </div>`;
+    }
+
+    if (themeBox) themeBox.addEventListener('click', (e) => {
+        const row = e.target.closest ? e.target.closest('[data-theme-id]') : null;
+        if (row) {
+            TG.setTheme(row.dataset.themeId);
+            renderThemeSheet();
+            TG.toast(I18N.t('hub_theme_saved'), 'success');
+            return;
+        }
+        if (e.target.closest('[data-theme-close]')) closeThemeSheet();
+    });
+
+    if (themeSheet) themeSheet.addEventListener('click', (e) => {
+        if (e.target === themeSheet) closeThemeSheet();
+    });
+
+    const themeHeaderBtn = document.getElementById('theme-btn');
+    if (themeHeaderBtn) themeHeaderBtn.addEventListener('click', openThemeSheet);
 
     // ---- Init ----
     refresh();

@@ -596,3 +596,58 @@ body {
     flex: 1;
     margin: 0;
 }
+
+/* ===== Theme picker ===== */
+
+#theme-btn {
+    font-size: 15px;
+}
+
+.th-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.th-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: transparent;
+    text-align: start;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.th-row.active {
+    border-color: var(--accent-color);
+    background: var(--accent-soft);
+}
+
+.th-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.th-dot-default {
+    background: linear-gradient(135deg, #0088cc 0%, #50a9e8 55%, #34c7f5 100%);
+}
+
+.th-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.th-check {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 15px;
+}

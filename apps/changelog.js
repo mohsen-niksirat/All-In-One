@@ -7,6 +7,28 @@
  */
 const APP_CHANGELOG = [
     {
+        version: '2.9.0',
+        icon: '🎨',
+        link: 'ai-chat',
+        i18n: {
+            fa: [
+                'پنج تم رنگی: اقیانوس، غروب، جنگل، سلطنتی و صورتی — از دکمهٔ 🎨 در بالای صفحه',
+                'انتخاب شما روی همهٔ اپ‌ها اعمال می‌شود و ذخیره می‌ماند',
+                'روشن/تیره همچنان خودکار با تلگرام هماهنگ است',
+            ],
+            en: [
+                'Five accent themes: Ocean, Sunset, Forest, Royal and Candy — pick one from the 🎨 button up top',
+                'Your choice applies across every app and is remembered',
+                'Light/dark still follows Telegram automatically',
+            ],
+            ar: [
+                'خمسة مظاهر ملونة: محيط وغروب وغابة وملكي ووردي — اختر من زر 🎨 في الأعلى',
+                'يُطبَّق اختيارك على جميع التطبيقات ويُحفظ',
+                'الفاتح/الداكن ما زال يتبع تلغرام تلقائياً',
+            ],
+        },
+    },
+    {
         version: '2.8.0',
         icon: '🔐',
         link: 'notes-app',

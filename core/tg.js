@@ -9,7 +9,7 @@ const TG = {
     /** Release version — shown in the header badge on every page.
      *  Keep in sync with sw.js (CACHE = 'allinone-v<major>'): run
      *  `node scripts/release.js` to bump both; tests enforce the sync. */
-    APP_VERSION: '2.8.0',
+    APP_VERSION: '2.9.0',
 
     /**
      * Initialize the Telegram WebApp SDK.
@@ -23,7 +23,11 @@ const TG = {
             this.webApp.ready();
             this.webApp.expand();
             this.applyTheme();
-            this.webApp.onEvent('themeChanged', () => this.applyTheme());
+            this.applyUserTheme();
+            this.webApp.onEvent('themeChanged', () => {
+                this.applyTheme();
+                this.applyUserTheme();
+            });
             // Merge CloudStorage into localStorage (cross-device sync, best effort)
             if (typeof Store !== 'undefined') Store.initCloud();
         } else {
@@ -31,6 +35,7 @@ const TG = {
             document.documentElement.setAttribute('data-theme', 'dark');
             console.log('Running outside Telegram (browser preview)');
         }
+        this.applyUserTheme();
         if (options.backHref) this.setupBack(options.backHref);
         this.registerServiceWorker();
         this.initVersionBadge();
@@ -140,6 +145,72 @@ const TG = {
         }
         // Mirror accent into chat user bubbles
         if (theme.button_color) root.style.setProperty('--user-bubble-bg', theme.button_color);
+    },
+
+    // ---- Accent themes ----
+    // The base light/dark look still follows Telegram's color scheme; these
+    // presets only re-tint the accent color (buttons, chips, highlights) plus
+    // the chat bubble colors, so every app inherits the choice automatically.
+    THEMES: [
+        { id: 'default', accent: '', hover: '', soft: '' },
+        { id: 'ocean', accent: '#0ea5e9', hover: '#0284c7', soft: 'rgba(14, 165, 233, 0.14)' },
+        { id: 'sunset', accent: '#f97316', hover: '#ea580c', soft: 'rgba(249, 115, 22, 0.15)' },
+        { id: 'forest', accent: '#16a34a', hover: '#15803d', soft: 'rgba(22, 163, 74, 0.16)' },
+        { id: 'royal', accent: '#8b5cf6', hover: '#7c3aed', soft: 'rgba(139, 92, 246, 0.15)' },
+        { id: 'candy', accent: '#ec4899', hover: '#db2777', soft: 'rgba(236, 72, 153, 0.15)' },
+    ],
+
+    /** Saved accent-theme id ('default' when unset). */
+    getTheme() {
+        try {
+            if (typeof Store === 'undefined') return 'default';
+            const t = Store.get('hub', 'theme', 'default');
+            return this.THEMES.some(x => x.id === t) ? t : 'default';
+        } catch (e) {
+            return 'default';
+        }
+    },
+
+    /** Overlay the saved accent theme onto the current Telegram/browser look. */
+    applyUserTheme() {
+        try {
+            const id = this.getTheme();
+            const theme = this.THEMES.find(t => t.id === id);
+            const root = document.documentElement;
+            if (!root || !root.style) return;
+            const ACCENT_VARS = ['--accent-color', '--accent-hover', '--accent-soft',
+                '--user-bubble-bg', '--user-bubble-text'];
+            if (!theme || id === 'default' || !theme.accent) {
+                // Only clear overrides we added in THIS page session, so the
+                // default look keeps Telegram's own inline accent colors.
+                if (!this._accentApplied) return;
+                ACCENT_VARS.forEach(v => {
+                    try { root.style.removeProperty(v); } catch (e) { /* ignore */ }
+                });
+                this._accentApplied = false;
+                return;
+            }
+            root.style.setProperty('--accent-color', theme.accent);
+            root.style.setProperty('--accent-hover', theme.hover);
+            root.style.setProperty('--accent-soft', theme.soft);
+            root.style.setProperty('--user-bubble-bg', theme.accent);
+            root.style.setProperty('--user-bubble-text', '#ffffff');
+            this._accentApplied = true;
+        } catch (e) {
+            // never let theming break a page
+        }
+    },
+
+    /** Persist + apply an accent theme and notify the UI. */
+    setTheme(id) {
+        if (!this.THEMES.some(t => t.id === id)) return;
+        try {
+            if (typeof Store !== 'undefined') Store.set('hub', 'theme', id);
+            this.applyTheme();
+            this.applyUserTheme();
+            document.dispatchEvent(new CustomEvent('theme:changed', { detail: id }));
+        } catch (e) { /* ignore */ }
+        this.haptic('light');
     },
 
     /** Current user object or null. */
