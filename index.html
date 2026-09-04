@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header id="header">
+            <div class="header-left">
+                <div class="avatar">
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <circle cx="18" cy="18" r="18" fill="var(--accent-color)"/>
+                        <text x="18" y="23" text-anchor="middle" fill="white" font-size="18" font-weight="bold">🤖</text>
+                    </svg>
+                </div>
+                <div class="header-info">
+                    <h1>AI Chat</h1>
+                    <span id="status" class="status online">آنلاین</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <select id="model-select" class="model-select">
+                    <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+                    <option value="llama-3.1-8b-instant">Llama 3.1 8B</option>
+                    <option value="gemma2-9b-it">Gemma 2 9B</option>
+                    <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+                </select>
+                <button id="settings-btn" class="icon-btn" title="تنظیمات">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+                <button id="clear-btn" class="icon-btn" title="پاک کردن چت">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Messages Area -->
+        <div id="messages" class="messages">
+            <div id="welcome" class="welcome">
+                <div class="welcome-icon">🤖</div>
+                <h2>سلام! من دستیار هوش مصنوعی هستم</h2>
+                <p>هر سوالی دارید از من بپرسید</p>
+                <div class="quick-actions">
+                    <button class="quick-btn" data-prompt="یک شوخی بگو">😄 یک شوخی</button>
+                    <button class="quick-btn" data-prompt="درباره خودت توضیح بده">ℹ️ درباره من</button>
+                    <button class="quick-btn" data-prompt="یک کد Python بنویس">💻 کد بنویس</button>
+                    <button class="quick-btn" data-prompt="تاریخ امروز چیست؟">📅 تاریخ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div id="input-area" class="input-area">
+            <div class="input-wrapper">
+                <textarea id="message-input" placeholder="پیام خود را بنویسید..." rows="1"></textarea>
+                <button id="send-btn" class="send-btn" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-footer">
+                <span id="token-count" class="token-count"></span>
+                <span class="powered-by"> powered by Groq</span>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>تنظیمات</h3>
+                    <button id="close-modal" class="icon-btn">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-group">
+                        <label for="api-key-input">API Key Groq</label>
+                        <p class="setting-hint">کلید API خود را از <a href="https://console.groq.com/keys" target="_blank">console.groq.com</a> دریافت کنید</p>
+                        <input type="password" id="api-key-input" placeholder="gsk_..." class="setting-input">
+                    </div>
+                    <div class="setting-group">
+                        <label for="system-prompt">System Prompt</label>
+                        <textarea id="system-prompt" class="setting-textarea" placeholder="دستورات سیستم..." rows="3">تو یک دستیار هوش مصنوعی مفید و دوستانه هستی. به سوالات به فارسی پاسخ بده.</textarea>
+                    </div>
+                    <div class="setting-group">
+                        <label for="max-tokens-input">حداکثر توکن‌ها</label>
+                        <input type="number" id="max-tokens-input" value="1024" min="100" max="4096" class="setting-input">
+                    </div>
+                    <button id="save-settings" class="save-btn">ذخیره تنظیمات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="storage.js"></script>
+    <script src="groq-api.js"></script>
+    <script src="chat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
