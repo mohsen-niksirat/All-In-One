@@ -6,6 +6,11 @@ const TG = {
     webApp: null,
     isTelegram: false,
 
+    /** Release version — shown in the header badge on every page.
+     *  Keep in sync with sw.js (CACHE = 'allinone-v<major>'): run
+     *  `node scripts/release.js` to bump both; tests enforce the sync. */
+    APP_VERSION: '2.1.0',
+
     /**
      * Initialize the Telegram WebApp SDK.
      * @param {Object} options - { backHref: string } link for the back button
@@ -28,7 +33,50 @@ const TG = {
         }
         if (options.backHref) this.setupBack(options.backHref);
         this.registerServiceWorker();
+        this.initVersionBadge();
         return this;
+    },
+
+    /**
+     * Version badge + SW update detection, on every page.
+     * Uses #version-badge when present, otherwise creates one next to the
+     * language switcher. When a newer service worker takes control (skipWaiting
+     * + network-first), the badge flashes ↻ and the page reloads to the new
+     * build; pages can listen for 'sw:update' to show their own notice.
+     */
+    initVersionBadge() {
+        let badge = null;
+        try { badge = document.getElementById('version-badge'); } catch (e) { badge = null; }
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.id = 'version-badge';
+            badge.className = 'version-badge';
+            badge.setAttribute('title', 'All-In-One');
+            const host = document.querySelector('[data-lang-switcher]');
+            if (host && host.parentNode) host.parentNode.insertBefore(badge, host);
+            else document.body.appendChild(badge);
+        }
+        badge.textContent = 'v' + this.APP_VERSION;
+
+        if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
+        const hadController = Boolean(navigator.serviceWorker.controller);
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            // First claim is just the SW taking control, not an update.
+            if (!hadController) return;
+            badge.textContent = '↻ v' + this.APP_VERSION;
+            badge.classList.add('updating');
+            try {
+                document.dispatchEvent(new CustomEvent('sw:update'));
+            } catch (e) { /* ignore */ }
+            setTimeout(() => location.reload(), 1500);
+        });
+        navigator.serviceWorker.ready
+            .then((reg) => {
+                // Check for a newer build now and then periodically.
+                reg.update();
+                setInterval(() => reg.update(), 10 * 60 * 1000);
+            })
+            .catch(() => {});
     },
 
     /**

@@ -261,6 +261,7 @@ test('static audit: every getElementById target exists in the page HTML or is cr
         for (const s of allScriptSrc(page)) {
             const src = fs.readFileSync(path.join(ROOT, path.dirname(page), s), 'utf8');
             [...src.matchAll(/id="([^"]+)"/g)].forEach(m => jsCreated.add(m[1]));
+            [...src.matchAll(/\.id\s*=\s*'([^']+)'/g)].forEach(m => jsCreated.add(m[1]));
             [...src.matchAll(/getElementById\s*\(\s*'([^']+)'\s*\)/g)].forEach(m => referenced.add(m[1]));
         }
         const missing = [...referenced].filter(id => !htmlIds.has(id) && !jsCreated.has(id));

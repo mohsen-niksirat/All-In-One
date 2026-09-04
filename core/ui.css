@@ -320,3 +320,23 @@ body.in-tg .back-btn {
     font-size: 42px;
     margin-bottom: 10px;
 }
+
+/* ---- Version badge (every page; injected by core/tg.js) ---- */
+.version-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+.version-badge.updating {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}

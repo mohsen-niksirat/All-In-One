@@ -9,12 +9,13 @@
  *    always get the freshly deployed build the moment the new SW takes over
  *    (skipWaiting + clients.claim) — and still work fully offline.
  *
- * Bump CACHE when you ship changes that must invalidate old cached assets.
- * (The version badge on the launcher shows the current release.)
+ * CACHE carries the full release version (allinone-<X.Y.Z>) so every release
+ * invalidates old cached assets — keep it equal to TG.APP_VERSION in
+ * core/tg.js (run `node scripts/release.js`; tests enforce the sync).
  */
 'use strict';
 
-const CACHE = 'allinone-v2';
+const CACHE = 'allinone-2.1.0';
 
 const PRECACHE = [
     './',

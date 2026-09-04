@@ -15,11 +15,22 @@ const Chat = {
             sendBtn: document.getElementById('send-btn'),
             welcome: document.getElementById('welcome'),
             tokenCount: document.getElementById('token-count'),
+            lastSync: document.getElementById('last-sync'),
         };
 
         this.loadHistory();
+        this.updateLastSync();
         this.setupEventListeners();
         this.updateSendButton();
+    },
+
+    /** Show when the conversation was last saved locally (history is always
+     *  persisted, so this doubles as the offline 'last synced' stamp). */
+    updateLastSync() {
+        const el = this.elements.lastSync;
+        if (!el) return;
+        const ts = parseInt(Store.get(this.NS, 'lastSync', 0), 10);
+        el.textContent = ts > 0 ? I18N.t('chat_last_sync', { time: Store.time(ts) }) : '';
     },
 
     loadHistory() {
@@ -338,6 +349,8 @@ const Chat = {
 
     saveHistory() {
         Store.setJSON(this.NS, 'history', this.messages);
+        Store.set(this.NS, 'lastSync', Date.now());
+        this.updateLastSync();
     },
 
     scrollToBottom() {

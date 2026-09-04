@@ -289,36 +289,10 @@
     });
 
     // ---- Version badge + update detection ----
-    // Bump APP_VERSION with every release; the badge makes updates obvious,
-    // and the SW's skipWaiting + network-first strategy means a controller
-    // change is always a newer build → reload to show it.
-    const APP_VERSION = '2.0.0';
-
-    function initVersionBadge() {
-        const badge = document.getElementById('version-badge');
-        if (badge) badge.textContent = 'v' + APP_VERSION;
-        if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
-
-        const hadController = Boolean(navigator.serviceWorker.controller);
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            // First claim is just the SW taking control, not an update.
-            if (!hadController) return;
-            if (badge) {
-                badge.classList.add('updating');
-                badge.textContent = '↻ v' + APP_VERSION;
-            }
-            TG.toast(I18N.t('hub_update_ready'));
-            setTimeout(() => location.reload(), 1500);
-        });
-
-        navigator.serviceWorker.ready
-            .then((reg) => {
-                // Check for a newer build now and then periodically.
-                reg.update();
-                setInterval(() => reg.update(), 10 * 60 * 1000);
-            })
-            .catch(() => {});
-    }
+    // The badge itself (vX.Y.Z, ↻ flash + auto-reload on update) lives in
+    // core/tg.js so every page has it. Here we add the localized toast when
+    // an update is detected.
+    document.addEventListener('sw:update', () => TG.toast(I18N.t('hub_update_ready')));
 
     // ---- Deep links ----
     // Open a specific app when the hub URL carries #<app-id> or when Telegram
@@ -346,6 +320,5 @@
 
     // ---- Init ----
     refresh();
-    initVersionBadge();
     openDeepLink();
 })();

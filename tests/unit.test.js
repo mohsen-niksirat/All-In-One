@@ -307,3 +307,20 @@ test('PasswordGen: strength thresholds', () => {
     assert.strictEqual(PasswordGen.strength(10, ['upper', 'lower']), 'medium'); // ~57 bits
     assert.strictEqual(PasswordGen.strength(16, ['upper', 'lower', 'digits', 'symbols']), 'strong'); // ~105 bits
 });
+// ================= Release sync =================
+
+test('release sync: sw.js CACHE version equals TG.APP_VERSION', () => {
+    const tgSrc = fs.readFileSync(path.join(ROOT, 'core', 'tg.js'), 'utf8');
+    const swSrc = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+
+    const version = (tgSrc.match(/APP_VERSION:\s*'(\d+\.\d+\.\d+)'/) || [])[1];
+    assert.ok(version, 'core/tg.js must declare APP_VERSION as X.Y.Z');
+
+    const cache = (swSrc.match(/const CACHE = 'allinone-([^']+)'/) || [])[1];
+    assert.ok(cache, "sw.js must declare CACHE = 'allinone-<X.Y.Z>'");
+
+    assert.strictEqual(
+        cache, version,
+        "sw.js cache version must match TG.APP_VERSION — run `node scripts/release.js` to bump both"
+    );
+});

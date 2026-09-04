@@ -122,6 +122,13 @@ body {
     color: var(--danger-color);
 }
 
+.nws-updated {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: -2px 0 10px;
+}
+
 /* ---- Feed ---- */
 .feed {
     display: flex;

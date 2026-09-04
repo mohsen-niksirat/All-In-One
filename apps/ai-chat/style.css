@@ -399,6 +399,12 @@ header {
     direction: ltr;
 }
 
+.last-sync {
+    font-size: 11px;
+    color: var(--text-secondary);
+    direction: ltr;
+}
+
 /* ===== Modal ===== */
 .modal {
     position: fixed;

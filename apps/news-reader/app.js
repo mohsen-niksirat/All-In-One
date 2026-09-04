@@ -31,6 +31,8 @@
         nws_error_net: 'خطا در دریافت اخبار — اتصال را بررسی کنید',
         nws_error_http: 'خطای سرویس ({code})',
         nws_open: 'باز کردن خبر',
+        nws_updated: 'آخرین به‌روزرسانی: {time}',
+        nws_cached: '⚠️ آفلاین — نمایش آخرین اخبار ذخیره‌شده',
         nws_time_now: 'همین حالا',
         nws_time_min: '{n} د',
         nws_time_hour: '{n} س',
@@ -68,6 +70,8 @@
         nws_error_net: 'Could not load news — check your connection',
         nws_error_http: 'Service error ({code})',
         nws_open: 'Open article',
+        nws_updated: 'Last updated: {time}',
+        nws_cached: '⚠️ Offline — showing last saved articles',
         nws_time_now: 'now',
         nws_time_min: '{n}m',
         nws_time_hour: '{n}h',
@@ -105,6 +109,8 @@
         nws_error_net: 'تعذّر تحميل الأخبار — تحقق من اتصالك',
         nws_error_http: 'خطأ في الخدمة ({code})',
         nws_open: 'فتح المقال',
+        nws_updated: 'آخر تحديث: {time}',
+        nws_cached: '⚠️ دون اتصال — عرض آخر المقالات المحفوظة',
         nws_time_now: 'الآن',
         nws_time_min: '{n} د',
         nws_time_hour: '{n} س',
@@ -164,6 +170,7 @@
                 lang: document.getElementById('lang'),
                 status: document.getElementById('status'),
                 feed: document.getElementById('feed'),
+                updated: document.getElementById('updated'),
             };
 
             this.setupSettings();
@@ -291,10 +298,51 @@
             this.elements.status.classList.toggle('error', Boolean(isError));
         },
 
+        /** Key identifying the current feed view (cache is per-view). */
+        cacheKey() {
+            return this.hasKey()
+                ? `g:${this.state.lang}:${this.state.q || this.state.cat}`
+                : `r:${this.state.lang}`;
+        },
+
+        /** Last saved feed matching the current view, or null. */
+        loadCached() {
+            const cached = Store.getJSON(NS, 'feed-cache');
+            if (cached && cached.key === this.cacheKey() && cached.articles && cached.articles.length) {
+                return cached;
+            }
+            return null;
+        },
+
+        showUpdated(ts) {
+            if (!this.elements.updated) return;
+            this.elements.updated.textContent = I18N.t('nws_updated', { time: this.fmtTime(ts) });
+            this.elements.updated.classList.remove('hidden');
+        },
+
+        fmtTime(ts) {
+            try {
+                const loc = I18N.current === 'fa' ? 'fa-IR' : (I18N.current === 'ar' ? 'ar-EG' : 'en-US');
+                return new Date(ts).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return String(ts);
+            }
+        },
+
+        saveCache(articles) {
+            Store.setJSON(NS, 'feed-cache', { ts: Date.now(), key: this.cacheKey(), articles });
+            this.showUpdated(Date.now());
+        },
+
         async fetch(silent) {
             if (this.state.fetching) return;
+
+            // Instant render from the last saved feed for this view (offline).
+            const cached = this.loadCached();
+            if (cached) this.renderFeed(cached.articles);
+
             if (typeof fetch !== 'function') {
-                this.setStatus(I18N.t('nws_error_net'), true);
+                if (!silent && !cached) this.setStatus(I18N.t('nws_error_net'), true);
                 return;
             }
             this.state.fetching = true;
@@ -306,7 +354,12 @@
                     await this.fetchRSS();
                 }
             } catch (e) {
-                this.setStatus(I18N.t('nws_error_net'), true);
+                // Offline → the saved feed is already on screen; add a note.
+                if (this.loadCached()) {
+                    if (!silent) this.setStatus(I18N.t('nws_cached'), true);
+                } else if (!silent) {
+                    this.setStatus(I18N.t('nws_error_net'), true);
+                }
             } finally {
                 this.state.fetching = false;
             }
@@ -335,12 +388,14 @@
                 return;
             }
             const data = await res.json();
-            this.renderFeed((data.articles || []).map(a => ({
+            const articles = (data.articles || []).map(a => ({
                 title: a.title, url: a.url, image: a.image,
                 description: a.description,
                 source: (a.source && a.source.name) || '',
                 time: a.publishedAt,
-            })));
+            }));
+            this.renderFeed(articles);
+            this.saveCache(articles);
             this.setStatus('');
         },
 
@@ -353,14 +408,16 @@
                 return;
             }
             const feedTitle = data.feed && data.feed.title ? data.feed.title : 'BBC';
-            this.renderFeed((data.items || []).slice(0, 15).map(it => ({
+            const articles = (data.items || []).slice(0, 15).map(it => ({
                 title: it.title,
                 url: it.link,
                 image: it.thumbnail || (it.enclosure && it.enclosure.link) || '',
                 description: this.stripHtml(it.description || '').slice(0, 200),
                 source: feedTitle,
                 time: it.pubDate,
-            })));
+            }));
+            this.renderFeed(articles);
+            this.saveCache(articles);
             this.setStatus('');
         },
 
